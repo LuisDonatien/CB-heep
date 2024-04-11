@@ -1,0 +1,36 @@
+CAPI=2:
+
+name: "cei:ip:cei_mochila"
+description: "CEI Mochila HW"
+
+filesets:
+  files_rtl:
+    depend:
+      - x-heep::packages
+    files:
+      - cei_mochila/rtl/include/cei_mochila_pkg.sv
+      - cei_mochila/rtl/mochila_top.sv
+      - cei_mochila/rtl/ext_cpu_system.sv
+      - cei_mochila/rtl/bus_system.sv
+      - cei_mochila/rtl/xbar_system.sv
+      - cei_mochila/rtl/periph_system.sv
+      - cei_mochila/rtl/memory_sys.sv
+    file_type: systemVerilogSource
+  
+  rtl-simulation:
+    depend:
+    files:
+    - cei_mochila/sim/memory_wrapper.sv
+    file_type: systemVerilogSource
+
+  rtl-fpga:
+    files:
+    - cei_mochila/fpga/memory_wrapper.sv
+    file_type: systemVerilogSource  
+    
+targets:
+  default: &default_target
+    filesets:
+    - files_rtl
+    - target_sim ? (rtl-simulation)
+    - target_pynq-z2 ? (rtl-fpga)
