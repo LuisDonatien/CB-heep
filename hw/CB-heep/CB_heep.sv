@@ -1,14 +1,17 @@
-module CB_heep#(
+
+module CB_heep
+    import obi_pkg::*;
+    import core_v_mini_mcu_pkg::*;
+  #(
+
     parameter COREV_PULP = 0,
     parameter FPU = 0,
     parameter ZFINX = 0,
-    parameter X_EXT = 0
-    parameter EXT_XBAR_NMASTER_RND = EXT_XBAR_NMASTER == 0 ? 1 : EXT_XBAR_NMASTER,
+    parameter X_EXT = 0,
     parameter EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS,
-    parameter NEXT_INT_RND = core_v_mini_mcu_pkg::NEXT_INT == 0 ? 1 : core_v_mini_mcu_pkg::NEXT_INT,
-    parameter EXT_HARTS = 0,
-    parameter EXT_HARTS_RND = EXT_HARTS == 0 ? 1 : EXT_HARTS
+    parameter NEXT_INT_RND = core_v_mini_mcu_pkg::NEXT_INT == 0 ? 1 : core_v_mini_mcu_pkg::NEXT_INT
 ) (
+
     input logic [NEXT_INT_RND-1:0] intr_vector_ext_i,
     // External slave ports
     output obi_req_t                      ext_dma_read_ch0_req_o,
@@ -170,12 +173,12 @@ module CB_heep#(
       .i2c_sda_io,
       .exit_value_o,
       .intr_vector_ext_i,
-      .xif_compressed_if(ext_if),
-      .xif_issue_if(ext_if),
-      .xif_commit_if(ext_if),
-      .xif_mem_if(ext_if),
-      .xif_mem_result_if(ext_if),
-      .xif_result_if(ext_if),
+      .xif_compressed_if,
+      .xif_issue_if,
+      .xif_commit_if,
+      .xif_mem_if,
+      .xif_mem_result_if,
+      .xif_result_if,
       .ext_xbar_master_req_i(ext_slave_bus_req),
       .ext_xbar_master_resp_o(ext_slave_bus_resp),
       .ext_core_instr_req_o(N_ext_master_bus_req[0]),
@@ -201,7 +204,7 @@ module CB_heep#(
       .external_subsystem_clkgate_en_no,
       .ext_dma_slot_tx_i,
       .ext_dma_slot_rx_i,
-      .external_cpu_subsystem_rst_no
+      .external_cpu_subsystem_rst_no(external_cpu_subsystem_rst)
   );
   localparam EXTERNALMASTERSIG = 4;
   localparam EXTERNALSLAVESIG = 1;
@@ -215,8 +218,8 @@ module CB_heep#(
   obi_req_t                          ext_master_bus_req;
   obi_resp_t                         ext_master_bus_resp;
 
-  obi_req_t                          ext_slave_bus_req;
-  obi_resp_t                         ext_slave_bus_resp;
+  obi_req_t  [EXTERNALSLAVESIG-1:0]  ext_slave_bus_req;
+  obi_resp_t [EXTERNALSLAVESIG-1:0]  ext_slave_bus_resp;
 
   // Debug Signal
   logic                              debug_req;

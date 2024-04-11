@@ -35,16 +35,19 @@ module testharness #(
 
   import obi_pkg::*;
   import reg_pkg::*;
-  import testharness_pkg::*;
   import addr_map_rule_pkg::*;
 
+    // eXtension Interface
+  if_xif #(
+      .X_NUM_RS(fpu_ss_pkg::X_NUM_RS),
+      .X_ID_WIDTH(fpu_ss_pkg::X_ID_WIDTH),
+      .X_MEM_WIDTH(fpu_ss_pkg::X_MEM_WIDTH),
+      .X_RFR_WIDTH(fpu_ss_pkg::X_RFR_WIDTH),
+      .X_RFW_WIDTH(fpu_ss_pkg::X_RFW_WIDTH),
+      .X_MISA(fpu_ss_pkg::X_MISA)
+  ) ext_if ();
   localparam SWITCH_ACK_LATENCY = 15;
-  localparam EXT_XBAR_NMASTER_RND = USE_EXTERNAL_DEVICE_EXAMPLE ? testharness_pkg::EXT_XBAR_NMASTER : 1;
-  localparam HEEP_EXT_XBAR_NMASTER = USE_EXTERNAL_DEVICE_EXAMPLE ? testharness_pkg::EXT_XBAR_NMASTER : 0;
 
-  localparam int unsigned LOG_EXT_XBAR_NSLAVE = EXT_XBAR_NSLAVE > 32'd1 ? $clog2(
-      EXT_XBAR_NSLAVE
-  ) : 32'd1;
 
   localparam EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS;
   localparam NEXT_INT_RND = core_v_mini_mcu_pkg::NEXT_INT == 0 ? 1 : core_v_mini_mcu_pkg::NEXT_INT;
@@ -72,39 +75,21 @@ module testharness #(
   wire [1:0] spi_csb;
   wire spi_sck;
 
-  logic [EXT_PERIPHERALS_PORT_SEL_WIDTH-1:0] ext_periph_select;
 
   logic iffifo_in_ready, iffifo_out_valid;
   logic iffifo_int_o;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t [EXT_XBAR_NMASTER_RND-1:0] ext_master_req;
-  obi_req_t [EXT_XBAR_NMASTER_RND-1:0] heep_slave_req;
-  obi_resp_t [EXT_XBAR_NMASTER_RND-1:0] ext_master_resp;
-  obi_resp_t [EXT_XBAR_NMASTER_RND-1:0] heep_slave_resp;
-  obi_req_t heep_core_instr_req;
-  obi_resp_t heep_core_instr_resp;
-  obi_req_t heep_core_data_req;
-  obi_resp_t heep_core_data_resp;
-  obi_req_t heep_debug_master_req;
-  obi_resp_t heep_debug_master_resp;
+
   obi_req_t heep_dma_read_ch0_req;
   obi_resp_t heep_dma_read_ch0_resp;
   obi_req_t heep_dma_write_ch0_req;
   obi_resp_t heep_dma_write_ch0_resp;
   obi_req_t heep_dma_addr_ch0_req;
   obi_resp_t heep_dma_addr_ch0_resp;
-  obi_req_t [EXT_XBAR_NSLAVE-1:0] ext_slave_req;
-  obi_resp_t [EXT_XBAR_NSLAVE-1:0] ext_slave_resp;
   reg_req_t periph_slave_req;
   reg_rsp_t periph_slave_rsp;
 
-  reg_pkg::reg_req_t [testharness_pkg::EXT_NPERIPHERALS-1:0] ext_periph_slv_req;
-  reg_pkg::reg_rsp_t [testharness_pkg::EXT_NPERIPHERALS-1:0] ext_periph_slv_rsp;
-
-  // External xbar slave example port
-  obi_req_t slow_ram_slave_req;
-  obi_resp_t slow_ram_slave_resp;
 
   // External interrupts
   logic [NEXT_INT_RND-1:0] intr_vector_ext;
@@ -119,14 +104,6 @@ module testharness #(
   logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_n;
 
   // eXtension Interface
-  if_xif #(
-      .X_NUM_RS(fpu_ss_pkg::X_NUM_RS),
-      .X_ID_WIDTH(fpu_ss_pkg::X_ID_WIDTH),
-      .X_MEM_WIDTH(fpu_ss_pkg::X_MEM_WIDTH),
-      .X_RFR_WIDTH(fpu_ss_pkg::X_RFR_WIDTH),
-      .X_RFW_WIDTH(fpu_ss_pkg::X_RFW_WIDTH),
-      .X_MISA(fpu_ss_pkg::X_MISA)
-  ) ext_if ();
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -268,9 +245,9 @@ module testharness #(
   logic [EXT_DOMAINS_RND-1:0] delayed_tb_external_subsystem_powergate_switch_ack_n;
 
   always_ff @(negedge clk_i) begin
-    tb_cpu_subsystem_powergate_switch_ack_n[0] <= x_heep_system_i.cpu_subsystem_powergate_switch_n;
-    tb_peripheral_subsystem_powergate_switch_ack_n[0] <= x_heep_system_i.peripheral_subsystem_powergate_switch_n;
-    tb_memory_subsystem_banks_powergate_switch_ack_n[0] <= x_heep_system_i.memory_subsystem_banks_powergate_switch_n;
+    tb_cpu_subsystem_powergate_switch_ack_n[0] <= CB_heep_i.x_heep_system_i.cpu_subsystem_powergate_switch_n;
+    tb_peripheral_subsystem_powergate_switch_ack_n[0] <= CB_heep_i.x_heep_system_i.peripheral_subsystem_powergate_switch_n;
+    tb_memory_subsystem_banks_powergate_switch_ack_n[0] <= CB_heep_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_n;
     tb_external_subsystem_powergate_switch_ack_n[0] <= external_subsystem_powergate_switch_n;
     for (int i = 0; i < SWITCH_ACK_LATENCY; i++) begin
       tb_memory_subsystem_banks_powergate_switch_ack_n[i+1] <= tb_memory_subsystem_banks_powergate_switch_ack_n[i];
@@ -287,14 +264,14 @@ module testharness #(
 
   always_comb begin
 `ifndef VERILATOR
-    force x_heep_system_i.core_v_mini_mcu_i.cpu_subsystem_powergate_switch_ack_ni = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
-    force x_heep_system_i.core_v_mini_mcu_i.peripheral_subsystem_powergate_switch_ack_ni = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-    force x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_ni = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
+    force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.cpu_subsystem_powergate_switch_ack_ni = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
+    force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.peripheral_subsystem_powergate_switch_ack_ni = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
+    force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_ni = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
     force external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `else
-    x_heep_system_i.cpu_subsystem_powergate_switch_ack_n = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
-    x_heep_system_i.peripheral_subsystem_powergate_switch_ack_n = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-    x_heep_system_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
+    CB_heep_i.x_heep_system_i.cpu_subsystem_powergate_switch_ack_n = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
+    CB_heep_i.x_heep_system_i.peripheral_subsystem_powergate_switch_ack_n = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
+    CB_heep_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
     external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `endif
   end
@@ -337,14 +314,7 @@ module testharness #(
   assign sim_jtag_tdo                    = JTAG_DPI ? mux_jtag_tdo : '0;
   assign jtag_tdo_o                      = !JTAG_DPI ? mux_jtag_tdo : '0;
 
-  assign slow_ram_slave_req              = ext_slave_req[SLOW_MEMORY_IDX];
-  assign ext_slave_resp[SLOW_MEMORY_IDX] = slow_ram_slave_resp;
 
-
-
-      assign slow_ram_slave_resp.gnt = '0;
-      assign slow_ram_slave_resp.rdata = '0;
-      assign slow_ram_slave_resp.rvalid = '0;
       assign memcopy_intr = '0;
       assign iffifo_int_o = '0;
 

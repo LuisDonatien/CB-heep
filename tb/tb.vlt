@@ -1,0 +1,9 @@
+`verilator_config
+
+lint_off -rule UNUSED -file "*tb/testharness.sv" -match "*"
+lint_off -rule UNDRIVEN -file "*tb/testharness.sv" -match "Signal is not driven: 'uart_rx'*"
+lint_off -rule UNDRIVEN -file "*tb/testharness.sv" -match "Signal is not driven: 'iffifo_in_ready'*"
+lint_off -rule UNDRIVEN -file "*tb/testharness.sv" -match "Signal is not driven: 'iffifo_out_valid'*"
+lint_off -rule SYNCASYNCNET -file "*tb/testharness.sv" -match "*"
+lint_off -rule WIDTH -file "*tb/testharness.sv" -match "*"
+lint_off -rule LITENDIAN -file "*tb/testharness.sv" -match "*"

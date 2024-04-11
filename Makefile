@@ -16,17 +16,35 @@
 # Description: CEI-Backpack top-level makefile
 
 MAKE = make
+.PHONY: test
 
+# Linker options are 'on_chip' (default),'flash_load','flash_exec','freertos'
+LINKER   ?= on_chip
+
+# Compiler options are 'gcc' (default) and 'clang'
+COMPILER ?= gcc
+
+# Compiler prefix options are 'riscv32-unknown-' (default)
+COMPILER_PREFIX ?= riscv32-unknown-
+
+# Target options are 'sim' (default) and 'pynq-z2'
+TARGET   	?= sim
+
+# Arch options are any RISC-V ISA string supported by the CPU. Default 'rv32imc'
+ARCH     ?= rv32imfc
+
+# Default FPGA 
+FPGA_BOARD 	?= pynq-z2
 all: help
 
-sim:
-	fusesoc --cores-root . run --no-export --target=sim $(FUSESOC_FLAGS) --setup --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee build_sim.log
+verilator-sim:
+	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee buildsim.log
 
 sim-opt: sim
 	$(MAKE) -C build/CEI_BackPack_heep_0.0/sim-modelsim opt
 
 synth-pynq-z2:
-	fusesoc --cores-root . run --no-export --target=pynq-z2 --setup --build CEI-Backpack-heep::ip:mochila:0.0 2>&1 | tee build_synth-pynq-z2.log
+	fusesoc --cores-root . run --no-export --target=pynq-z2 --setup --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee build_synth-pynq-z2.log
 
 clean:
 	rm -rf build
