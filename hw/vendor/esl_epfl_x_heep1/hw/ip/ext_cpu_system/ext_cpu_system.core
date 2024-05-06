@@ -1,0 +1,20 @@
+CAPI=2:
+
+name: "x-heep:ip:ext_cpu_system"
+description: "system external CPU"
+
+# Copyright 2022 EPFL
+# Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+# SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+
+filesets:
+  files_rtl:
+    depend:
+    files:
+    - ext_cpu_system.sv
+    file_type: systemVerilogSource
+
+targets:
+  default:
+    filesets:
+    - files_rtl
