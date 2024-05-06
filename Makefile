@@ -18,6 +18,7 @@
 MAKE = make
 .PHONY: test
 
+PROJECT  ?= hello_world
 # Linker options are 'on_chip' (default),'flash_load','flash_exec','freertos'
 LINKER   ?= on_chip
 
@@ -46,11 +47,39 @@ sim-opt: sim
 
 sim-helloworld:
 	cd ./build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/build/main.hex; \
+	./Vtestharness +firmware=../../../sw/CB_C0_build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
+	
+
+##SW
+
+#Three option depending on which core it's choose.
+#Set flag to choose the correct core.
+
+#Core X-HEEP SoC
+app-xheep:
+	cd ./hw/vendor/esl_epfl_x_heep; \
+	$(MAKE) app 
+
+#Core CB-Heep 0
+app-cbcore0: app-clean
+	$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH)
 
 
+## Clean the CMake build folder
+app-clean:
+	if [ -f "sw/build/Makefile" ]; then\
+		$(MAKE) -C sw/CB_C0_build clean;\
+	else\
+		$(MAKE) app-restore;\
+	fi
+
+## Removes the CMake build folder
+app-restore:
+	rm -rf sw/CB_C0_build
+
+#FPGA Pynq-z2
 
 synth-pynq-z2:
 	fusesoc --cores-root . run --no-export --target=pynq-z2 --setup --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee build_synth-pynq-z2.log

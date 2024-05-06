@@ -2,6 +2,7 @@
 # Copyright 2019 Robert Balas
 # Copyright 2022 Jose Miranda
 # Copyright 2023 Juan Sapriza
+# Copyright 2024 Luis Waucquez
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +16,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-# Author: Juan Sapriza (juan.sapriza@epfl.ch)
+# Author: Luis Waucquez (luis.waucquez.jimenez@upm.es)
 
 MAKE                       = make
 

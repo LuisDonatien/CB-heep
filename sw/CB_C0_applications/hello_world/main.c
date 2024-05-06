@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     *P= 12;
 
     if(*P!=15)
-        printf("ERROR MEM1");
+        printf("CoreCB");
     else
         printf("Read data %d \n",*P);
 
