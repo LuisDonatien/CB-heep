@@ -43,6 +43,15 @@ verilator-sim:
 sim-opt: sim
 	$(MAKE) -C build/CEI_BackPack_heep_0.0/sim-modelsim opt
 
+
+sim-helloworld:
+	cd ./build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+
+
 synth-pynq-z2:
 	fusesoc --cores-root . run --no-export --target=pynq-z2 --setup --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee build_synth-pynq-z2.log
 

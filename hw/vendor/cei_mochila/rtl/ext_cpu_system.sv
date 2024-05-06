@@ -48,7 +48,7 @@ module ext_cpu_system
       .NUM_MHPMCOUNTERS(NUM_MHPMCOUNTERS)
   ) cv32e40p_top_i (
       .clk_i (clk_i),
-      .rst_ni(rst_ni),
+      .rst_ni(rst_ni && 1'b0),
 
       .pulp_clock_en_i(1'b1),
       .scan_cg_en_i   (1'b0),
