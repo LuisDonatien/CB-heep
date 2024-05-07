@@ -36,6 +36,12 @@ ARCH     ?= rv32imfc
 
 # Default FPGA 
 FPGA_BOARD 	?= pynq-z2
+
+
+# Default Core in CB-Accelerator.
+CORE		?= 1
+
+
 all: help
 
 verilator-sim:
@@ -62,27 +68,30 @@ app-xheep:
 	cd ./hw/vendor/esl_epfl_x_heep; \
 	$(MAKE) app 
 
-#Core CB-Heep 0
-app-cbcore0: app-clean
-	$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH)
+#Core CB-Heep 
+# CORE ?=0
+app-cbcore: ##app-clean
+	$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) CORE=$(CORE) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH)
 
 
 ## Clean the CMake build folder
 app-clean:
 	if [ -f "sw/build/Makefile" ]; then\
-		$(MAKE) -C sw/CB_C0_build clean;\
+		$(MAKE) -C sw/build_CB_C$(CORE) clean;\
 	else\
 		$(MAKE) app-restore;\
 	fi
 
 ## Removes the CMake build folder
 app-restore:
-	rm -rf sw/CB_C0_build
+	rm -rf sw/build_CB_C$(CORE)
 
+
+##Vivado Synthesis & Implementation
 #FPGA Pynq-z2
+vivado-fpga:
+	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --build CEI-Backpack-heep:ip:mochila:0.0 ${FUSESOC_PARAM} 2>&1 | tee buildvivado.log
 
-synth-pynq-z2:
-	fusesoc --cores-root . run --no-export --target=pynq-z2 --setup --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee build_synth-pynq-z2.log
 
 clean:
 	rm -rf build

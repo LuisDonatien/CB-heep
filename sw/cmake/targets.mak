@@ -16,14 +16,14 @@
 # Author: Juan Sapriza (juan.sapriza@epfl.ch)
 
 build : build/Makefile
-	@echo CB_C0_build 
-	${MAKE} -C CB_C0_build
+	@echo build_CB_C${CORE}
+	${MAKE} -C build_CB_C${CORE}
 
 setup : build/Makefile
 
 build/Makefile : CMakeLists.txt ${CMAKE_DIR}/riscv.cmake
-	if [ ! -d CB_C0_build ] ; then mkdir CB_C0_build ; fi
-	cd CB_C0_build;  \
+	if [ ! -d build_CB_C${CORE} ] ; then mkdir build_CB_C${CORE} ; fi
+	cd build_CB_C${CORE};  \
 		${CMAKE} \
 		    -G "Unix Makefiles" \
 			-DCMAKE_TOOLCHAIN_FILE=../${CMAKE_DIR}/riscv.cmake \
@@ -37,10 +37,11 @@ build/Makefile : CMakeLists.txt ${CMAKE_DIR}/riscv.cmake
 			-DLINKER:STRING=${LINKER} \
 			-DCOMPILER:STRING=${COMPILER} \
 			-DCOMPILER_PREFIX:STRING=${COMPILER_PREFIX} \
+			-DCORE=${CORE} \
 		    ../ 
 
 clean:
-	rm -rf CB_C0_build
+	rm -rf build_CB_C${CORE}
 
 .PHONY: setup build
 .SUFFIXES:

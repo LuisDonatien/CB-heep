@@ -336,7 +336,7 @@ endif()
 #      SET TARGETS
 #######################################################################
 
-set(SOURCES ${SOURCE_PATH}CB_C0_applications/${PROJECT}/${MAINFILE}.c)
+set(SOURCES ${SOURCE_PATH}applications_CB_C${CORE}/${PROJECT}/${MAINFILE}.c)
 
 # add the executable
 add_executable(${MAINFILE}.elf ${SOURCES})
@@ -385,13 +385,13 @@ endif()
 if (${COMPILER} MATCHES "clang")
 	if( ${PROJECT} MATCHES "freertos" )
 		set( CMAKE_C_LINK_EXECUTABLE "${CMAKE_LINKER} ${COMPILER_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS} \
-                                ${SOURCE_PATH}CB_C0_build/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}CB_C0_applications/${PROJECT}/${MAINFILE}.c.obj \
+                                ${SOURCE_PATH}build_CB_C${CORE}/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}applications_CB_C${CORE}/${PROJECT}/${MAINFILE}.c.obj \
                                 -o ${MAINFILE}.elf \
 								_deps/freertos_kernel-build/libfreertos_kernel.a \ _deps/freertos_kernel-build/portable/libfreertos_kernel_port.a \ _deps/freertos_kernel-build/libfreertos_kernel.a \ _deps/freertos_kernel-build/portable/libfreertos_kernel_port.a \
 								")
 	else()
   set( CMAKE_C_LINK_EXECUTABLE "${CMAKE_LINKER} ${COMPILER_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS} \
-                                ${SOURCE_PATH}CB_C0_build/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}CB_C0_applications/${PROJECT}/${MAINFILE}.c.obj \
+                                ${SOURCE_PATH}build_CB_C${CORE}/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}applications_CB_C${CORE}/${PROJECT}/${MAINFILE}.c.obj \
                                 -o ${MAINFILE}.elf")
     endif()
 endif()
@@ -424,7 +424,7 @@ add_custom_command(TARGET ${MAINFILE}.elf POST_BUILD
 foreach (SRC_MODULE ${MAINFILE} )
   add_custom_command(TARGET ${MAINFILE}.elf
                      PRE_LINK
-                     COMMAND ${CMAKE_OBJDUMP} -S ${ROOT_PROJECT}CB_C0_build/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}CB_C0_applications/${PROJECT}/${SRC_MODULE}.c.obj > ${SRC_MODULE}.s
+                     COMMAND ${CMAKE_OBJDUMP} -S ${ROOT_PROJECT}build_CB_C${CORE}/CMakeFiles/${MAINFILE}.elf.dir/${OBJ_PATH}applications_CB_C${CORE}/${PROJECT}/${SRC_MODULE}.c.obj > ${SRC_MODULE}.s
                      COMMENT "Invoking: Disassemble ( CMakeFiles/${MAINFILE}.dir/${SRC_MODULE}.c.obj)")
 endforeach()
 
