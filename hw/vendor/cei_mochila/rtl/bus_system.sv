@@ -19,17 +19,17 @@ module bus_system
   import obi_pkg::*;
   import addr_map_rule_pkg::*;
 #(
-
+  parameter NHARTS = 2
 ) (
     input logic clk_i,
     input logic rst_ni,
 
     // Internal master ports
-    input  obi_req_t  core_instr_req_i,
-    output obi_resp_t core_instr_resp_o,
+    input  obi_req_t  [NHARTS-1 : 0] core_instr_req_i,
+    output obi_resp_t [NHARTS-1 : 0] core_instr_resp_o,
 
-    input  obi_req_t  core_data_req_i,
-    output obi_resp_t core_data_resp_o,
+    input  obi_req_t  [NHARTS-1 : 0] core_data_req_i,
+    output obi_resp_t [NHARTS-1 : 0] core_data_resp_o,
 
     // Internal slave ports
     output obi_req_t  peripheral_slave_req_o,
@@ -62,14 +62,17 @@ module bus_system
   obi_resp_t [cei_mochila_pkg::SYSTEM_XBAR_NSLAVE-1:0] int_slave_resp;
 
   // Internal master requests
-  assign int_master_req[cei_mochila_pkg::CORE_INSTR_IDX] = core_instr_req_i;
-  assign int_master_req[cei_mochila_pkg::CORE_DATA_IDX] = core_data_req_i;
+  assign int_master_req[cei_mochila_pkg::CORE0_INSTR_IDX] = core_instr_req_i[0];
+  assign int_master_req[cei_mochila_pkg::CORE0_DATA_IDX] = core_data_req_i[0];
+  assign int_master_req[cei_mochila_pkg::CORE1_INSTR_IDX] = core_instr_req_i[1];
+  assign int_master_req[cei_mochila_pkg::CORE1_DATA_IDX] = core_data_req_i[1];
   assign int_master_req[cei_mochila_pkg::EXTERNAL_MASTER_IDX] = ext_master_req_i; 
 
   // Internal master responses
-  assign core_instr_resp_o = int_master_resp[cei_mochila_pkg::CORE_INSTR_IDX];
-  assign core_data_resp_o = int_master_resp[cei_mochila_pkg::CORE_DATA_IDX];
-
+  assign core_instr_resp_o[0] = int_master_resp[cei_mochila_pkg::CORE0_INSTR_IDX];
+  assign core_data_resp_o[0] = int_master_resp[cei_mochila_pkg::CORE0_DATA_IDX];
+  assign core_instr_resp_o[1] = int_master_resp[cei_mochila_pkg::CORE1_INSTR_IDX];
+  assign core_data_resp_o[1] = int_master_resp[cei_mochila_pkg::CORE1_DATA_IDX];
   // External master responses
   assign ext_master_resp_o = int_master_resp[cei_mochila_pkg::EXTERNAL_MASTER_IDX];
 

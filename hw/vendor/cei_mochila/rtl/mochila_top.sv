@@ -7,7 +7,9 @@ module mochila_top
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter DM_HALTADDRESS = core_v_mini_mcu_pkg::DEBUG_START_ADDRESS + 32'h00000800
+    parameter DM_HALTADDRESS = core_v_mini_mcu_pkg::DEBUG_START_ADDRESS + 32'h00000800,
+    parameter NHARTS = 2
+    
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -22,7 +24,7 @@ module mochila_top
     input  obi_resp_t   ext_slave_resp_i,
 
     // Debug Interface
-    input logic debug_req_i
+    input logic [NHARTS-1 : 0] debug_req_i
 );
 
 
@@ -30,11 +32,11 @@ module mochila_top
 //Signals
 
     // Internal master ports
-    obi_req_t  core_instr_req;
-    obi_resp_t core_instr_resp;
+    obi_req_t  [NHARTS-1 : 0] core_instr_req;
+    obi_resp_t [NHARTS-1 : 0] core_instr_resp;
 
-    obi_req_t  core_data_req;
-    obi_resp_t core_data_resp;
+    obi_req_t  [NHARTS-1 : 0] core_data_req;
+    obi_resp_t [NHARTS-1 : 0] core_data_resp;
 
     // Internal slave ports
     obi_req_t  peripheral_slave_req;
@@ -107,9 +109,5 @@ bus_system bus_system_i(
     .ram_req_o(ram_req),
     .ram_resp_i(ram_resp)  
 );
-
-
-
-
 
 endmodule

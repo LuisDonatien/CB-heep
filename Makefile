@@ -39,7 +39,7 @@ FPGA_BOARD 	?= pynq-z2
 
 
 # Default Core in CB-Accelerator.
-CORE		?= 1
+CORE		?= 0
 
 
 all: help

@@ -111,7 +111,7 @@ module CB_heep
       .ZFINX           (ZFINX),
       .X_EXT           (X_EXT),
       .EXT_XBAR_NMASTER(1),
-      .EXT_HARTS       (1)
+      .EXT_HARTS       (NHARTS)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -208,6 +208,7 @@ module CB_heep
   );
   localparam EXTERNALMASTERSIG = 4;
   localparam EXTERNALSLAVESIG = 1;
+  localparam NHARTS = 2;
   //***External_Core*****//
   // Reset Signal
   logic                              external_cpu_subsystem_rst;
@@ -222,7 +223,7 @@ module CB_heep
   obi_resp_t [EXTERNALSLAVESIG-1:0]  ext_slave_bus_resp;
 
   // Debug Signal
-  logic                              debug_req;
+  logic      [NHARTS-1 : 0]          debug_req;
 
 
   // N-to-1 crossbar Data

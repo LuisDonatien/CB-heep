@@ -13,11 +13,13 @@ package cei_mochila_pkg;
 //System Bus
 
   //master idx
-  localparam logic [31:0] CORE_INSTR_IDX = 0;
-  localparam logic [31:0] CORE_DATA_IDX = 1;
-  localparam logic [31:0] EXTERNAL_MASTER_IDX = 2;
+  localparam logic [31:0] CORE0_INSTR_IDX = 0;
+  localparam logic [31:0] CORE0_DATA_IDX = 1;
+  localparam logic [31:0] CORE1_INSTR_IDX = 2;
+  localparam logic [31:0] CORE1_DATA_IDX = 3;
+  localparam logic [31:0] EXTERNAL_MASTER_IDX = 4;
 
-  localparam SYSTEM_XBAR_NMASTER = 3;
+  localparam SYSTEM_XBAR_NMASTER = 5;
   localparam SYSTEM_XBAR_NSLAVE = 4;
   //Internal Memory Map and Index
   //--------------------

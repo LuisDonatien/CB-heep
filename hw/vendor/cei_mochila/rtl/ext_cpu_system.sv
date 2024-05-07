@@ -12,22 +12,23 @@ module ext_cpu_system
     parameter FPU = 0,  // Floating Point Unit (interfaced via APU interface)
     parameter ZFINX = 0,  // Float-in-General Purpose registers
     parameter NUM_MHPMCOUNTERS = 1,
+    parameter NHARTS = 2,
     parameter DM_HALTADDRESS = core_v_mini_mcu_pkg::DEBUG_START_ADDRESS + 32'h00000800
 ) (
     // Clock and Reset
     input logic clk_i,
     input logic rst_ni,
 
-    // Instruction memory interface
-    output obi_req_t  core_instr_req_o,
-    input  obi_resp_t core_instr_resp_i,
+    // Instruction memory interface 
+    output obi_req_t  [NHARTS-1 : 0] core_instr_req_o,
+    input  obi_resp_t [NHARTS-1 : 0] core_instr_resp_i,
 
-    // Data memory interface
-    output obi_req_t  core_data_req_o,
-    input  obi_resp_t core_data_resp_i,
+    // Data memory interface 
+    output obi_req_t  [NHARTS-1 : 0] core_data_req_o,
+    input  obi_resp_t [NHARTS-1 : 0] core_data_resp_i,
 
     // Debug Interface
-    input logic debug_req_i
+    input logic [NHARTS-1 : 0] debug_req_i
 );
 
 
@@ -35,18 +36,25 @@ module ext_cpu_system
   logic fetch_enable;
 
   assign fetch_enable = 1'b1;
-
-  assign core_instr_req_o.wdata = '0;
-  assign core_instr_req_o.we    = '0;
-  assign core_instr_req_o.be    = 4'b1111;
-  // instantiate the core
+  
+  //Core 0 
+  assign core_instr_req_o[0].wdata = '0;
+  assign core_instr_req_o[0].we    = '0;
+  assign core_instr_req_o[0].be    = 4'b1111;
+  
+  // Core 1
+  assign core_instr_req_o[1].wdata = '0;
+  assign core_instr_req_o[1].we    = '0;
+  assign core_instr_req_o[1].be    = 4'b1111;
+  
+  // instantiate the core 0
   cv32e40p_top #(
       .COREV_PULP      (COREV_PULP),
       .COREV_CLUSTER   (0),
       .FPU             (FPU),
       .ZFINX           (ZFINX),
       .NUM_MHPMCOUNTERS(NUM_MHPMCOUNTERS)
-  ) cv32e40p_top_i (
+  ) cv32e40p_core0 (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
 
@@ -59,26 +67,26 @@ module ext_cpu_system
       .hart_id_i          (32'h1),
       .dm_exception_addr_i(32'h0),
 
-      .instr_addr_o  (core_instr_req_o.addr),
-      .instr_req_o   (core_instr_req_o.req),
-      .instr_rdata_i (core_instr_resp_i.rdata),
-      .instr_gnt_i   (core_instr_resp_i.gnt),
-      .instr_rvalid_i(core_instr_resp_i.rvalid),
+      .instr_addr_o  (core_instr_req_o[0].addr),
+      .instr_req_o   (core_instr_req_o[0].req),
+      .instr_rdata_i (core_instr_resp_i[0].rdata),
+      .instr_gnt_i   (core_instr_resp_i[0].gnt),
+      .instr_rvalid_i(core_instr_resp_i[0].rvalid),
 
-      .data_addr_o  (core_data_req_o.addr),
-      .data_wdata_o (core_data_req_o.wdata),
-      .data_we_o    (core_data_req_o.we),
-      .data_req_o   (core_data_req_o.req),
-      .data_be_o    (core_data_req_o.be),
-      .data_rdata_i (core_data_resp_i.rdata),
-      .data_gnt_i   (core_data_resp_i.gnt),
-      .data_rvalid_i(core_data_resp_i.rvalid),
+      .data_addr_o  (core_data_req_o[0].addr),
+      .data_wdata_o (core_data_req_o[0].wdata),
+      .data_we_o    (core_data_req_o[0].we),
+      .data_req_o   (core_data_req_o[0].req),
+      .data_be_o    (core_data_req_o[0].be),
+      .data_rdata_i (core_data_resp_i[0].rdata),
+      .data_gnt_i   (core_data_resp_i[0].gnt),
+      .data_rvalid_i(core_data_resp_i[0].rvalid),
 
       .irq_i    (),
       .irq_ack_o(),
       .irq_id_o (),
 
-      .debug_req_i      (debug_req_i),
+      .debug_req_i      (debug_req_i[0]),
       .debug_havereset_o(),
       .debug_running_o  (),
       .debug_halted_o   (),
@@ -86,5 +94,53 @@ module ext_cpu_system
       .fetch_enable_i(fetch_enable),
       .core_sleep_o  ()
   );
+  
+  
+  // instantiate the core 1
+  cv32e40p_top #(
+      .COREV_PULP      (COREV_PULP),
+      .COREV_CLUSTER   (0),
+      .FPU             (FPU),
+      .ZFINX           (ZFINX),
+      .NUM_MHPMCOUNTERS(NUM_MHPMCOUNTERS)
+  ) cv32e40p_core1 (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
 
+      .pulp_clock_en_i(1'b1),
+      .scan_cg_en_i   (1'b0),
+
+      .boot_addr_i        (BOOT_ADDR),
+      .mtvec_addr_i       (32'h0),
+      .dm_halt_addr_i     (DM_HALTADDRESS),
+      .hart_id_i          (32'h2),
+      .dm_exception_addr_i(32'h0),
+
+      .instr_addr_o  (core_instr_req_o[1].addr),
+      .instr_req_o   (core_instr_req_o[1].req),
+      .instr_rdata_i (core_instr_resp_i[1].rdata),
+      .instr_gnt_i   (core_instr_resp_i[1].gnt),
+      .instr_rvalid_i(core_instr_resp_i[1].rvalid),
+
+      .data_addr_o  (core_data_req_o[1].addr),
+      .data_wdata_o (core_data_req_o[1].wdata),
+      .data_we_o    (core_data_req_o[1].we),
+      .data_req_o   (core_data_req_o[1].req),
+      .data_be_o    (core_data_req_o[1].be),
+      .data_rdata_i (core_data_resp_i[1].rdata),
+      .data_gnt_i   (core_data_resp_i[1].gnt),
+      .data_rvalid_i(core_data_resp_i[1].rvalid),
+
+      .irq_i    (),
+      .irq_ack_o(),
+      .irq_id_o (),
+
+      .debug_req_i      (debug_req_i[1]),
+      .debug_havereset_o(),
+      .debug_running_o  (),
+      .debug_halted_o   (),
+
+      .fetch_enable_i(fetch_enable),
+      .core_sleep_o  ()
+  );
 endmodule
