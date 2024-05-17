@@ -53,7 +53,7 @@ sim-opt: sim
 
 sim-helloworld:
 	cd ./build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/CB_C0_build/main.hex; \
+	./Vtestharness +firmware=../../../sw/build_CB_C0/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 	

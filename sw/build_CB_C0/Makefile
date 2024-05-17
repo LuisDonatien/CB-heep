@@ -132,29 +132,29 @@ main.elf/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/build
 .PHONY : main.elf/fast
 
-applications_CB_C0/hello_world/main.obj: applications_CB_C0/hello_world/main.c.obj
-.PHONY : applications_CB_C0/hello_world/main.obj
+applications_CB_C0/Switch_Context_Routine/main.obj: applications_CB_C0/Switch_Context_Routine/main.c.obj
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.obj
 
 # target to build an object file
-applications_CB_C0/hello_world/main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj
-.PHONY : applications_CB_C0/hello_world/main.c.obj
+applications_CB_C0/Switch_Context_Routine/main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/Switch_Context_Routine/main.c.obj
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.c.obj
 
-applications_CB_C0/hello_world/main.i: applications_CB_C0/hello_world/main.c.i
-.PHONY : applications_CB_C0/hello_world/main.i
+applications_CB_C0/Switch_Context_Routine/main.i: applications_CB_C0/Switch_Context_Routine/main.c.i
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.i
 
 # target to preprocess a source file
-applications_CB_C0/hello_world/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.i
-.PHONY : applications_CB_C0/hello_world/main.c.i
+applications_CB_C0/Switch_Context_Routine/main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/Switch_Context_Routine/main.c.i
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.c.i
 
-applications_CB_C0/hello_world/main.s: applications_CB_C0/hello_world/main.c.s
-.PHONY : applications_CB_C0/hello_world/main.s
+applications_CB_C0/Switch_Context_Routine/main.s: applications_CB_C0/Switch_Context_Routine/main.c.s
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.s
 
 # target to generate assembly for a file
-applications_CB_C0/hello_world/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.s
-.PHONY : applications_CB_C0/hello_world/main.c.s
+applications_CB_C0/Switch_Context_Routine/main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.elf.dir/build.make CMakeFiles/main.elf.dir/applications_CB_C0/Switch_Context_Routine/main.c.s
+.PHONY : applications_CB_C0/Switch_Context_Routine/main.c.s
 
 # Help Target
 help:
@@ -165,9 +165,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main.elf"
-	@echo "... applications_CB_C0/hello_world/main.obj"
-	@echo "... applications_CB_C0/hello_world/main.i"
-	@echo "... applications_CB_C0/hello_world/main.s"
+	@echo "... applications_CB_C0/Switch_Context_Routine/main.obj"
+	@echo "... applications_CB_C0/Switch_Context_Routine/main.i"
+	@echo "... applications_CB_C0/Switch_Context_Routine/main.s"
 .PHONY : help
 
 

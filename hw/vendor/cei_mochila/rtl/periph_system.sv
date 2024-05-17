@@ -101,7 +101,7 @@ module periph_system
       .out_rsp_i(peripheral_slv_rsp)
   );
 
-  boot_rom boot_rom_i (
+  CB_boot_rom CB_boot_rom_i (
       .reg_req_i(peripheral_slv_req[cei_mochila_pkg::BOOTROM_IDX]),
       .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::BOOTROM_IDX])
   );

@@ -15,6 +15,7 @@ filesets:
       - cei_mochila/rtl/xbar_system.sv
       - cei_mochila/rtl/periph_system.sv
       - cei_mochila/rtl/memory_sys.sv
+      - cei_mochila/ip/CB_boot_rom/CB_boot_rom.sv
     file_type: systemVerilogSource
   
   rtl-simulation:
