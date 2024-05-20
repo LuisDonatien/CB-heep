@@ -1,0 +1,115 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri May 17 10:31:01 2024
+[*]
+[dumpfile] "/home/luis/Documents/PhD/CB-heep/build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator/waveform.vcd"
+[dumpfile_mtime] "Fri May 17 09:44:46 2024"
+[dumpfile_size] 10215828
+[savefile] "/home/luis/Documents/PhD/CB-heep/tb/Core1Signals.gtkw"
+[timestart] 262020
+[size] 1850 1016
+[pos] -1 -1
+*-7.763067 262617 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.testharness.
+[treeopen] TOP.testharness.CB_heep_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(0).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.crash_dump_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.crash_dump_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.
+[sst_width] 422
+[signals_width] 277
+[sst_expanded] 1
+[sst_vpaned_height] 397
+@28
+TOP.jtag_tck_i
+TOP.testharness.CB_heep_i.mochila_top_i.clk_i
+@22
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(0).addr[31:0]
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(0).rdata[31:0]
+@28
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(0).rvalid
+@22
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).addr[31:0]
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).wdata[31:0]
+@28
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).we
+@22
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.crash_dump_o.current_pc[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.crash_dump_o.next_pc[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.crash_dump_o.last_data_addr[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.crash_dump_o.exception_addr[31:0]
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_instr_req_o(1).addr[31:0]
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_instr_resp_i(1).rdata[31:0]
+@28
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_instr_resp_i(1).rvalid
+@22
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_data_req_o(1).addr[31:0]
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_data_resp_i(1).rdata[31:0]
+@28
+[color] 1
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.core_data_resp_i(1).rvalid
+@22
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.crash_dump_o.next_pc[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.crash_dump_o.last_data_addr[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.crash_dump_o.exception_addr[31:0]
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core1.crash_dump_o.current_pc[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(0)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(1)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(2)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(3)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(4)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(5)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(6)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(7)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(8)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(9)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(10)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(11)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(12)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(13)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(14)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(15)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(16)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(17)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(18)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(19)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(20)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(21)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(22)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(23)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(24)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(25)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(26)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(27)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(28)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(29)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(30)[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg(31)[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

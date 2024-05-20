@@ -64,7 +64,7 @@ module cpu_subsystem
         .DmExceptionAddr('0)
     ) cv32e20_i (
         .clk_i (clk_i),
-        .rst_ni(rst_ni),
+        .rst_ni(rst_ni && 1'b0),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
