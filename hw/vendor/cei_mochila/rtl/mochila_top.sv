@@ -38,6 +38,10 @@ module mochila_top
     obi_req_t  [NHARTS-1 : 0] core_data_req;
     obi_resp_t [NHARTS-1 : 0] core_data_resp;
 
+    // Safe Wrapper Control/Status Register
+    obi_req_t  wrapper_csr_req;
+    obi_resp_t wrapper_csr_resp;    
+
     // Internal slave ports
     obi_req_t  peripheral_slave_req;
     obi_resp_t peripheral_slave_resp;
@@ -47,9 +51,9 @@ module mochila_top
     obi_resp_t ram_resp;    
 
 //CPU_System
-ext_cpu_system #(
+safe_cpu_wrapper #(
         .DM_HALTADDRESS  (DM_HALTADDRESS)
-    )ext_cpu_system_i(
+    )safe_cpu_wrapper_i(
     .clk_i,
     .rst_ni,
 
@@ -60,6 +64,10 @@ ext_cpu_system #(
     // Data memory interface
     .core_data_req_o(core_data_req),
     .core_data_resp_i(core_data_resp),
+
+    // Wrapper Control & Status Rgister
+    .wrapper_csr_req_i(wrapper_csr_req),
+    .wrapper_csr_resp_o(wrapper_csr_resp),
 
     // Debug Interface
     .debug_req_i
@@ -105,9 +113,11 @@ bus_system bus_system_i(
     .peripheral_slave_req_o(peripheral_slave_req),
     .peripheral_slave_resp_i(peripheral_slave_resp),
 
-    // Internal slave ports
     .ram_req_o(ram_req),
-    .ram_resp_i(ram_resp)  
+    .ram_resp_i(ram_resp),
+
+    .wrapper_csr_req_o(wrapper_csr_req),
+    .wrapper_csr_resp_i(wrapper_csr_resp)
 );
 
 endmodule

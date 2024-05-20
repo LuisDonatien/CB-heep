@@ -45,9 +45,11 @@ module bus_system
 
     //Ram memory
     output obi_req_t   ram_req_o,
-    input  obi_resp_t  ram_resp_i
+    input  obi_resp_t  ram_resp_i,
 
-
+    // Control Status Register
+    output obi_req_t   wrapper_csr_req_o,
+    input  obi_resp_t  wrapper_csr_resp_i
 
 );
 
@@ -79,6 +81,7 @@ module bus_system
   // Internal slave requests
   assign peripheral_slave_req_o = int_slave_req[cei_mochila_pkg::PERIPHERAL_IDX];
   assign ram_req_o              = int_slave_req[cei_mochila_pkg::MEMORY_IDX];
+  assign wrapper_csr_req_o      = int_slave_req[cei_mochila_pkg::SAFE_WRAPPER_CSR_IDX];
 
   // External slave requests
   assign ext_slave_req_o = int_slave_req[cei_mochila_pkg::EXTERNAL_PERIPHERAL_IDX];
@@ -86,6 +89,7 @@ module bus_system
   // Internal slave responses
   assign int_slave_resp[cei_mochila_pkg::PERIPHERAL_IDX] = peripheral_slave_resp_i;
   assign int_slave_resp[cei_mochila_pkg::MEMORY_IDX] = ram_resp_i;
+  assign int_slave_resp[cei_mochila_pkg::SAFE_WRAPPER_CSR_IDX] = wrapper_csr_resp_i;
   // External slave responses
   assign int_slave_resp[cei_mochila_pkg::EXTERNAL_PERIPHERAL_IDX] = ext_slave_resp_i;
   // Internal system crossbar

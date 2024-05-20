@@ -1,0 +1,28 @@
+// Copyright lowRISC contributors.
+// Licensed under the Apache License, Version 2.0, see LICENSE for details.
+// SPDX-License-Identifier: Apache-2.0
+{ name: "safe_wrapper_ctrl",
+  clock_primary: "clk_i",
+  bus_interfaces: [
+    { protocol: "reg_iface", direction: "device" }
+  ],
+  regwidth: "32",
+  registers: [
+    { name:     "Core0Sync",
+      desc:     "Core 0 Synchronize",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "CORE_0_SYNC", desc: "Core 0 is Sync" }
+      ]
+    },
+    { name:     "Core1Sync",
+      desc:     "Core 1 Synchronize",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "CORE_1_SYNC", desc: "Core 1 is Sync" }
+      ]
+    }
+   ]
+}

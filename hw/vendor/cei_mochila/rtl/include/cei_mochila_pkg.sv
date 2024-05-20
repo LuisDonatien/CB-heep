@@ -20,7 +20,7 @@ package cei_mochila_pkg;
   localparam logic [31:0] EXTERNAL_MASTER_IDX = 4;
 
   localparam SYSTEM_XBAR_NMASTER = 5;
-  localparam SYSTEM_XBAR_NSLAVE = 4;
+  localparam SYSTEM_XBAR_NSLAVE = 5;
   //Internal Memory Map and Index
   //--------------------
   localparam int unsigned LOG_SYSTEM_XBAR_NMASTER = SYSTEM_XBAR_NMASTER > 1 ? $clog2(
@@ -36,7 +36,7 @@ package cei_mochila_pkg;
   localparam logic [31:0] ERROR_IDX = 32'd0;
 
   localparam logic [31:0] PERIPHERAL_START_ADDRESS = 32'hF0000000;
-  localparam logic [31:0] PERIPHERAL_SIZE = 32'h00100000;
+  localparam logic [31:0] PERIPHERAL_SIZE = 32'h00010000;
   localparam logic[31:0] PERIPHERAL_END_ADDRESS = PERIPHERAL_START_ADDRESS + PERIPHERAL_SIZE;
   localparam logic [31:0] PERIPHERAL_IDX = 32'd1;
 
@@ -49,6 +49,11 @@ package cei_mochila_pkg;
   localparam logic [31:0] MEMORY_SIZE = 32'h00010000;
   localparam logic[31:0]  MEMORY_END_ADDRESS = MEMORY_START_ADDRESS + MEMORY_SIZE;
   localparam logic [31:0] MEMORY_IDX = 32'd3;
+
+  localparam logic [31:0] SAFE_WRAPPER_CSR_START_ADDRESS = 32'hF0010000;
+  localparam logic [31:0] SAFE_WRAPPER_CSR_SIZE = 32'h00010000;
+  localparam logic[31:0]  SAFE_WRAPPER_CSR_END_ADDRESS = SAFE_WRAPPER_CSR_START_ADDRESS + SAFE_WRAPPER_CSR_SIZE;
+  localparam logic [31:0] SAFE_WRAPPER_CSR_IDX = 32'd4;  
 
   localparam addr_map_rule_t [SYSTEM_XBAR_NSLAVE-1:0] XBAR_ADDR_RULES = '{
       '{  idx: ERROR_IDX, start_addr: ERROR_START_ADDRESS, end_addr: ERROR_END_ADDRESS},
@@ -66,6 +71,11 @@ package cei_mochila_pkg;
           idx: MEMORY_IDX,
           start_addr: MEMORY_START_ADDRESS,
           end_addr: MEMORY_END_ADDRESS
+      },
+      '{
+          idx: SAFE_WRAPPER_CSR_IDX,
+          start_addr: SAFE_WRAPPER_CSR_START_ADDRESS,
+          end_addr: SAFE_WRAPPER_CSR_END_ADDRESS
       }
   };
 

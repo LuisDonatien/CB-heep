@@ -9,6 +9,7 @@ filesets:
       - x-heep::packages
     files:
       - cei_mochila/rtl/include/cei_mochila_pkg.sv
+      - cei_mochila/rtl/include/safe_wrapper_ctrl_reg_pkg.sv
       - cei_mochila/rtl/mochila_top.sv
       - cei_mochila/rtl/ext_cpu_system.sv
       - cei_mochila/rtl/bus_system.sv
@@ -16,6 +17,9 @@ filesets:
       - cei_mochila/rtl/periph_system.sv
       - cei_mochila/rtl/memory_sys.sv
       - cei_mochila/ip/CB_boot_rom/CB_boot_rom.sv
+      - cei_mochila/rtl/safe_wrapper_ctrl_reg_top.sv
+      - cei_mochila/rtl/safe_wrapper_ctrl.sv
+      - cei_mochila/rtl/safe_cpu_wrapper.sv
     file_type: systemVerilogSource
   
   rtl-simulation:
@@ -29,9 +33,16 @@ filesets:
     - cei_mochila/fpga/memory_wrapper.sv
     file_type: systemVerilogSource  
     
+
+  files_verilator_waiver:
+    files:
+    - cei_mochila/rtl/safe_wrapper.vlt
+    file_type: vlt
+
 targets:
   default: &default_target
     filesets:
     - files_rtl
     - target_sim ? (rtl-simulation)
+    - target_sim ? (tool_verilator? (files_verilator_waiver))
     - target_pynq-z2 ? (rtl-fpga)
