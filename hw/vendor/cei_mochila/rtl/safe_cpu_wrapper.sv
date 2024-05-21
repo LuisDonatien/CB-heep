@@ -8,7 +8,7 @@ module safe_cpu_wrapper
   import core_v_mini_mcu_pkg::*;
 #(
     parameter NHARTS = 2,
-    parameter DM_HALTADDRESS = 'hF001000c
+    parameter DM_HALTADDRESS = 32'hF001000c
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -110,7 +110,21 @@ periph_to_reg #(
       .reg_rsp_i(reg_rsp)
   );
 
+//FSM
 
+safe_FSM safe_FSM_i (
+    // Clock and Reset
+    .clk_i,
+    .rst_ni,
+
+    .Sync1(core0sync),
+    .Sync2(core1sync),
+    .Dual_Sync(),
+
+    .Interrupt_Sync(),
+    .Interrupt_Halt()
+
+);
 
 
 //Safety_Multiplexer//

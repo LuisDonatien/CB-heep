@@ -7,7 +7,7 @@ module mochila_top
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter DM_HALTADDRESS = core_v_mini_mcu_pkg::DEBUG_START_ADDRESS + 32'h00000800,
+    parameter DM_HALTADDRESS = 32'hF001000c,
     parameter NHARTS = 2
     
 ) (

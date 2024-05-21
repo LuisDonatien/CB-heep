@@ -35,7 +35,7 @@ package cei_mochila_pkg;
   localparam logic [31:0] ERROR_END_ADDRESS = ERROR_START_ADDRESS + ERROR_SIZE;
   localparam logic [31:0] ERROR_IDX = 32'd0;
 
-  localparam logic [31:0] PERIPHERAL_START_ADDRESS = 32'hF0000000;
+  localparam logic [31:0] PERIPHERAL_START_ADDRESS = 32'hF0010000;
   localparam logic [31:0] PERIPHERAL_SIZE = 32'h00010000;
   localparam logic[31:0] PERIPHERAL_END_ADDRESS = PERIPHERAL_START_ADDRESS + PERIPHERAL_SIZE;
   localparam logic [31:0] PERIPHERAL_IDX = 32'd1;
@@ -50,7 +50,7 @@ package cei_mochila_pkg;
   localparam logic[31:0]  MEMORY_END_ADDRESS = MEMORY_START_ADDRESS + MEMORY_SIZE;
   localparam logic [31:0] MEMORY_IDX = 32'd3;
 
-  localparam logic [31:0] SAFE_WRAPPER_CSR_START_ADDRESS = 32'hF0010000;
+  localparam logic [31:0] SAFE_WRAPPER_CSR_START_ADDRESS = 32'hF0020000;
   localparam logic [31:0] SAFE_WRAPPER_CSR_SIZE = 32'h00010000;
   localparam logic[31:0]  SAFE_WRAPPER_CSR_END_ADDRESS = SAFE_WRAPPER_CSR_START_ADDRESS + SAFE_WRAPPER_CSR_SIZE;
   localparam logic [31:0] SAFE_WRAPPER_CSR_IDX = 32'd4;  
@@ -84,8 +84,8 @@ package cei_mochila_pkg;
 
   localparam PERIPHERALS = 1;
 
-  localparam logic [31:0] BOOTROM_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00010000;
-  localparam logic [31:0] BOOTROM_SIZE = 32'h00010000;
+  localparam logic [31:0] BOOTROM_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00000000;
+  localparam logic [31:0] BOOTROM_SIZE = 32'h00001000;
   localparam logic [31:0] BOOTROM_END_ADDRESS = BOOTROM_START_ADDRESS + BOOTROM_SIZE;
   localparam logic [31:0] BOOTROM_IDX = 32'd0;
 

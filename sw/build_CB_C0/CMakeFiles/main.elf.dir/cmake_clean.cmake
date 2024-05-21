@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/main.elf.dir/applications_CB_C0/Switch_Context_Routine/main.c.obj"
-  "CMakeFiles/main.elf.dir/applications_CB_C0/Switch_Context_Routine/main.c.obj.d"
+  "CMakeFiles/main.elf.dir/applications_CB_C0/Dual_Safe_CPU/main.c.obj"
+  "CMakeFiles/main.elf.dir/applications_CB_C0/Dual_Safe_CPU/main.c.obj.d"
   "main.elf"
   "main.elf.pdb"
 )

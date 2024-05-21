@@ -7,9 +7,9 @@ module ext_cpu_system
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter BOOT_ADDR = 'hF0010000,//'hF0010024,
+    parameter BOOT_ADDR = 32'hF0010000,//'hF0010024,
     parameter NHARTS = 2,
-    parameter DM_HALTADDRESS = 'hF001000c
+    parameter DM_HALTADDRESS = 32'hF001000c
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -91,7 +91,7 @@ module ext_cpu_system
   
   // instantiate the core 1
     cve2_top #(
-        .DmHaltAddr('hF001000c),
+        .DmHaltAddr(DM_HALTADDRESS),
         .DmExceptionAddr('0)
     ) cv32e20_core1 (
         .clk_i (clk_i),
