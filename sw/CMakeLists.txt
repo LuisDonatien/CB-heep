@@ -190,8 +190,8 @@ endif()
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Set the default CRT directories
 
-SET(LIB_CRT_P	  "${ROOT_PROJECT}device/lib/crt/crt0.S")
-SET(LIB_VCTR_P  "${ROOT_PROJECT}device/lib/crt/vectors.S")
+SET(LIB_CRT_P	  "${ROOT_PROJECT}CB_device/lib/crt/crt0.S")
+SET(LIB_VCTR_P  "${ROOT_PROJECT}CB_device/lib/crt/vectors.S")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Look for external CRT files

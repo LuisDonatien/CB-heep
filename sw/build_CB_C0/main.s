@@ -241,7 +241,7 @@ volatile unsigned int *P=0xF0100920;
 
         //x30   t5 
 //        asm volatile("li t6, 0xC874");
-        asm volatile("sw t5, 116(t6)");
+        asm volatile("sw t5, 116(t6)"); 
   e0:	07efaa23          	sw	t5,116(t6)
 
         //x31   t6 
