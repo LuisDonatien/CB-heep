@@ -28,7 +28,7 @@ module ext_cpu_system
     input logic [31 : 0] intc_core0,
     //Core 1
     input logic [31 : 0] intc_core1,
-    output logic     [1:0]   sleep,
+    output logic     [1:0]   sleep_o,
     // Debug Interface
     input logic [NHARTS-1 : 0] debug_req_i
 );
@@ -91,7 +91,7 @@ module ext_cpu_system
 
         .fetch_enable_i(fetch_enable),
 
-        .core_sleep_o(sleep[0])
+        .core_sleep_o(sleep_o[0])
     );
   
   
@@ -137,6 +137,6 @@ module ext_cpu_system
 
         .fetch_enable_i(fetch_enable),
 
-        .core_sleep_o(sleep[1])
+        .core_sleep_o(sleep_o[1])
     );
 endmodule

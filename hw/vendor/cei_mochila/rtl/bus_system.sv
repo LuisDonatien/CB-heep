@@ -19,7 +19,8 @@ module bus_system
   import obi_pkg::*;
   import addr_map_rule_pkg::*;
 #(
-  parameter NHARTS = 2
+  parameter NHARTS = 2,
+  parameter N_BANKS = 2
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -44,8 +45,8 @@ module bus_system
     input  obi_resp_t   ext_slave_resp_i,
 
     //Ram memory
-    output obi_req_t   ram_req_o,
-    input  obi_resp_t  ram_resp_i,
+    output obi_req_t   [N_BANKS-1:0]ram_req_o,
+    input  obi_resp_t  [N_BANKS-1:0]ram_resp_i,
 
     // Control Status Register
     output obi_req_t   wrapper_csr_req_o,
@@ -80,7 +81,8 @@ module bus_system
 
   // Internal slave requests
   assign peripheral_slave_req_o = int_slave_req[cei_mochila_pkg::PERIPHERAL_IDX];
-  assign ram_req_o              = int_slave_req[cei_mochila_pkg::MEMORY_IDX];
+  assign ram_req_o[0]              = int_slave_req[cei_mochila_pkg::MEMORY_RAM0_IDX];
+  assign ram_req_o[1]              = int_slave_req[cei_mochila_pkg::MEMORY_RAM0_IDX];
   assign wrapper_csr_req_o      = int_slave_req[cei_mochila_pkg::SAFE_WRAPPER_CSR_IDX];
 
   // External slave requests
@@ -88,7 +90,8 @@ module bus_system
 
   // Internal slave responses
   assign int_slave_resp[cei_mochila_pkg::PERIPHERAL_IDX] = peripheral_slave_resp_i;
-  assign int_slave_resp[cei_mochila_pkg::MEMORY_IDX] = ram_resp_i;
+  assign int_slave_resp[cei_mochila_pkg::MEMORY_RAM0_IDX] = ram_resp_i[0];
+  assign int_slave_resp[cei_mochila_pkg::MEMORY_RAM1_IDX] = ram_resp_i[1];
   assign int_slave_resp[cei_mochila_pkg::SAFE_WRAPPER_CSR_IDX] = wrapper_csr_resp_i;
   // External slave responses
   assign int_slave_resp[cei_mochila_pkg::EXTERNAL_PERIPHERAL_IDX] = ext_slave_resp_i;

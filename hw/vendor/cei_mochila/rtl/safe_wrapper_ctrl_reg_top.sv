@@ -10,7 +10,7 @@
 module safe_wrapper_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 4
+  parameter int AW = 3
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -67,71 +67,14 @@ module safe_wrapper_ctrl_reg_top #(
   // Define SW related signals
   // Format: <reg>_<field>_{wd|we|qs}
   //        or <reg>_{wd|we|qs} if field == 1 or 0
-  logic core0sync_qs;
-  logic core0sync_wd;
-  logic core0sync_we;
-  logic core1sync_qs;
-  logic core1sync_wd;
-  logic core1sync_we;
   logic intc_ack_qs;
   logic intc_ack_wd;
   logic intc_ack_we;
+  logic master_core_qs;
+  logic master_core_wd;
+  logic master_core_we;
 
   // Register instances
-  // R[core0sync]: V(False)
-
-  prim_subreg #(
-    .DW      (1),
-    .SWACCESS("RW"),
-    .RESVAL  (1'h0)
-  ) u_core0sync (
-    .clk_i   (clk_i    ),
-    .rst_ni  (rst_ni  ),
-
-    // from register interface
-    .we     (core0sync_we),
-    .wd     (core0sync_wd),
-
-    // from internal hardware
-    .de     (1'b0),
-    .d      ('0  ),
-
-    // to internal hardware
-    .qe     (),
-    .q      (reg2hw.core0sync.q ),
-
-    // to register interface (read)
-    .qs     (core0sync_qs)
-  );
-
-
-  // R[core1sync]: V(False)
-
-  prim_subreg #(
-    .DW      (1),
-    .SWACCESS("RW"),
-    .RESVAL  (1'h0)
-  ) u_core1sync (
-    .clk_i   (clk_i    ),
-    .rst_ni  (rst_ni  ),
-
-    // from register interface
-    .we     (core1sync_we),
-    .wd     (core1sync_wd),
-
-    // from internal hardware
-    .de     (1'b0),
-    .d      ('0  ),
-
-    // to internal hardware
-    .qe     (),
-    .q      (reg2hw.core1sync.q ),
-
-    // to register interface (read)
-    .qs     (core1sync_qs)
-  );
-
-
   // R[intc_ack]: V(False)
 
   prim_subreg #(
@@ -159,14 +102,40 @@ module safe_wrapper_ctrl_reg_top #(
   );
 
 
+  // R[master_core]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_master_core (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (master_core_we),
+    .wd     (master_core_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.master_core.q ),
+
+    // to register interface (read)
+    .qs     (master_core_qs)
+  );
 
 
-  logic [2:0] addr_hit;
+
+
+  logic [1:0] addr_hit;
   always_comb begin
     addr_hit = '0;
-    addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_CORE0SYNC_OFFSET);
-    addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_CORE1SYNC_OFFSET);
-    addr_hit[2] = (reg_addr == SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET);
+    addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET);
+    addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -175,33 +144,25 @@ module safe_wrapper_ctrl_reg_top #(
   always_comb begin
     wr_err = (reg_we &
               ((addr_hit[0] & (|(SAFE_WRAPPER_CTRL_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be))) |
-               (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be)))));
+               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be)))));
   end
 
-  assign core0sync_we = addr_hit[0] & reg_we & !reg_error;
-  assign core0sync_wd = reg_wdata[0];
-
-  assign core1sync_we = addr_hit[1] & reg_we & !reg_error;
-  assign core1sync_wd = reg_wdata[0];
-
-  assign intc_ack_we = addr_hit[2] & reg_we & !reg_error;
+  assign intc_ack_we = addr_hit[0] & reg_we & !reg_error;
   assign intc_ack_wd = reg_wdata[0];
+
+  assign master_core_we = addr_hit[1] & reg_we & !reg_error;
+  assign master_core_wd = reg_wdata[0];
 
   // Read data return
   always_comb begin
     reg_rdata_next = '0;
     unique case (1'b1)
       addr_hit[0]: begin
-        reg_rdata_next[0] = core0sync_qs;
+        reg_rdata_next[0] = intc_ack_qs;
       end
 
       addr_hit[1]: begin
-        reg_rdata_next[0] = core1sync_qs;
-      end
-
-      addr_hit[2]: begin
-        reg_rdata_next[0] = intc_ack_qs;
+        reg_rdata_next[0] = master_core_qs;
       end
 
       default: begin
@@ -226,7 +187,7 @@ endmodule
 
 module safe_wrapper_ctrl_reg_top_intf
 #(
-  parameter int AW = 4,
+  parameter int AW = 3,
   localparam int DW = 32
 ) (
   input logic clk_i,

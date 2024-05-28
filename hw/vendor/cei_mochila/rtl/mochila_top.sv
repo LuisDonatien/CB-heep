@@ -8,7 +8,8 @@ module mochila_top
   import core_v_mini_mcu_pkg::*;
 #(
     parameter DM_HALTADDRESS = 32'hF001000c,
-    parameter NHARTS = 2
+    parameter NHARTS = 2,
+    parameter N_BANKS = 2
     
 ) (
     // Clock and Reset
@@ -47,8 +48,8 @@ module mochila_top
     obi_resp_t peripheral_slave_resp;
 
     // RAM memory ports
-    obi_req_t  ram_req;
-    obi_resp_t ram_resp;    
+    obi_req_t  [N_BANKS-1:0]ram_req;
+    obi_resp_t [N_BANKS-1:0]ram_resp;    
 
 //CPU_System
 safe_cpu_wrapper #(

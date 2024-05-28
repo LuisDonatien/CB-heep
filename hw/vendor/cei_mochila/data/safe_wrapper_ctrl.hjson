@@ -8,28 +8,20 @@
   ],
   regwidth: "32",
   registers: [
-    { name:     "Core0Sync",
-      desc:     "Core 0 Synchronize",
-      swaccess: "rw",
-      hwaccess: "hro",
-      fields: [
-        { bits: "0", name: "CORE_0_SYNC", desc: "Core 0 is Sync" }
-      ]
-    },
-    { name:     "Core1Sync",
-      desc:     "Core 1 Synchronize",
-      swaccess: "rw",
-      hwaccess: "hro",
-      fields: [
-        { bits: "0", name: "CORE_1_SYNC", desc: "Core 1 is Sync" }
-      ]
-    },
     { name:     "Intc_ack",
-      desc:     "ACK Syncho Interruption",
+      desc:     "ACK Intc Safe_FSM",
       swaccess: "rw",
       hwaccess: "hro",
       fields: [
-        { bits: "0", name: "Intc_ack", desc: "ACK DualSynchr" }
+        { bits: "0", name: "INTC_ACK", desc: "ACK INTC" }
+      ]
+    },
+    { name:     "Master_core",
+      desc:     "Master Core Configuration",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Master_core", desc: "MASTER CORE" }
       ]
     }
    ]
