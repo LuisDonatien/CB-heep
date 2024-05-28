@@ -7,5 +7,8 @@ lint_off -rule UNUSED -file "*/safe_cpu_wrapper.sv" -match "*"
 lint_off -rule DECLFILENAME -file "*/safe_wrapper_ctrl_reg_top.sv"
 lint_off -rule WIDTH -file "*/safe_wrapper_ctrl_reg_top.sv" -match "Operator ASSIGNW expects *"
 
-//lint_off -rule UNUSED -file "*/safe_cpu_wrapper.sv" -match "Signal is not driven: 'core0sync'*"
-//lint_off -rule UNUSED -file "*/safe_cpu_wrapper.sv" -match "Signal is not driven: 'core1sync'*"
+lint_off -rule UNUSED -file "*/safe_cpu_wrapper.sv" -match "Signal is not driven: 'intc_core0'*"
+lint_off -rule UNUSED -file "*/safe_cpu_wrapper.sv" -match "Signal is not driven: 'intc_core1'*"
+
+lint_off -rule UNUSED -file "*/ext_cpu_system.sv" -match "Bits of signal are not used: 'intc_core0'[31,14:0]*"
+lint_off -rule UNUSED -file "*/ext_cpu_system.sv" -match "Bits of signal are not used: 'intc_core1'[31,14:0]*"

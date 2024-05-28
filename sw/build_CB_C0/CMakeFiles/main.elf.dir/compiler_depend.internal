@@ -3,6 +3,11 @@
 
 CMakeFiles/main.elf.dir/applications_CB_C0/Dual_Safe_CPU/main.c.obj
  /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Dual_Safe_CPU/main.c
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr.h
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/freestanding/stdbool.h
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/freestanding/stdint.h
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/stdasm.h
  /home/luis/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/include/stdarg.h
  /home/luis/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/include/stddef.h
  /home/luis/tools/riscv/riscv32-unknown-elf/include/_ansi.h

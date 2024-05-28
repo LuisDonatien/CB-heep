@@ -10,7 +10,7 @@
 module safe_wrapper_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 3
+  parameter int AW = 4
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -73,6 +73,9 @@ module safe_wrapper_ctrl_reg_top #(
   logic core1sync_qs;
   logic core1sync_wd;
   logic core1sync_we;
+  logic intc_ack_qs;
+  logic intc_ack_wd;
+  logic intc_ack_we;
 
   // Register instances
   // R[core0sync]: V(False)
@@ -129,13 +132,41 @@ module safe_wrapper_ctrl_reg_top #(
   );
 
 
+  // R[intc_ack]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_intc_ack (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (intc_ack_we),
+    .wd     (intc_ack_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.intc_ack.q ),
+
+    // to register interface (read)
+    .qs     (intc_ack_qs)
+  );
 
 
-  logic [1:0] addr_hit;
+
+
+  logic [2:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_CORE0SYNC_OFFSET);
     addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_CORE1SYNC_OFFSET);
+    addr_hit[2] = (reg_addr == SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -144,7 +175,8 @@ module safe_wrapper_ctrl_reg_top #(
   always_comb begin
     wr_err = (reg_we &
               ((addr_hit[0] & (|(SAFE_WRAPPER_CTRL_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be)))));
+               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be))) |
+               (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be)))));
   end
 
   assign core0sync_we = addr_hit[0] & reg_we & !reg_error;
@@ -152,6 +184,9 @@ module safe_wrapper_ctrl_reg_top #(
 
   assign core1sync_we = addr_hit[1] & reg_we & !reg_error;
   assign core1sync_wd = reg_wdata[0];
+
+  assign intc_ack_we = addr_hit[2] & reg_we & !reg_error;
+  assign intc_ack_wd = reg_wdata[0];
 
   // Read data return
   always_comb begin
@@ -163,6 +198,10 @@ module safe_wrapper_ctrl_reg_top #(
 
       addr_hit[1]: begin
         reg_rdata_next[0] = core1sync_qs;
+      end
+
+      addr_hit[2]: begin
+        reg_rdata_next[0] = intc_ack_qs;
       end
 
       default: begin
@@ -187,7 +226,7 @@ endmodule
 
 module safe_wrapper_ctrl_reg_top_intf
 #(
-  parameter int AW = 3,
+  parameter int AW = 4,
   localparam int DW = 32
 ) (
   input logic clk_i,

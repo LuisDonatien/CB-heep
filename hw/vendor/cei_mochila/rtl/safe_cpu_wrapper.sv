@@ -38,6 +38,13 @@ module safe_cpu_wrapper
 
     logic core0sync;
     logic core1sync;
+    logic intc_ack;
+    logic bus_config;
+    logic intc_sync;
+    logic intc_halt;
+    logic [31:0] intr;
+    logic [1:0] sleep;
+    logic [1:0] debug_req;
 
     // CPU ports
     obi_req_t  [NHARTS-1 : 0] core_instr_req;
@@ -69,6 +76,12 @@ ext_cpu_system #(
     .core_data_req_o(core_data_req),
     .core_data_resp_i(core_data_resp),
 
+    // Interrupt
+    //Core 0
+    .intc_core0(intr),
+    //Core 1
+    .intc_core1(intr),
+    .sleep(sleep),
     // Debug Interface
     .debug_req_i
 );
@@ -84,8 +97,9 @@ safe_wrapper_ctrl #(
     .reg_req_i(reg_req),
     .reg_rsp_o(reg_rsp),
 
-    .core0sync(core0sync),
-    .core1sync(core1sync)
+    .core0sync(),
+    .core1sync(),
+    .intc_ack (intc_ack)
     );
 
 periph_to_reg #(
@@ -117,23 +131,45 @@ safe_FSM safe_FSM_i (
     .clk_i,
     .rst_ni,
 
-    .Sync1(core0sync),
-    .Sync2(core1sync),
-    .Dual_Sync(),
+    .Sync1(sleep[0]),
+    .Sync2(sleep[1]),
+    .Intc_ack(intc_ack),
 
-    .Interrupt_Sync(),
-    .Interrupt_Halt()
+    .Interrupt_Sync(intc_sync),
+    .Interrupt_Halt(intc_halt),
+    .Single_Bus(bus_config)
 
 );
+      assign intr = {
+    2'b0, intc_sync , 29'b0
+  };
 
-
+  assign debug_req[0] = debug_req_i[0];
+  assign debug_req[1] = debug_req_i[1] || intc_halt;
 //Safety_Multiplexer//
 //always @(*) begin
 //   if (safe_conf == 1'b0) begin
-        assign core_instr_req_o = core_instr_req;
-        assign core_instr_resp = core_instr_resp_i;
-        assign core_data_req_o = core_data_req;
-        assign core_data_resp = core_data_resp_i;
+
+    always @(*) begin
+        
+        if (bus_config == 0) begin
+            core_instr_req_o = core_instr_req;
+            core_instr_resp = core_instr_resp_i;
+            core_data_req_o = core_data_req;
+            core_data_resp = core_data_resp_i;
+        end
+        else begin
+            core_instr_req_o[0] = core_instr_req[0];
+            core_instr_resp[0] = core_instr_resp_i[0];
+            core_data_req_o[0] = core_data_req[0];
+            core_data_resp[0] = core_data_resp_i[0]; 
+
+            core_instr_resp[1] = core_instr_resp_i[0];
+            core_data_resp[1] = core_data_resp_i[0];   
+            core_data_req_o[1] = '0;
+            core_instr_req_o[1] = '0;  
+        end
+    end
 /*    end else if(safe_conf == 1'b1) begin
         //Core 0
         assign core_instr_req_o[0] = core_instr_req[0];

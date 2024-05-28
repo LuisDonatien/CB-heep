@@ -7,7 +7,7 @@
 package safe_wrapper_ctrl_reg_pkg;
 
   // Address widths within the block
-  parameter int BlockAw = 3;
+  parameter int BlockAw = 4;
 
   ////////////////////////////
   // Typedefs for registers //
@@ -21,26 +21,34 @@ package safe_wrapper_ctrl_reg_pkg;
     logic        q;
   } safe_wrapper_ctrl_reg2hw_core1sync_reg_t;
 
+  typedef struct packed {
+    logic        q;
+  } safe_wrapper_ctrl_reg2hw_intc_ack_reg_t;
+
   // Register -> HW type
   typedef struct packed {
-    safe_wrapper_ctrl_reg2hw_core0sync_reg_t core0sync; // [1:1]
-    safe_wrapper_ctrl_reg2hw_core1sync_reg_t core1sync; // [0:0]
+    safe_wrapper_ctrl_reg2hw_core0sync_reg_t core0sync; // [2:2]
+    safe_wrapper_ctrl_reg2hw_core1sync_reg_t core1sync; // [1:1]
+    safe_wrapper_ctrl_reg2hw_intc_ack_reg_t intc_ack; // [0:0]
   } safe_wrapper_ctrl_reg2hw_t;
 
   // Register offsets
-  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_CORE0SYNC_OFFSET = 3'h 0;
-  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_CORE1SYNC_OFFSET = 3'h 4;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_CORE0SYNC_OFFSET = 4'h 0;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_CORE1SYNC_OFFSET = 4'h 4;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET = 4'h 8;
 
   // Register index
   typedef enum int {
     SAFE_WRAPPER_CTRL_CORE0SYNC,
-    SAFE_WRAPPER_CTRL_CORE1SYNC
+    SAFE_WRAPPER_CTRL_CORE1SYNC,
+    SAFE_WRAPPER_CTRL_INTC_ACK
   } safe_wrapper_ctrl_id_e;
 
   // Register width information to check illegal writes
-  parameter logic [3:0] SAFE_WRAPPER_CTRL_PERMIT [2] = '{
+  parameter logic [3:0] SAFE_WRAPPER_CTRL_PERMIT [3] = '{
     4'b 0001, // index[0] SAFE_WRAPPER_CTRL_CORE0SYNC
-    4'b 0001  // index[1] SAFE_WRAPPER_CTRL_CORE1SYNC
+    4'b 0001, // index[1] SAFE_WRAPPER_CTRL_CORE1SYNC
+    4'b 0001  // index[2] SAFE_WRAPPER_CTRL_INTC_ACK
   };
 
 endpackage

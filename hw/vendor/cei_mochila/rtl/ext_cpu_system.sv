@@ -23,6 +23,12 @@ module ext_cpu_system
     output obi_req_t  [NHARTS-1 : 0] core_data_req_o,
     input  obi_resp_t [NHARTS-1 : 0] core_data_resp_i,
 
+    // Interrupt
+    //Core 0
+    input logic [31 : 0] intc_core0,
+    //Core 1
+    input logic [31 : 0] intc_core1,
+    output logic     [1:0]   sleep,
     // Debug Interface
     input logic [NHARTS-1 : 0] debug_req_i
 );
@@ -77,7 +83,7 @@ module ext_cpu_system
         .irq_software_i(),
         .irq_timer_i   (),
         .irq_external_i(),
-        .irq_fast_i    (),
+        .irq_fast_i    (intc_core0[30:15]),
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i[0]),
@@ -85,7 +91,7 @@ module ext_cpu_system
 
         .fetch_enable_i(fetch_enable),
 
-        .core_sleep_o()
+        .core_sleep_o(sleep[0])
     );
   
   
@@ -95,7 +101,7 @@ module ext_cpu_system
         .DmExceptionAddr('0)
     ) cv32e20_core1 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni ),
+        .rst_ni(rst_ni),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
@@ -123,7 +129,7 @@ module ext_cpu_system
         .irq_software_i(),
         .irq_timer_i   (),
         .irq_external_i(),
-        .irq_fast_i    (),
+        .irq_fast_i    (intc_core1[30:15]),
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i[1]),
@@ -131,6 +137,6 @@ module ext_cpu_system
 
         .fetch_enable_i(fetch_enable),
 
-        .core_sleep_o()
+        .core_sleep_o(sleep[1])
     );
 endmodule

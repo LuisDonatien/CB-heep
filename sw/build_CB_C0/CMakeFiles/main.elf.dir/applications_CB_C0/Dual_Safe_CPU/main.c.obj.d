@@ -31,4 +31,10 @@ CMakeFiles/main.elf.dir/applications_CB_C0/Dual_Safe_CPU/main.c.obj: \
  /home/luis/tools/riscv/riscv32-unknown-elf/include/sys/stdio.h \
  /home/luis/tools/riscv/riscv32-unknown-elf/include/stdlib.h \
  /home/luis/tools/riscv/riscv32-unknown-elf/include/machine/stdlib.h \
- /home/luis/tools/riscv/riscv32-unknown-elf/include/alloca.h
+ /home/luis/tools/riscv/riscv32-unknown-elf/include/alloca.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/freestanding/stdbool.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/freestanding/stdint.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/stdasm.h \
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h

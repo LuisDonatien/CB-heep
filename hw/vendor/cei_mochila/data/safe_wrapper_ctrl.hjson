@@ -23,6 +23,14 @@
       fields: [
         { bits: "0", name: "CORE_1_SYNC", desc: "Core 1 is Sync" }
       ]
+    },
+    { name:     "Intc_ack",
+      desc:     "ACK Syncho Interruption",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Intc_ack", desc: "ACK DualSynchr" }
+      ]
     }
    ]
 }

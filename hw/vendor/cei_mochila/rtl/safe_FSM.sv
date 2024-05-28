@@ -14,15 +14,16 @@ module safe_FSM
 
     input logic Sync1,
     input logic Sync2,
-    input logic Dual_Sync,
+    input logic Intc_ack,
 
     output logic Interrupt_Sync,
-    output logic Interrupt_Halt
+    output logic Interrupt_Halt,
+    output logic Single_Bus
 
 );
   // FSM state encoding
   typedef enum logic [3:0] {
-    RESET, IDLE, STATE1, DELAY1, SYNC_INTERRUPT, DELAY2, DUAL_SYNC
+    RESET, IDLE, SH_HALT, WAIT_SH, MS_INTRSYNC, DUAL_SYNC
   } ctrl_fsm_e;
 
   ctrl_fsm_e ctrl_fsm_cs, ctrl_fsm_ns;
@@ -36,9 +37,9 @@ module safe_FSM
         end
       end
 
-      always @(Sync1 or Sync2 or Dual_Sync) begin
+      always @(Sync1 or Sync2 or Intc_ack) begin
     
-          ctrl_fsm_ns = ctrl_fsm_cs;
+        ctrl_fsm_ns = ctrl_fsm_cs;
     
 
         unique case (ctrl_fsm_cs)
@@ -51,32 +52,30 @@ module safe_FSM
           IDLE:
           begin
             if (Sync1==1'b1)
-              ctrl_fsm_ns = STATE1;
+              ctrl_fsm_ns = SH_HALT;
             else
               ctrl_fsm_ns = IDLE; 
           end
   
-          STATE1:
+          SH_HALT:
+          begin
+            ctrl_fsm_ns = WAIT_SH; 
+          end
+  
+          WAIT_SH:
           begin
             if (Sync2==1'b1)
-              ctrl_fsm_ns = DELAY1;
+              ctrl_fsm_ns = MS_INTRSYNC;
             else
-              ctrl_fsm_ns = STATE1; 
+              ctrl_fsm_ns = WAIT_SH;               
           end
   
-          DELAY1:
+          MS_INTRSYNC:
           begin
-              ctrl_fsm_ns = SYNC_INTERRUPT; 
-          end
-  
-          SYNC_INTERRUPT:
-          begin
-              ctrl_fsm_ns = DELAY2;
-          end 
-  
-          DELAY2:
-          begin
+            if (Intc_ack==1)
               ctrl_fsm_ns = DUAL_SYNC;
+            else
+              ctrl_fsm_ns = MS_INTRSYNC;
           end
 
           DUAL_SYNC:
@@ -95,20 +94,24 @@ module safe_FSM
 
         assign Interrupt_Sync = 1'b0;
         assign Interrupt_Halt = 1'b0;
-
+        assign Single_Bus     = 0'b0;
         unique case (ctrl_fsm_cs)
   
-          STATE1:
+          SH_HALT:
           begin
-            assign Interrupt_Sync = 1'b0;
             assign Interrupt_Halt = 1'b1;
           end        
   
-          SYNC_INTERRUPT:
+          MS_INTRSYNC:
           begin
             assign Interrupt_Sync = 1'b1;
-            assign Interrupt_Halt = 1'b0;
+            assign Single_Bus     = 1'b1;
           end 
+
+          DUAL_SYNC:
+          begin
+            assign Single_Bus     = 1'b1;
+          end
           default: begin
 
           end 
