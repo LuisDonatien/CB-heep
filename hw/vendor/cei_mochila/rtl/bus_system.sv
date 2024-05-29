@@ -82,7 +82,7 @@ module bus_system
   // Internal slave requests
   assign peripheral_slave_req_o = int_slave_req[cei_mochila_pkg::PERIPHERAL_IDX];
   assign ram_req_o[0]              = int_slave_req[cei_mochila_pkg::MEMORY_RAM0_IDX];
-  assign ram_req_o[1]              = int_slave_req[cei_mochila_pkg::MEMORY_RAM0_IDX];
+  assign ram_req_o[1]              = int_slave_req[cei_mochila_pkg::MEMORY_RAM1_IDX];
   assign wrapper_csr_req_o      = int_slave_req[cei_mochila_pkg::SAFE_WRAPPER_CSR_IDX];
 
   // External slave requests

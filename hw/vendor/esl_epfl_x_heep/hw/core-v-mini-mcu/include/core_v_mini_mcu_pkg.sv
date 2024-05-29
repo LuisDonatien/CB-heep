@@ -24,7 +24,7 @@ package core_v_mini_mcu_pkg;
     cv32e40px
   } cpu_type_e;
 
-  localparam cpu_type_e CpuType = cv32e20;
+  localparam cpu_type_e CpuType = cv32e40p;
 
   typedef enum logic {
     NtoM,

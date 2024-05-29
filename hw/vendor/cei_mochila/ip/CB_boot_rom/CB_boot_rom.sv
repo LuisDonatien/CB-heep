@@ -22,12 +22,12 @@ module CB_boot_rom
 );
   import core_v_mini_mcu_pkg::*;
 
-  localparam int unsigned RomSize = 55;
+  localparam int unsigned RomSize = 61;
 
   logic [RomSize-1:0][31:0] mem;
   assign mem = {
     32'h00010001,
-    32'hf3dff06f,
+    32'hf41ff06f,
     32'h00010001,
     32'h7b200073,
     32'h7b1f1073,
@@ -63,8 +63,8 @@ module CB_boot_rom
     32'h008fa183,
     32'h004fa103,
     32'h000fa083,
-    32'h800f8f93,
-    32'hf0101fb7,
+    32'h100f8f93,
+    32'hf0108fb7,
     32'h343f9073,
     32'h010f2f83,
     32'h341f9073,
@@ -75,12 +75,18 @@ module CB_boot_rom
     32'h004f2f83,
     32'h300f9073,
     32'h000f2f83,
-    32'h900f0f13,
-    32'hf0101f37,
+    32'hf0108f37,
+    32'h00010001,
+    32'h00010000,
+    32'h006f0001,
     32'h00010001,
     32'h00010001,
-    32'h00010001,
-    32'h0000006f
+    32'h950241c8,
+    32'hd57d0005,
+    32'hc503f001,
+    32'h15b700b5,
+    32'h0e634589,
+    32'hf1402573
   };
 
   logic [$clog2(core_v_mini_mcu_pkg::BOOTROM_SIZE)-1-2:0] word_addr;

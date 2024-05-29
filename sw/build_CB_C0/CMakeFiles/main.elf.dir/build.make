@@ -104,7 +104,7 @@ main.elf: CMakeFiles/main.elf.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Invoking: Disassemble"
 	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objdump -S main.elf > main.S
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Invoking: Hexdump"
-	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objcopy -O verilog main.elf main.hex
+	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objcopy --adjust-vma=-0xF0100000 -O verilog main.elf main.hex
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Invoking: Hexdump"
 	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objcopy -O binary main.elf main.bin
 

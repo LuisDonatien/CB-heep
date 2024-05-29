@@ -43,7 +43,7 @@ int main (int argc, char * argv[])
 {
 
   unsigned int SRAM_SIZE;
-  std::string firmware, arg_max_sim_time, arg_openocd, arg_boot_sel, arg_execute_from_flash;
+  std::string firmware,CB_firmware, arg_max_sim_time, arg_openocd, arg_boot_sel, arg_execute_from_flash;
   unsigned int max_sim_time;
   bool use_openocd;
   bool run_all = false;
@@ -75,6 +75,17 @@ int main (int argc, char * argv[])
       exit(EXIT_FAILURE);
   } else {
     std::cout<<"[TESTBENCH]: loading firmware  "<<firmware<<std::endl;
+  }
+
+  //CB_heep main.hex
+
+  CB_firmware = getCmdOption(argc, argv, "+CBfirmware=");
+  if(CB_firmware.empty()){
+    std::cout<<"[TESTBENCH]: No CB_firmware  specified"<<std::endl;
+    if(use_openocd==false)
+      exit(EXIT_FAILURE);
+  } else {
+    std::cout<<"[TESTBENCH]: loading CB_firmware  "<<CB_firmware<<std::endl;
   }
 
   arg_max_sim_time = getCmdOption(argc, argv, "+max_sim_time=");
@@ -148,8 +159,10 @@ int main (int argc, char * argv[])
   //dont need to exit from boot loop if using OpenOCD or Boot from Flash
   if(use_openocd==false || boot_sel == 1) {
     dut->tb_loadHEX(firmware.c_str());
+    dut->tb_CBloadHEX(CB_firmware.c_str());
     runCycles(1, dut, m_trace);
     dut->tb_set_exit_loop();
+    dut->tb_CBset_exit_loop();
     std::cout<<"Set Exit Loop"<< std::endl;
     runCycles(1, dut, m_trace);
     std::cout<<"Memory Loaded"<< std::endl;

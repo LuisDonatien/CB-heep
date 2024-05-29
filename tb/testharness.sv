@@ -30,9 +30,9 @@ module testharness #(
     inout  wire         exit_valid_o
 );
 
-
-  `include "tb_util.svh"
-
+  `include "tb_util.svh"  
+  `include "tb_util_CB_Heep.svh"
+  
   import obi_pkg::*;
   import reg_pkg::*;
   import addr_map_rule_pkg::*;

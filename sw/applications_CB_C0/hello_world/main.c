@@ -22,7 +22,7 @@
 int main(int argc, char *argv[])
 {
     /* write something to stdout */
-    volatile unsigned int *P = 0xF0100000;
+    volatile unsigned int *P = 0xF0108000;
 
     *P= 12;
 

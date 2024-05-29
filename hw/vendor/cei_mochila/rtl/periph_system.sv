@@ -105,4 +105,15 @@ module periph_system
       .reg_req_i(peripheral_slv_req[cei_mochila_pkg::BOOTROM_IDX]),
       .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::BOOTROM_IDX])
   );
+
+  cb_heep_ctrl #(
+    .reg_req_t(reg_pkg::reg_req_t),
+    .reg_rsp_t(reg_pkg::reg_rsp_t)
+    )cb_heep_ctrl_i(
+    .clk_i,
+    .rst_ni,
+    // Bus Interface
+    .reg_req_i(peripheral_slv_req[cei_mochila_pkg::CB_CTRL_IDX]),
+    .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::CB_CTRL_IDX])
+    );
 endmodule

@@ -9,7 +9,7 @@ module ext_cpu_system
 #(
     parameter BOOT_ADDR = 32'hF0010000,//'hF0010024,
     parameter NHARTS = 2,
-    parameter DM_HALTADDRESS = 32'hF001000c
+    parameter DM_HALTADDRESS = 32'hF0010028
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -61,7 +61,7 @@ module ext_cpu_system
         .ram_cfg_i('0),
 
         .hart_id_i  (32'h1),
-        .boot_addr_i('h20010000),
+        .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[0].addr),
         .instr_req_o   (core_instr_req_o[0].req),

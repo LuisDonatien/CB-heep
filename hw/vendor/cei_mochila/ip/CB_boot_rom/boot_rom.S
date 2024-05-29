@@ -18,19 +18,32 @@
 
 
 entry:
-       //Loop until HALT
-       jal zero, entry
+       csrr   a0, mhartid
+       li     a1, 0x2
+       beq    a0, a1, shadow_loop
+       lui     a1, 0xF0011
+       lbu     a0, 0(a1)
+       // Check whether exit_loop flag is 1, otherwise jump back to entry 
+       beqz   a0, entry
+       lw     a0, 4(a1)
+       jalr   a0
        nop
        nop
        nop
        nop
        nop
+//Loop until HALT
+shadow_loop:
+       jal zero, shadow_loop
        nop
+       nop
+       nop
+
 
 halt_boot:
 
        //Control & Status Register//
-       li   t5,0xF0100900
+       li   t5,0xF0108000
 
        // csr mstatus
        lw   t6, 0(t5)
@@ -53,7 +66,7 @@ halt_boot:
        csrw mtval, t6
 
        //Register File//
-       li   t6,0xF0100800
+       li   t6,0xF0108100
 
        //x1
        lw   ra, 0(t6)

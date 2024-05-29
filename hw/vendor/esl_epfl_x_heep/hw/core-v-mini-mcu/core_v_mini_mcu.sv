@@ -702,13 +702,14 @@ module core_v_mini_mcu
     assign ext_debug_req  = 0;
   end else begin
     always @(*) begin
-      for (int i = 0; i < NRHARTS - 1; i++) begin
+      for (int i = 0; i < NRHARTS; i++) begin
         if (i == 0) debug_core_req = debug_req[i];
         else ext_debug_req[i-1] = debug_req[i];
       end
     end
   end
-  assign ext_debug_req[1]              = jtag_tck_i;
+
+
 
   assign external_cpu_subsystem_rst_no = cpu_subsystem_rst_n;
 

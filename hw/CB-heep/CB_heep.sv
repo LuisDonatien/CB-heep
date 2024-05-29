@@ -103,8 +103,6 @@ module CB_heep
 );
 
 
-
-
   x_heep_system #(
       .COREV_PULP      (COREV_PULP),
       .FPU             (FPU),

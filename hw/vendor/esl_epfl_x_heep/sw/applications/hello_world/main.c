@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 {
     /* write something to stdout */
     volatile unsigned int *P = 0xF0100000;
-
+/*
     *P= 12;
 
     if(*P!=15)
@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
     else
         printf("Read data %d \n",*P);
 
-    printf("hello world!\n");
+    printf("hello world!\n");*/
+    while(1){};
     return EXIT_SUCCESS;
 }
 

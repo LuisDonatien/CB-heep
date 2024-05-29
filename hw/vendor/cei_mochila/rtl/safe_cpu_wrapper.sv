@@ -8,7 +8,7 @@ module safe_cpu_wrapper
   import core_v_mini_mcu_pkg::*;
 #(
     parameter NHARTS = 2,
-    parameter DM_HALTADDRESS = 32'hF001000c
+    parameter DM_HALTADDRESS = 32'hF0010028
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -82,7 +82,7 @@ ext_cpu_system #(
     .intc_core1(intr),
     .sleep_o(sleep),
     // Debug Interface
-    .debug_req_i
+    .debug_req_i(debug_req)
 );
 
 safe_wrapper_ctrl #(

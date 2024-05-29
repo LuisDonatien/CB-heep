@@ -28,6 +28,7 @@ filesets:
     
   tb-harness:
     files:
+    - tb/tb_util_CB_Heep.svh: {is_include_file: true}
     - tb/tb_util.svh: {is_include_file: true}
     - tb/testharness.sv
     file_type: systemVerilogSource

@@ -234,7 +234,7 @@ module soc_ctrl_reg_top #(
   prim_subreg #(
       .DW      (32),
       .SWACCESS("RW"),
-      .RESVAL  (32'h10180)  //Boot address
+      .RESVAL  (32'hF180)  //Boot address
   ) u_boot_address1 (
       .clk_i (clk_i),
       .rst_ni(rst_ni),

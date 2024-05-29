@@ -5,7 +5,7 @@
 **                                                                         **
 ** project  : x-heep                                                       **
 ** filename : power_manager_structs.h                                 **
-** date     : 11/04/2024                                                      **
+** date     : 29/05/2024                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -16,7 +16,7 @@
 
 /**
 * @file   power_manager_structs.h
-* @date   11/04/2024
+* @date   29/05/2024
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.

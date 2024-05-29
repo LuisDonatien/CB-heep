@@ -21,6 +21,12 @@ package cei_mochila_pkg;
 
   localparam SYSTEM_XBAR_NMASTER = 5;
   localparam SYSTEM_XBAR_NSLAVE = 6;
+
+  
+  localparam int unsigned MEM_SIZE = 32'h00010000;
+  localparam int unsigned NUM_BANKS = 2;
+  
+
   //Internal Memory Map and Index
   //--------------------
   localparam int unsigned LOG_SYSTEM_XBAR_NMASTER = SYSTEM_XBAR_NMASTER > 1 ? $clog2(
@@ -46,12 +52,12 @@ package cei_mochila_pkg;
   localparam logic [31:0] EXTERNAL_PERIPHERAL_IDX = 32'd2;
 
   localparam logic [31:0] MEMORY_RAM0_START_ADDRESS = 32'hF0100000;
-  localparam logic [31:0] MEMORY_RAM0_SIZE = 32'h00010000;
+  localparam logic [31:0] MEMORY_RAM0_SIZE = 32'h00008000;
   localparam logic[31:0]  MEMORY_RAM0_END_ADDRESS = MEMORY_RAM0_START_ADDRESS + MEMORY_RAM0_SIZE;
   localparam logic [31:0] MEMORY_RAM0_IDX = 32'd3;
 
-  localparam logic [31:0] MEMORY_RAM1_START_ADDRESS = 32'hF0110000;
-  localparam logic [31:0] MEMORY_RAM1_SIZE = 32'h00010000;
+  localparam logic [31:0] MEMORY_RAM1_START_ADDRESS = 32'hF0108000;
+  localparam logic [31:0] MEMORY_RAM1_SIZE = 32'h00008000;
   localparam logic[31:0]  MEMORY_RAM1_END_ADDRESS = MEMORY_RAM1_START_ADDRESS + MEMORY_RAM1_SIZE;
   localparam logic [31:0] MEMORY_RAM1_IDX = 32'd4;
 
@@ -92,17 +98,26 @@ package cei_mochila_pkg;
 //Peripherals
 //-----------
 
-  localparam PERIPHERALS = 1;
+  localparam PERIPHERALS = 2;
 
   localparam logic [31:0] BOOTROM_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00000000;
   localparam logic [31:0] BOOTROM_SIZE = 32'h00001000;
   localparam logic [31:0] BOOTROM_END_ADDRESS = BOOTROM_START_ADDRESS + BOOTROM_SIZE;
   localparam logic [31:0] BOOTROM_IDX = 32'd0;
 
+  localparam logic [31:0] CB_CTRL_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00001000;
+  localparam logic [31:0] CB_CTRL_SIZE = 32'h00001000;
+  localparam logic [31:0] CB_CTRL_END_ADDRESS = CB_CTRL_START_ADDRESS + CB_CTRL_SIZE;
+  localparam logic [31:0] CB_CTRL_IDX = 32'd1;
+
   localparam addr_map_rule_t [PERIPHERALS-1:0] PERIPHERALS_ADDR_RULES ='{
       '{  idx: BOOTROM_IDX, 
           start_addr: BOOTROM_START_ADDRESS, 
           end_addr: BOOTROM_END_ADDRESS
+      },
+      '{  idx: CB_CTRL_IDX, 
+          start_addr: CB_CTRL_START_ADDRESS, 
+          end_addr: CB_CTRL_END_ADDRESS
       }
   };
 
