@@ -82,8 +82,8 @@ __attribute__((weak)) void handler_irq_external(void) {
   }
 }
 __attribute__((weak)) void handler_safe_fsm(void) {
-     volatile unsigned int *Int_ack = 0xF0020000;   
-    *Int_ack= 1;
+  volatile unsigned int *Priv_Reg = 0xFF000008;
+  *Priv_Reg = 0x1;
 }
 
 __attribute__((weak)) void handler_instr_acc_fault(void) {

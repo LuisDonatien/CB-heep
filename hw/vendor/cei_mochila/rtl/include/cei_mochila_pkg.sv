@@ -17,9 +17,11 @@ package cei_mochila_pkg;
   localparam logic [31:0] CORE0_DATA_IDX = 1;
   localparam logic [31:0] CORE1_INSTR_IDX = 2;
   localparam logic [31:0] CORE1_DATA_IDX = 3;
-  localparam logic [31:0] EXTERNAL_MASTER_IDX = 4;
+  localparam logic [31:0] CORE2_INSTR_IDX = 4;
+  localparam logic [31:0] CORE2_DATA_IDX = 5;
+  localparam logic [31:0] EXTERNAL_MASTER_IDX = 6;
 
-  localparam SYSTEM_XBAR_NMASTER = 5;
+  localparam SYSTEM_XBAR_NMASTER = 7;
   localparam SYSTEM_XBAR_NSLAVE = 6;
 
   
@@ -125,5 +127,41 @@ package cei_mochila_pkg;
       PERIPHERALS
   ) : 32'd1;
 
+
+  //Private Memory CPU
+  localparam CPU_XBAR_SLAVE = 2;
+  localparam CPU_XBAR_NRULES = 3; //Depending on the external address.
+
+  localparam logic [31:0] BUS_SYSTEM_START_ADDRESS = PERIPHERAL_START_ADDRESS;
+  localparam logic [31:0] BUS_SYSTEM_SIZE = 32'h10000000;
+  localparam logic [31:0] BUS_SYSTEM_END_ADDRESS = BUS_SYSTEM_START_ADDRESS + BUS_SYSTEM_SIZE;
+  localparam logic [31:0] BUS_SYSTEM_IDX = 32'd0;
+
+  localparam logic [31:0] EXT_BUS_SYSTEM_START_ADDRESS = 32'h00000000;
+  localparam logic [31:0] EXT_BUS_SYSTEM_SIZE = 32'h41000000;
+  localparam logic [31:0] EXT_BUS_SYSTEM_END_ADDRESS = EXT_BUS_SYSTEM_START_ADDRESS + EXT_BUS_SYSTEM_SIZE;
+  localparam logic [31:0] EXT_BUS_SYSTEM_IDX = 32'd0;
+
+  localparam logic [31:0] CPU_REG_START_ADDRESS = 32'hFF000000;
+  localparam logic [31:0] CPU_REG_SIZE = 32'h00001000;
+  localparam logic [31:0] CPU_REG_END_ADDRESS = CPU_REG_START_ADDRESS + CPU_REG_SIZE;
+  localparam logic [31:0] CPU_REG_IDX = 32'd1;
+
+
+
+  localparam addr_map_rule_t [CPU_XBAR_NRULES-1:0] CPU_XBAR_ADDR_RULES ='{
+      '{  idx: BUS_SYSTEM_IDX, 
+          start_addr: BUS_SYSTEM_START_ADDRESS, 
+          end_addr: BUS_SYSTEM_END_ADDRESS
+      },
+      '{  idx: EXT_BUS_SYSTEM_IDX, 
+          start_addr: EXT_BUS_SYSTEM_START_ADDRESS, 
+          end_addr: EXT_BUS_SYSTEM_END_ADDRESS
+      },
+      '{  idx: CPU_REG_IDX, 
+          start_addr: CPU_REG_START_ADDRESS, 
+          end_addr: CPU_REG_END_ADDRESS
+      }
+  };
 
 endpackage

@@ -15,8 +15,9 @@ module safe_wrapper_ctrl #(
     input  reg_req_t reg_req_i,
     output reg_rsp_t reg_rsp_o,
 
-    output logic master_core_o,
-    output logic intc_ack_o
+    output logic [2:0] master_core_o,
+    output logic safe_mode_o,
+    output logic safe_configuration_o
 );
 
   import safe_wrapper_ctrl_reg_pkg::*;
@@ -36,7 +37,8 @@ module safe_wrapper_ctrl #(
       .devmode_i(1'b1)
   );
 
-  assign master_core_o  = reg2hw.master_core.q;
-  assign intc_ack_o   = reg2hw.intc_ack.q;
+  assign master_core_o = reg2hw.master_core.q;
+  assign safe_mode_o = reg2hw.safe_mode.q;
+  assign safe_configuration_o = reg2hw.safe_configuration.q;
 
 endmodule : safe_wrapper_ctrl

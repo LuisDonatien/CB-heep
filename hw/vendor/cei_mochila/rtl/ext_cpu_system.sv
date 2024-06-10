@@ -8,8 +8,8 @@ module ext_cpu_system
   import core_v_mini_mcu_pkg::*;
 #(
     parameter BOOT_ADDR = 32'hF0010000,//'hF0010024,
-    parameter NHARTS = 2,
-    parameter DM_HALTADDRESS = 32'hF0010028
+    parameter NHARTS = 3,
+    parameter DM_HALTADDRESS = 32'hF0010040
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -25,10 +25,13 @@ module ext_cpu_system
 
     // Interrupt
     //Core 0
-    input logic [31 : 0] intc_core0,
+    input logic [31:0] intc_core0,
     //Core 1
-    input logic [31 : 0] intc_core1,
-    output logic     [1:0]   sleep_o,
+    input logic [31:0] intc_core1,
+
+    input logic [31:0] intc_core2,
+
+    output logic     [NHARTS-1:0]   sleep_o,
     // Debug Interface
     input logic [NHARTS-1 : 0] debug_req_i
 );
@@ -138,5 +141,50 @@ module ext_cpu_system
         .fetch_enable_i(fetch_enable),
 
         .core_sleep_o(sleep_o[1])
+    );
+
+  // instantiate the core 2
+    cve2_top #(
+        .DmHaltAddr(DM_HALTADDRESS),
+        .DmExceptionAddr('0)
+    ) cv32e20_core2 (
+        .clk_i (clk_i),
+        .rst_ni(rst_ni),
+
+        .test_en_i(1'b0),
+        .ram_cfg_i('0),
+
+        .hart_id_i  (32'h3),
+        .boot_addr_i(BOOT_ADDR),
+
+        .instr_addr_o  (core_instr_req_o[2].addr),
+        .instr_req_o   (core_instr_req_o[2].req),
+        .instr_rdata_i (core_instr_resp_i[2].rdata),
+        .instr_gnt_i   (core_instr_resp_i[2].gnt),
+        .instr_rvalid_i(core_instr_resp_i[2].rvalid),
+        .instr_err_i   (1'b0),
+
+        .data_addr_o  (core_data_req_o[2].addr),
+        .data_wdata_o (core_data_req_o[2].wdata),
+        .data_we_o    (core_data_req_o[2].we),
+        .data_req_o   (core_data_req_o[2].req),
+        .data_be_o    (core_data_req_o[2].be),
+        .data_rdata_i (core_data_resp_i[2].rdata),
+        .data_gnt_i   (core_data_resp_i[2].gnt),
+        .data_rvalid_i(core_data_resp_i[2].rvalid),
+        .data_err_i   (1'b0),
+
+        .irq_software_i(),
+        .irq_timer_i   (),
+        .irq_external_i(),
+        .irq_fast_i    (intc_core2[30:15]),
+        .irq_nm_i      (1'b0),
+
+        .debug_req_i (debug_req_i[2]),
+        .crash_dump_o(),
+
+        .fetch_enable_i(fetch_enable),
+
+        .core_sleep_o(sleep_o[2])
     );
 endmodule

@@ -1,0 +1,36 @@
+// Copyright lowRISC contributors.
+// Licensed under the Apache License, Version 2.0, see LICENSE for details.
+// SPDX-License-Identifier: Apache-2.0
+{ name: "CPU_Private",
+  clock_primary: "clk_i",
+  bus_interfaces: [
+    { protocol: "reg_iface", direction: "device" }
+  ],
+  regwidth: "32",
+  registers: [
+    { name:     "Hart_ack",
+      desc:     "enter_debug_mode_operating",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Hart_ack", desc: "Hart_ack" }
+      ]
+    },
+    { name:     "Initial_Sync_Master",
+      desc:     "Starting Sync Process as Master",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Initial_Sync_Master", desc: "Initial_Sync_Master" }
+      ]
+    },
+    { name:     "Hart_intc_ack",
+      desc:     "ACK of Sync Interrupt",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Hart_intc_ack", desc: "Hart_intc_ack" }
+      ]
+    }
+   ]
+}

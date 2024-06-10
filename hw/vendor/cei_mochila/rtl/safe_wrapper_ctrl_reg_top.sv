@@ -10,7 +10,7 @@
 module safe_wrapper_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 3
+  parameter int AW = 4
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -67,27 +67,30 @@ module safe_wrapper_ctrl_reg_top #(
   // Define SW related signals
   // Format: <reg>_<field>_{wd|we|qs}
   //        or <reg>_{wd|we|qs} if field == 1 or 0
-  logic intc_ack_qs;
-  logic intc_ack_wd;
-  logic intc_ack_we;
-  logic master_core_qs;
-  logic master_core_wd;
+  logic safe_configuration_qs;
+  logic safe_configuration_wd;
+  logic safe_configuration_we;
+  logic safe_mode_qs;
+  logic safe_mode_wd;
+  logic safe_mode_we;
+  logic [2:0] master_core_qs;
+  logic [2:0] master_core_wd;
   logic master_core_we;
 
   // Register instances
-  // R[intc_ack]: V(False)
+  // R[safe_configuration]: V(False)
 
   prim_subreg #(
     .DW      (1),
     .SWACCESS("RW"),
     .RESVAL  (1'h0)
-  ) u_intc_ack (
+  ) u_safe_configuration (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
 
     // from register interface
-    .we     (intc_ack_we),
-    .wd     (intc_ack_wd),
+    .we     (safe_configuration_we),
+    .wd     (safe_configuration_wd),
 
     // from internal hardware
     .de     (1'b0),
@@ -95,19 +98,46 @@ module safe_wrapper_ctrl_reg_top #(
 
     // to internal hardware
     .qe     (),
-    .q      (reg2hw.intc_ack.q ),
+    .q      (reg2hw.safe_configuration.q ),
 
     // to register interface (read)
-    .qs     (intc_ack_qs)
+    .qs     (safe_configuration_qs)
+  );
+
+
+  // R[safe_mode]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_safe_mode (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (safe_mode_we),
+    .wd     (safe_mode_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.safe_mode.q ),
+
+    // to register interface (read)
+    .qs     (safe_mode_qs)
   );
 
 
   // R[master_core]: V(False)
 
   prim_subreg #(
-    .DW      (1),
+    .DW      (3),
     .SWACCESS("RW"),
-    .RESVAL  (1'h0)
+    .RESVAL  (3'h1)
   ) u_master_core (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
@@ -131,11 +161,12 @@ module safe_wrapper_ctrl_reg_top #(
 
 
 
-  logic [1:0] addr_hit;
+  logic [2:0] addr_hit;
   always_comb begin
     addr_hit = '0;
-    addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET);
-    addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET);
+    addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_OFFSET);
+    addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_MODE_OFFSET);
+    addr_hit[2] = (reg_addr == SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -144,25 +175,33 @@ module safe_wrapper_ctrl_reg_top #(
   always_comb begin
     wr_err = (reg_we &
               ((addr_hit[0] & (|(SAFE_WRAPPER_CTRL_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be)))));
+               (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be))) |
+               (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be)))));
   end
 
-  assign intc_ack_we = addr_hit[0] & reg_we & !reg_error;
-  assign intc_ack_wd = reg_wdata[0];
+  assign safe_configuration_we = addr_hit[0] & reg_we & !reg_error;
+  assign safe_configuration_wd = reg_wdata[0];
 
-  assign master_core_we = addr_hit[1] & reg_we & !reg_error;
-  assign master_core_wd = reg_wdata[0];
+  assign safe_mode_we = addr_hit[1] & reg_we & !reg_error;
+  assign safe_mode_wd = reg_wdata[0];
+
+  assign master_core_we = addr_hit[2] & reg_we & !reg_error;
+  assign master_core_wd = reg_wdata[2:0];
 
   // Read data return
   always_comb begin
     reg_rdata_next = '0;
     unique case (1'b1)
       addr_hit[0]: begin
-        reg_rdata_next[0] = intc_ack_qs;
+        reg_rdata_next[0] = safe_configuration_qs;
       end
 
       addr_hit[1]: begin
-        reg_rdata_next[0] = master_core_qs;
+        reg_rdata_next[0] = safe_mode_qs;
+      end
+
+      addr_hit[2]: begin
+        reg_rdata_next[2:0] = master_core_qs;
       end
 
       default: begin
@@ -187,7 +226,7 @@ endmodule
 
 module safe_wrapper_ctrl_reg_top_intf
 #(
-  parameter int AW = 3,
+  parameter int AW = 4,
   localparam int DW = 32
 ) (
   input logic clk_i,

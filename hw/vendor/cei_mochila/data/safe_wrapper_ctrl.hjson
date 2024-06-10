@@ -8,20 +8,29 @@
   ],
   regwidth: "32",
   registers: [
-    { name:     "Intc_ack",
-      desc:     "ACK Intc Safe_FSM",
+    { name:     "Safe_configuration",
+      desc:     "Configure TMR or DMR",
       swaccess: "rw",
       hwaccess: "hro",
       fields: [
-        { bits: "0", name: "INTC_ACK", desc: "ACK INTC" }
+        { bits: "0", name: "Safe_configuration", desc: "Safe_configuration" }
+      ]
+    },
+    { name:     "Safe_mode",
+      desc:     "Activate Safe Mode",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Safe_mode", desc: "Safe_mode" }
       ]
     },
     { name:     "Master_core",
       desc:     "Master Core Configuration",
       swaccess: "rw",
+      resval:   "0x1",
       hwaccess: "hro",
       fields: [
-        { bits: "0", name: "Master_core", desc: "MASTER CORE" }
+        { bits: "2:0", name: "Master_core", desc: "MASTER CORE" }
       ]
     }
    ]

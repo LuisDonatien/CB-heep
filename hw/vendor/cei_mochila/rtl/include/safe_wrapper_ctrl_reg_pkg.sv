@@ -7,7 +7,7 @@
 package safe_wrapper_ctrl_reg_pkg;
 
   // Address widths within the block
-  parameter int BlockAw = 3;
+  parameter int BlockAw = 4;
 
   ////////////////////////////
   // Typedefs for registers //
@@ -15,32 +15,40 @@ package safe_wrapper_ctrl_reg_pkg;
 
   typedef struct packed {
     logic        q;
-  } safe_wrapper_ctrl_reg2hw_intc_ack_reg_t;
+  } safe_wrapper_ctrl_reg2hw_safe_configuration_reg_t;
 
   typedef struct packed {
     logic        q;
+  } safe_wrapper_ctrl_reg2hw_safe_mode_reg_t;
+
+  typedef struct packed {
+    logic [2:0]  q;
   } safe_wrapper_ctrl_reg2hw_master_core_reg_t;
 
   // Register -> HW type
   typedef struct packed {
-    safe_wrapper_ctrl_reg2hw_intc_ack_reg_t intc_ack; // [1:1]
-    safe_wrapper_ctrl_reg2hw_master_core_reg_t master_core; // [0:0]
+    safe_wrapper_ctrl_reg2hw_safe_configuration_reg_t safe_configuration; // [4:4]
+    safe_wrapper_ctrl_reg2hw_safe_mode_reg_t safe_mode; // [3:3]
+    safe_wrapper_ctrl_reg2hw_master_core_reg_t master_core; // [2:0]
   } safe_wrapper_ctrl_reg2hw_t;
 
   // Register offsets
-  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_INTC_ACK_OFFSET = 3'h 0;
-  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET = 3'h 4;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_OFFSET = 4'h 0;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_SAFE_MODE_OFFSET = 4'h 4;
+  parameter logic [BlockAw-1:0] SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET = 4'h 8;
 
   // Register index
   typedef enum int {
-    SAFE_WRAPPER_CTRL_INTC_ACK,
+    SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION,
+    SAFE_WRAPPER_CTRL_SAFE_MODE,
     SAFE_WRAPPER_CTRL_MASTER_CORE
   } safe_wrapper_ctrl_id_e;
 
   // Register width information to check illegal writes
-  parameter logic [3:0] SAFE_WRAPPER_CTRL_PERMIT [2] = '{
-    4'b 0001, // index[0] SAFE_WRAPPER_CTRL_INTC_ACK
-    4'b 0001  // index[1] SAFE_WRAPPER_CTRL_MASTER_CORE
+  parameter logic [3:0] SAFE_WRAPPER_CTRL_PERMIT [3] = '{
+    4'b 0001, // index[0] SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION
+    4'b 0001, // index[1] SAFE_WRAPPER_CTRL_SAFE_MODE
+    4'b 0001  // index[2] SAFE_WRAPPER_CTRL_MASTER_CORE
   };
 
 endpackage

@@ -567,7 +567,7 @@ module dm_csrs #(
     // default assignment
     haltreq_o = '0;
     resumereq_o = '0;
-    if (selected_hart < HartSelLen'(NrHarts-1)+1) begin
+    if (selected_hart <= HartSelLen'(NrHarts-1)) begin
       haltreq_o[selected_hart]   = dmcontrol_q.haltreq;
       resumereq_o[selected_hart] = dmcontrol_q.resumereq;
     end

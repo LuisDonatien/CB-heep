@@ -10,7 +10,8 @@ filesets:
     files:
       - cei_mochila/rtl/include/cei_mochila_pkg.sv
       - cei_mochila/rtl/include/safe_wrapper_ctrl_reg_pkg.sv
-      - cei_mochila/rtl/include/cb_heep_ctrl_reg_pkg.sv      
+      - cei_mochila/rtl/include/cb_heep_ctrl_reg_pkg.sv 
+      - cei_mochila/rtl/include/cpu_private_reg_pkg.sv     
       - cei_mochila/rtl/mochila_top.sv
       - cei_mochila/rtl/ext_cpu_system.sv
       - cei_mochila/rtl/bus_system.sv
@@ -24,6 +25,8 @@ filesets:
       - cei_mochila/rtl/safe_FSM.sv
       - cei_mochila/rtl/cb_heep_ctrl_reg_top.sv
       - cei_mochila/rtl/cb_heep_ctrl.sv
+      - cei_mochila/rtl/cpu_private_reg_top.sv      
+      - cei_mochila/rtl/cpu_private_reg.sv
     file_type: systemVerilogSource
   
   rtl-simulation:

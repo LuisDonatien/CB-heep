@@ -7,8 +7,8 @@ module mochila_top
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter DM_HALTADDRESS = 32'hF0010028,
-    parameter NHARTS = 2,
+    parameter DM_HALTADDRESS = 32'hF0010040,
+    parameter NHARTS = 3,
     parameter N_BANKS = 2
     
 ) (
@@ -94,7 +94,9 @@ memory_sys memory_sys_i(
 
 
 //Bus System
-bus_system bus_system_i(
+bus_system #(
+        .NHARTS(NHARTS)
+    )bus_system_i(
     .clk_i,
     .rst_ni,
 

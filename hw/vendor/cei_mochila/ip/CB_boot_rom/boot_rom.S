@@ -19,8 +19,8 @@
 
 entry:
        csrr   a0, mhartid
-       li     a1, 0x2
-       beq    a0, a1, shadow_loop
+       li     a1, 0x1
+       bne    a0, a1, shadow_loop
        lui     a1, 0xF0011
        lbu     a0, 0(a1)
        // Check whether exit_loop flag is 1, otherwise jump back to entry 
@@ -34,13 +34,29 @@ entry:
        nop
 //Loop until HALT
 shadow_loop:
-       jal zero, shadow_loop
+//       jal zero, shadow_loop
+       wfi
        nop
        nop
        nop
+       nop
+       nop
+       nop
+       nop
+       nop
+       nop
+       nop
+       nop
+       nop
+       nop
+
 
 
 halt_boot:
+       //Entered Debug Room
+       li   t5,0xFF000000
+       li  t6, 0x1
+       sw   t6,0(t5)
 
        //Control & Status Register//
        li   t5,0xF0108000
@@ -166,11 +182,11 @@ halt_boot:
        //Program Counter//
        lw   t5, 124(t6)
 
-
+       //Ensure the read data dpc is performed before instruction bus.
+       fence 
        //Program Counter -> dpc Control & Status Register            
        csrw dpc, t5
 
-       //
        //Resume//
        dret
        

@@ -19,7 +19,7 @@ module bus_system
   import obi_pkg::*;
   import addr_map_rule_pkg::*;
 #(
-  parameter NHARTS = 2,
+  parameter NHARTS = 3,
   parameter N_BANKS = 2
 ) (
     input logic clk_i,
@@ -69,6 +69,8 @@ module bus_system
   assign int_master_req[cei_mochila_pkg::CORE0_DATA_IDX] = core_data_req_i[0];
   assign int_master_req[cei_mochila_pkg::CORE1_INSTR_IDX] = core_instr_req_i[1];
   assign int_master_req[cei_mochila_pkg::CORE1_DATA_IDX] = core_data_req_i[1];
+  assign int_master_req[cei_mochila_pkg::CORE2_INSTR_IDX] = core_instr_req_i[2];
+  assign int_master_req[cei_mochila_pkg::CORE2_DATA_IDX] = core_data_req_i[2];
   assign int_master_req[cei_mochila_pkg::EXTERNAL_MASTER_IDX] = ext_master_req_i; 
 
   // Internal master responses
@@ -76,6 +78,8 @@ module bus_system
   assign core_data_resp_o[0] = int_master_resp[cei_mochila_pkg::CORE0_DATA_IDX];
   assign core_instr_resp_o[1] = int_master_resp[cei_mochila_pkg::CORE1_INSTR_IDX];
   assign core_data_resp_o[1] = int_master_resp[cei_mochila_pkg::CORE1_DATA_IDX];
+  assign core_instr_resp_o[2] = int_master_resp[cei_mochila_pkg::CORE2_INSTR_IDX];
+  assign core_data_resp_o[2] = int_master_resp[cei_mochila_pkg::CORE2_DATA_IDX];
   // External master responses
   assign ext_master_resp_o = int_master_resp[cei_mochila_pkg::EXTERNAL_MASTER_IDX];
 

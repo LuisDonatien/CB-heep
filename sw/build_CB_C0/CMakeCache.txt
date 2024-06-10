@@ -136,7 +136,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=Dual_Safe_CPU
+CMAKE_PROJECT_NAME:STATIC=TMR_Safe_CPU
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/home/luis/tools/riscv/bin/riscv32-unknown-elf-ranlib
@@ -219,6 +219,15 @@ COMPILER_PREFIX:STRING=riscv32-unknown-
 CORE:UNINITIALIZED=0
 
 //Value Computed by CMake
+Dual_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+Dual_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Dual_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
+
+//Value Computed by CMake
 Dual_Safe_CPU_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
 
 //Value Computed by CMake
@@ -254,7 +263,7 @@ LINKER:STRING=on_chip
 LINK_FOLDER:STRING=/home/luis/Documents/PhD/CB-heep/sw/linker_CB_C0
 
 //No help, variable specified on the command line.
-PROJECT:STRING=Dual_Safe_CPU
+PROJECT:STRING=TMR_Safe_CPU
 
 //No help, variable specified on the command line.
 RISCV:STRING=/home/luis/tools/riscv
@@ -276,6 +285,15 @@ Switch_Context_Routine_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
 
 //No help, variable specified on the command line.
 TARGET:UNINITIALIZED=sim
+
+//Value Computed by CMake
+TMR_Safe_CPU_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+TMR_Safe_CPU_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+TMR_Safe_CPU_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
 
 //Value Computed by CMake
 hello_world_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0

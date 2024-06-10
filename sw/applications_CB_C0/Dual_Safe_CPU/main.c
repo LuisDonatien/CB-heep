@@ -10,18 +10,25 @@
 #include "csr.h"
 #include "csr_registers.h"
 
-
+#define PRIVATE_REG_BASEADDRESS 0xFF000000 
 
 int main(int argc, char *argv[])
 {
 
 volatile unsigned int *P=0xF0109000;
+volatile unsigned int *Safe_config_reg= 0xF0020000;
+volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
+
+//Starting Configuration
+*Safe_config_reg = 0x1;
+*(Safe_config_reg+1) = 0x1;
 
    CSR_READ(CSR_REG_MHARTID,P);
    
    printf("Hart: %d init the program...\n",*P); 
    
-   
+   *Priv_Reg =0x0;
+
    //Activate Interrupt
     // Enable interrupt on processor side
     // Enable global interrupt for machine-level interrupts
@@ -179,9 +186,9 @@ volatile unsigned int *P=0xF0109000;
 
         //x29   t4 
 //        asm volatile("li t6, 0xC870");
-        asm volatile("sw t4, 112(t6)");
+        asm volatile("sw t4, 112(t6)"); 
 
-        //x30   t5 
+        //x30   t5  
 //        asm volatile("li t6, 0xC874");
         asm volatile("sw t5, 116(t6)"); 
 
@@ -189,19 +196,26 @@ volatile unsigned int *P=0xF0109000;
 //        asm volatile("li t6, 0xC878");
         asm volatile("sw t6, 120(t6)");
 
-        
+        //Master Sync Priv Reg
+        *(Priv_Reg+1) = 0x1;
         //PC Program Counter
         asm volatile("auipc t5, 0");
         asm volatile("sw t5, 124(t6)");
 
-            asm volatile("wfi"); 
+        asm volatile ("fence"); 
+        asm volatile("wfi");  
 
-   CSR_READ(CSR_REG_MHARTID,P);
-   volatile unsigned int *MHARTID = 0xF0109004;
-   *MHARTID=*P;
+        *(Priv_Reg+2) = 0x0;
+        //end safe mode
+        *(Safe_config_reg+1) = 0x0;
+        *(Safe_config_reg+2) = 0x4;
+        asm volatile("wfi");
 
-   
-   printf("Hart: %d finish the program...\n",*P);         
+
+volatile unsigned int *P1=0xF0109000;
+        CSR_READ(CSR_REG_MHARTID,P1);
+
+   printf("Hart: %d finish the program...\n",*P1); 
     
    return EXIT_SUCCESS;
 }
