@@ -7,7 +7,7 @@ module ext_cpu_system
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter BOOT_ADDR = 32'hF0010000,//'hF0010024,
+    parameter BOOT_ADDR = core_v_mini_mcu_pkg::BOOTROM_START_ADDRESS,//32'hF0010000,
     parameter NHARTS = 3,
     parameter DM_HALTADDRESS = 32'hF0010040
 ) (

@@ -200,35 +200,35 @@ module safe_FSM
 
 
       always_comb begin
-        assign enable_interrupt_halt_s[i] = 1'b0;
-        assign Interrupt_Sync_o[i] = 1'b0;
-        assign single_bus_s[i]     = 0'b0;
-        assign dbg_halt_req_s[i]   = 0'b0;
+        enable_interrupt_halt_s[i] = 1'b0;
+        Interrupt_Sync_o[i] = 1'b0;
+        single_bus_s[i]     = 1'b0;
+        dbg_halt_req_s[i]   = 1'b0;
         unique case (ctrl_tmr_fsm_cs[i])
   
           TMR_SH_HALT:
           begin
             if (Master_Core_i[i] == 1'b1) begin
-              assign dbg_halt_req_s[i] = 1'b1;
-              assign enable_interrupt_halt_s[i] = 1'b1;         
+              dbg_halt_req_s[i] = 1'b1;
+              enable_interrupt_halt_s[i] = 1'b1;         
             end
           end        
   
           TMR_MS_INTRSYNC:
           begin
-            assign Interrupt_Sync_o[i] = 1'b1;
-            assign single_bus_s[i]  = 1'b1;
+            Interrupt_Sync_o[i] = 1'b1;
+            single_bus_s[i]  = 1'b1;
           end 
 
           TMR_SYNC:
           begin
-            assign single_bus_s[i]  = 1'b1;
+            single_bus_s[i]  = 1'b1;
           end
 
           TMR_END_SYNC:
           begin
             if (Master_Core_i[i] == 1'b1) begin
-              assign Interrupt_Sync_o[i] = 1'b1;        
+              Interrupt_Sync_o[i] = 1'b1;        
             end
           end
           default: begin  end 
@@ -245,11 +245,11 @@ assign halt_req_s = dbg_halt_req_s[0] || dbg_halt_req_s[1] || dbg_halt_req_s[2];
 assign Single_Bus_o = single_bus_s[0] || single_bus_s[1] || single_bus_s[2];
 
 always_comb begin
-  assign Interrupt_Halt_o = '0;
-    if (enable_interrupt_halt_s[0] == 1'b1 || enable_interrupt_halt_s[1] == 1'b1 || enable_interrupt_halt_s[2] == 1'b1) begin
-      assign Interrupt_Halt_o= ~Initial_Sync_Master_i;
-    end
+  Interrupt_Halt_o = '0;
+  if (enable_interrupt_halt_s[0] == 1'b1 || enable_interrupt_halt_s[1] == 1'b1 || enable_interrupt_halt_s[2] == 1'b1) begin
+    Interrupt_Halt_o= ~Initial_Sync_Master_i;
   end
+end
 
 
 endmodule

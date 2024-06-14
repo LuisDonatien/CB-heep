@@ -36,6 +36,7 @@ module cb_heep_ctrl #(
 `else
   assign hw2reg.exit_loop.d = 1'b0;
   assign hw2reg.exit_loop.de = 1'b0;
+
 `endif
 
   cb_heep_ctrl_reg_top #(

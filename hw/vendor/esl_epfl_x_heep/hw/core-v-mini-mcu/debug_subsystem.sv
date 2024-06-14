@@ -5,9 +5,9 @@
 module debug_subsystem
   import obi_pkg::*;
 #(
-    parameter              JTAG_IDCODE = 32'h10001c05,
+    parameter JTAG_IDCODE = 32'h10001c05,
     //Modification Dual-Core
-    parameter int unsigned NrHarts     = 2
+    parameter NrHarts     = 2
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -34,6 +34,22 @@ module debug_subsystem
   //*******//
   //Hart Dependent 
   //Debug Req
+
+  logic [NrHarts-1:0]    unavailable_i;
+  dm::hartinfo_t [NrHarts-1:0] hartinfo;
+
+  always @(*) begin
+    for (int i = 0; i < NrHarts; i++) begin
+      hartinfo[i].zero1 = '0;
+      hartinfo[i].nscratch = 2;  // Debug module needs at least two scratch regs
+      hartinfo[i].zero0 = '0;
+      hartinfo[i].dataaccess = 1'b1;  // data registers are memory mapped in the debugger
+      hartinfo[i].datasize = dm::DataCount;
+      hartinfo[i].dataaddr = dm::DataAddr;
+      unavailable_i[i] = ~(1'b1);
+    end
+  end
+  /* 
   logic [NrHarts-1:0]    unavailable_i;
   dm::hartinfo_t [NrHarts-1:0] hartinfo;
   always @(*) begin
@@ -53,6 +69,7 @@ module debug_subsystem
     end
   end
 
+*/
   /*Single Hart
   localparam dm::hartinfo_t hartinfo = '{
       zero1: '0,

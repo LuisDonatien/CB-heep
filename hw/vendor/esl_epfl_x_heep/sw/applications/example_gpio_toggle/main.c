@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     gpio_res = gpio_config (pin_cfg);
     if (gpio_res != GpioOk)
         PRINTF("Gpio initialization failed!\n");
-    volatile unsigned int *i = 0xF0100008;
+    volatile unsigned int *i = 0x08040;
 while(1){
     if((*i)<50000){
         gpio_write(GPIO_TOGGLE, true);        
