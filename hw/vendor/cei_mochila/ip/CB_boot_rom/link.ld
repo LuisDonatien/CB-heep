@@ -1,12 +1,16 @@
-/* See LICENSE.SiFive for license details. */
-OUTPUT_ARCH( "riscv" )
-ENTRY( entry )
-SECTIONS
-{
-    . = 0x000;
-    .text :
-    {
+ENTRY(entry)
+
+MEMORY {
+    rom (rx) : ORIGIN = 0x00000000, LENGTH = 0x2000 /* Ajusta la longitud según tus necesidades */
+}
+
+SECTIONS {
+    .text 0x0 : {
         *(.text)
-    }
-    _end = .;
+        . = ALIGN(4); /* Alinea la posición actual a un múltiplo de 4 bytes */
+        FILL(0x00)
+        . += 0x200 - .;
+        *(.debug_entry)
+    } > rom
+
 }

@@ -102,8 +102,8 @@ module periph_system
   );
 
   CB_boot_rom CB_boot_rom_i (
-      .reg_req_i(peripheral_slv_req[cei_mochila_pkg::BOOTROM_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::BOOTROM_IDX])
+      .reg_req_i(peripheral_slv_req[cei_mochila_pkg::DEBUG_BOOTROM_IDX]),
+      .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::DEBUG_BOOTROM_IDX])
   );
 
   cb_heep_ctrl #(

@@ -31,6 +31,15 @@
       fields: [
         { bits: "0", name: "Hart_intc_ack", desc: "Hart_intc_ack" }
       ]
+    },
+    { name:     "External_Debug_Req",
+      desc:     "External Debug Request Signal",
+      resval  :"0x0",
+      swaccess: "ro",
+      hwaccess: "hwo",
+      fields: [
+        { bits: "0", name: "External_Debug_Req", desc: "External_Debug_Req" }
+      ]
     }
    ]
 }

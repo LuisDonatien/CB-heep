@@ -8,7 +8,7 @@ module safe_cpu_wrapper
   import cei_mochila_pkg::*;
 #(
     parameter NHARTS = 3,
-    parameter DM_HALTADDRESS = 32'hF0010040
+    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -284,7 +284,8 @@ for(genvar i=0; i<NHARTS;i++) begin :priv_reg
 
     .Hart_ack_o(Hart_ack_s[i]),
     .Initial_Sync_Master_o(Initial_Sync_Master_s[i]),
-    .Hart_intc_ack_o(Hart_intc_ack_s[i])
+    .Hart_intc_ack_o(Hart_intc_ack_s[i]),
+    .Debug_ext_req_i      (intc_halt_s[i]) //Check if debug_req comes from FSM or external debug
     );
 
 end
