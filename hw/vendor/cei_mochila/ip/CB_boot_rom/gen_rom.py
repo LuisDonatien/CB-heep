@@ -20,7 +20,6 @@ if not os.path.isfile(file):
     sys.exit(1)
 
 filename = os.path.splitext(file)[0]
-
 license = """\
 /* Copyright 2018 ETH Zurich and University of Bologna.
  * Copyright and related rights are licensed under the Solderpad Hardware
@@ -101,6 +100,7 @@ def read_bin():
     return rom
 
 rom = read_bin()
+
 
 """ Generate C header file for simulator
 """

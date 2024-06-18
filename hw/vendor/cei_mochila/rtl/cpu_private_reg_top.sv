@@ -18,6 +18,7 @@ module cpu_private_reg_top #(
   output reg_rsp_t reg_rsp_o,
   // To HW
   output cpu_private_reg_pkg::cpu_private_reg2hw_t reg2hw, // Write
+  input  cpu_private_reg_pkg::cpu_private_hw2reg_t hw2reg, // Read
 
 
   // Config
@@ -76,6 +77,7 @@ module cpu_private_reg_top #(
   logic hart_intc_ack_qs;
   logic hart_intc_ack_wd;
   logic hart_intc_ack_we;
+  logic external_debug_req_qs;
 
   // Register instances
   // R[hart_ack]: V(False)
@@ -159,14 +161,41 @@ module cpu_private_reg_top #(
   );
 
 
+  // R[external_debug_req]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RO"),
+    .RESVAL  (1'h0)
+  ) u_external_debug_req (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    .we     (1'b0),
+    .wd     ('0  ),
+
+    // from internal hardware
+    .de     (hw2reg.external_debug_req.de),
+    .d      (hw2reg.external_debug_req.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (external_debug_req_qs)
+  );
 
 
-  logic [2:0] addr_hit;
+
+
+  logic [3:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == CPU_PRIVATE_HART_ACK_OFFSET);
     addr_hit[1] = (reg_addr == CPU_PRIVATE_INITIAL_SYNC_MASTER_OFFSET);
     addr_hit[2] = (reg_addr == CPU_PRIVATE_HART_INTC_ACK_OFFSET);
+    addr_hit[3] = (reg_addr == CPU_PRIVATE_EXTERNAL_DEBUG_REQ_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -176,7 +205,8 @@ module cpu_private_reg_top #(
     wr_err = (reg_we &
               ((addr_hit[0] & (|(CPU_PRIVATE_PERMIT[0] & ~reg_be))) |
                (addr_hit[1] & (|(CPU_PRIVATE_PERMIT[1] & ~reg_be))) |
-               (addr_hit[2] & (|(CPU_PRIVATE_PERMIT[2] & ~reg_be)))));
+               (addr_hit[2] & (|(CPU_PRIVATE_PERMIT[2] & ~reg_be))) |
+               (addr_hit[3] & (|(CPU_PRIVATE_PERMIT[3] & ~reg_be)))));
   end
 
   assign hart_ack_we = addr_hit[0] & reg_we & !reg_error;
@@ -202,6 +232,10 @@ module cpu_private_reg_top #(
 
       addr_hit[2]: begin
         reg_rdata_next[0] = hart_intc_ack_qs;
+      end
+
+      addr_hit[3]: begin
+        reg_rdata_next[0] = external_debug_req_qs;
       end
 
       default: begin
@@ -234,6 +268,7 @@ module cpu_private_reg_top_intf
   REG_BUS.in  regbus_slave,
   // To HW
   output cpu_private_reg_pkg::cpu_private_reg2hw_t reg2hw, // Write
+  input  cpu_private_reg_pkg::cpu_private_hw2reg_t hw2reg, // Read
   // Config
   input devmode_i // If 1, explicit error return for unmapped register access
 );
@@ -267,6 +302,7 @@ module cpu_private_reg_top_intf
     .reg_req_i(s_reg_req),
     .reg_rsp_o(s_reg_rsp),
     .reg2hw, // Write
+    .hw2reg, // Read
     .devmode_i
   );
   

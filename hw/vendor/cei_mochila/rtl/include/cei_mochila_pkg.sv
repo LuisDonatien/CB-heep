@@ -102,10 +102,10 @@ package cei_mochila_pkg;
 
   localparam PERIPHERALS = 2;
 
-  localparam logic [31:0] BOOTROM_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00000000;
-  localparam logic [31:0] BOOTROM_SIZE = 32'h00001000;
-  localparam logic [31:0] BOOTROM_END_ADDRESS = BOOTROM_START_ADDRESS + BOOTROM_SIZE;
-  localparam logic [31:0] BOOTROM_IDX = 32'd0;
+  localparam logic [31:0] DEBUG_BOOTROM_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00000000;
+  localparam logic [31:0] DEBUG_BOOTROM_SIZE = 32'h00001000;
+  localparam logic [31:0] DEBUG_BOOTROM_END_ADDRESS = DEBUG_BOOTROM_START_ADDRESS + DEBUG_BOOTROM_SIZE;
+  localparam logic [31:0] DEBUG_BOOTROM_IDX = 32'd0;
 
   localparam logic [31:0] CB_CTRL_START_ADDRESS = PERIPHERAL_START_ADDRESS + 32'h00001000;
   localparam logic [31:0] CB_CTRL_SIZE = 32'h00001000;
@@ -113,9 +113,9 @@ package cei_mochila_pkg;
   localparam logic [31:0] CB_CTRL_IDX = 32'd1;
 
   localparam addr_map_rule_t [PERIPHERALS-1:0] PERIPHERALS_ADDR_RULES ='{
-      '{  idx: BOOTROM_IDX, 
-          start_addr: BOOTROM_START_ADDRESS, 
-          end_addr: BOOTROM_END_ADDRESS
+      '{  idx: DEBUG_BOOTROM_IDX, 
+          start_addr: DEBUG_BOOTROM_START_ADDRESS, 
+          end_addr: DEBUG_BOOTROM_END_ADDRESS
       },
       '{  idx: CB_CTRL_IDX, 
           start_addr: CB_CTRL_START_ADDRESS, 
@@ -163,5 +163,10 @@ package cei_mochila_pkg;
           end_addr: CPU_REG_END_ADDRESS
       }
   };
+
+  //External Peripherals MM Base Address
+  
+  //DEBUG SYSTEM
+  localparam int unsigned DEBUG_SYSTEM_START_START_ADDRESS = 32'h10000000;
 
 endpackage

@@ -1,0 +1,204 @@
+
+CB_boot_rom.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <entry>:
+   0:	f1402573          	csrr	a0,mhartid
+   4:	00100593          	li	a1,1
+   8:	02b51663          	bne	a0,a1,34 <shadow_loop>
+   c:	f00115b7          	lui	a1,0xf0011
+  10:	0005c503          	lbu	a0,0(a1) # f0011000 <debug_entry+0xf0010e00>
+  14:	fe0506e3          	beqz	a0,0 <entry>
+  18:	0045a503          	lw	a0,4(a1)
+  1c:	000500e7          	jalr	a0
+  20:	00000013          	nop
+  24:	00000013          	nop
+  28:	00000013          	nop
+  2c:	00000013          	nop
+  30:	00000013          	nop
+
+00000034 <shadow_loop>:
+  34:	10500073          	wfi
+  38:	00000013          	nop
+  3c:	00000013          	nop
+  40:	00000013          	nop
+  44:	00000013          	nop
+  48:	00000013          	nop
+  4c:	00000013          	nop
+  50:	00000013          	nop
+  54:	00000013          	nop
+  58:	00000013          	nop
+  5c:	00000013          	nop
+  60:	00000013          	nop
+  64:	00000013          	nop
+  68:	00000013          	nop
+
+0000006c <halt_boot>:
+  6c:	f0108f37          	lui	t5,0xf0108
+  70:	000f2f83          	lw	t6,0(t5) # f0108000 <debug_entry+0xf0107e00>
+  74:	300f9073          	csrw	mstatus,t6
+  78:	004f2f83          	lw	t6,4(t5)
+  7c:	304f9073          	csrw	mie,t6
+  80:	008f2f83          	lw	t6,8(t5)
+  84:	305f9073          	csrw	mtvec,t6
+  88:	00cf2f83          	lw	t6,12(t5)
+  8c:	341f9073          	csrw	mepc,t6
+  90:	010f2f83          	lw	t6,16(t5)
+  94:	343f9073          	csrw	mtval,t6
+  98:	f0108fb7          	lui	t6,0xf0108
+  9c:	100f8f93          	addi	t6,t6,256 # f0108100 <debug_entry+0xf0107f00>
+  a0:	000fa083          	lw	ra,0(t6)
+  a4:	004fa103          	lw	sp,4(t6)
+  a8:	008fa183          	lw	gp,8(t6)
+  ac:	00cfa203          	lw	tp,12(t6)
+  b0:	010fa283          	lw	t0,16(t6)
+  b4:	014fa303          	lw	t1,20(t6)
+  b8:	018fa383          	lw	t2,24(t6)
+  bc:	01cfa403          	lw	s0,28(t6)
+  c0:	020fa483          	lw	s1,32(t6)
+  c4:	024fa503          	lw	a0,36(t6)
+  c8:	028fa583          	lw	a1,40(t6)
+  cc:	02cfa603          	lw	a2,44(t6)
+  d0:	030fa683          	lw	a3,48(t6)
+  d4:	034fa703          	lw	a4,52(t6)
+  d8:	038fa783          	lw	a5,56(t6)
+  dc:	03cfa803          	lw	a6,60(t6)
+  e0:	040fa883          	lw	a7,64(t6)
+  e4:	044fa903          	lw	s2,68(t6)
+  e8:	048fa983          	lw	s3,72(t6)
+  ec:	04cfaa03          	lw	s4,76(t6)
+  f0:	050faa83          	lw	s5,80(t6)
+  f4:	054fab03          	lw	s6,84(t6)
+  f8:	058fab83          	lw	s7,88(t6)
+  fc:	05cfac03          	lw	s8,92(t6)
+ 100:	060fac83          	lw	s9,96(t6)
+ 104:	064fad03          	lw	s10,100(t6)
+ 108:	068fad83          	lw	s11,104(t6)
+ 10c:	06cfae03          	lw	t3,108(t6)
+ 110:	070fae83          	lw	t4,112(t6)
+ 114:	074faf03          	lw	t5,116(t6)
+ 118:	078faf83          	lw	t6,120(t6)
+ 11c:	07cfaf03          	lw	t5,124(t6)
+ 120:	0ff0000f          	fence
+ 124:	7b1f1073          	csrw	dpc,t5
+ 128:	7b200073          	dret
+ 12c:	00000013          	nop
+ 130:	f3dff06f          	j	6c <halt_boot>
+ 134:	0000                	unimp
+ 136:	0000                	unimp
+ 138:	0000                	unimp
+ 13a:	0000                	unimp
+ 13c:	0000                	unimp
+ 13e:	0000                	unimp
+ 140:	0000                	unimp
+ 142:	0000                	unimp
+ 144:	0000                	unimp
+ 146:	0000                	unimp
+ 148:	0000                	unimp
+ 14a:	0000                	unimp
+ 14c:	0000                	unimp
+ 14e:	0000                	unimp
+ 150:	0000                	unimp
+ 152:	0000                	unimp
+ 154:	0000                	unimp
+ 156:	0000                	unimp
+ 158:	0000                	unimp
+ 15a:	0000                	unimp
+ 15c:	0000                	unimp
+ 15e:	0000                	unimp
+ 160:	0000                	unimp
+ 162:	0000                	unimp
+ 164:	0000                	unimp
+ 166:	0000                	unimp
+ 168:	0000                	unimp
+ 16a:	0000                	unimp
+ 16c:	0000                	unimp
+ 16e:	0000                	unimp
+ 170:	0000                	unimp
+ 172:	0000                	unimp
+ 174:	0000                	unimp
+ 176:	0000                	unimp
+ 178:	0000                	unimp
+ 17a:	0000                	unimp
+ 17c:	0000                	unimp
+ 17e:	0000                	unimp
+ 180:	0000                	unimp
+ 182:	0000                	unimp
+ 184:	0000                	unimp
+ 186:	0000                	unimp
+ 188:	0000                	unimp
+ 18a:	0000                	unimp
+ 18c:	0000                	unimp
+ 18e:	0000                	unimp
+ 190:	0000                	unimp
+ 192:	0000                	unimp
+ 194:	0000                	unimp
+ 196:	0000                	unimp
+ 198:	0000                	unimp
+ 19a:	0000                	unimp
+ 19c:	0000                	unimp
+ 19e:	0000                	unimp
+ 1a0:	0000                	unimp
+ 1a2:	0000                	unimp
+ 1a4:	0000                	unimp
+ 1a6:	0000                	unimp
+ 1a8:	0000                	unimp
+ 1aa:	0000                	unimp
+ 1ac:	0000                	unimp
+ 1ae:	0000                	unimp
+ 1b0:	0000                	unimp
+ 1b2:	0000                	unimp
+ 1b4:	0000                	unimp
+ 1b6:	0000                	unimp
+ 1b8:	0000                	unimp
+ 1ba:	0000                	unimp
+ 1bc:	0000                	unimp
+ 1be:	0000                	unimp
+ 1c0:	0000                	unimp
+ 1c2:	0000                	unimp
+ 1c4:	0000                	unimp
+ 1c6:	0000                	unimp
+ 1c8:	0000                	unimp
+ 1ca:	0000                	unimp
+ 1cc:	0000                	unimp
+ 1ce:	0000                	unimp
+ 1d0:	0000                	unimp
+ 1d2:	0000                	unimp
+ 1d4:	0000                	unimp
+ 1d6:	0000                	unimp
+ 1d8:	0000                	unimp
+ 1da:	0000                	unimp
+ 1dc:	0000                	unimp
+ 1de:	0000                	unimp
+ 1e0:	0000                	unimp
+ 1e2:	0000                	unimp
+ 1e4:	0000                	unimp
+ 1e6:	0000                	unimp
+ 1e8:	0000                	unimp
+ 1ea:	0000                	unimp
+ 1ec:	0000                	unimp
+ 1ee:	0000                	unimp
+ 1f0:	0000                	unimp
+ 1f2:	0000                	unimp
+ 1f4:	0000                	unimp
+ 1f6:	0000                	unimp
+ 1f8:	0000                	unimp
+ 1fa:	0000                	unimp
+ 1fc:	0000                	unimp
+ 1fe:	0000                	unimp
+
+00000200 <debug_entry>:
+ 200:	ff000537          	lui	a0,0xff000
+ 204:	00c52503          	lw	a0,12(a0) # ff00000c <debug_entry+0xfefffe0c>
+ 208:	00050463          	beqz	a0,210 <debug_entry+0x10>
+ 20c:	e61ff06f          	j	6c <halt_boot>
+ 210:	0ff0000f          	fence
+ 214:	7b241073          	csrw	dscratch0,s0
+ 218:	7b351073          	csrw	dscratch1,a0
+ 21c:	10000537          	lui	a0,0x10000
+ 220:	10001437          	lui	s0,0x10001
+ 224:	83040413          	addi	s0,s0,-2000 # 10000830 <debug_entry+0x10000630>
+ 228:	00040067          	jr	s0
+ 22c:	00000013          	nop
