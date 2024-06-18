@@ -52,6 +52,7 @@ module safe_cpu_wrapper
     logic [NHARTS-1:0] intc_halt_s;
     logic [NHARTS-1:0] sleep_s;
 
+
     // CPU ports
     obi_req_t  [NHARTS-1 : 0] core_instr_req;
     obi_resp_t [NHARTS-1 : 0] core_instr_resp;
@@ -63,6 +64,10 @@ module safe_cpu_wrapper
     // XBAR_CPU Slaves Signals
     obi_req_t  [NHARTS-1 : 0][1:0] xbar_core_data_req;
     obi_resp_t [NHARTS-1 : 0][1:0] xbar_core_data_resp;   
+
+    //Voted_CPU Signals
+    obi_req_t  voted_core_instr_req_o;
+    obi_req_t  voted_core_data_req_o;    
 
     // CPU Private Regs
     reg_pkg::reg_req_t  [NHARTS-1 : 0]cpu_reg_req;
@@ -177,7 +182,7 @@ safe_FSM safe_FSM_i (
   assign debug_req[2] = debug_req_i[2] || intc_halt_s[2];
 
 
-//Safety_Multiplexer//
+//*****************Safety_Multiplexer*********************//
 
 
     always @(*) begin
@@ -191,11 +196,10 @@ safe_FSM safe_FSM_i (
             xbar_core_data_resp[0][0] = core_data_resp_i[0];
             xbar_core_data_resp[1][0] = core_data_resp_i[1];
             xbar_core_data_resp[2][0] = core_data_resp_i[2];
-
         end
         else begin
                 //Instruction
-                core_instr_req_o[0] = core_instr_req[0];
+                core_instr_req_o[0] = voted_core_instr_req_o;
                 core_instr_req_o[1] = '0;
                 core_instr_req_o[2] = '0;
 
@@ -204,17 +208,37 @@ safe_FSM safe_FSM_i (
                 core_instr_resp[2] = core_instr_resp_i[0];                                
 
                 //Data
-                core_data_req_o[0] = xbar_core_data_req[0][0];
+                core_data_req_o[0] = voted_core_data_req_o;
                 core_data_req_o[1] = '0;
                 core_data_req_o[2] = '0;
 
                 xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
                 xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
-                xbar_core_data_resp[2][0] = core_data_resp_i[0];
+                xbar_core_data_resp[2][0] = core_data_resp_i[0];    
         end
     end
+/**********************************************************/
 
 
+//*********************Safety Voter***********************//
+assign core_data_req[0] = xbar_core_data_req[0][0];
+assign core_data_req[1] = xbar_core_data_req[1][0];
+assign core_data_req[2] = xbar_core_data_req[2][0];
+
+    tmr_voter #(
+
+    ) tmr_voter_i (
+        // Instruction Bus
+        .core_instr_req_i(core_instr_req),
+        .voted_core_instr_req_o(voted_core_instr_req_o),
+        
+        // Data Bus
+        .core_data_req_i(core_data_req),
+        .voted_core_data_req_o(voted_core_data_req_o),
+    
+        .error_o(),
+        .error_id_o()
+    );
 
 
 // Private CPU Register

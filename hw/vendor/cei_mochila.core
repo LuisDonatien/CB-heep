@@ -23,6 +23,7 @@ filesets:
       - cei_mochila/rtl/safe_wrapper_ctrl.sv
       - cei_mochila/rtl/safe_cpu_wrapper.sv
       - cei_mochila/rtl/safe_FSM.sv
+      - cei_mochila/rtl/tmr_voter.sv
       - cei_mochila/rtl/cb_heep_ctrl_reg_top.sv
       - cei_mochila/rtl/cb_heep_ctrl.sv
       - cei_mochila/rtl/cpu_private_reg_top.sv      
