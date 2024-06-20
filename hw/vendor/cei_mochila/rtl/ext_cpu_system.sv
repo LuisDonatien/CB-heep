@@ -51,6 +51,11 @@ module ext_cpu_system
   assign core_instr_req_o[1].wdata = '0;
   assign core_instr_req_o[1].we    = '0;
   assign core_instr_req_o[1].be    = 4'b1111;
+
+  // Core 2
+  assign core_instr_req_o[2].wdata = '0;
+  assign core_instr_req_o[2].we    = '0;
+  assign core_instr_req_o[2].be    = 4'b1111;  
   
   // instantiate the core 0
     cve2_top #(
@@ -63,7 +68,7 @@ module ext_cpu_system
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h1),
+        .hart_id_i  (32'h2),
         .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[0].addr),
@@ -154,7 +159,7 @@ module ext_cpu_system
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h3),
+        .hart_id_i  (32'h1),
         .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[2].addr),

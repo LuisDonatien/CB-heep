@@ -63,7 +63,8 @@ module safe_cpu_wrapper
 
     // XBAR_CPU Slaves Signals
     obi_req_t  [NHARTS-1 : 0][1:0] xbar_core_data_req;
-    obi_resp_t [NHARTS-1 : 0][1:0] xbar_core_data_resp;   
+    obi_resp_t [NHARTS-1 : 0][1:0] xbar_core_data_resp;
+    obi_req_t  [NHARTS-1 : 0]      xbar_core_data_req_s;  
 
     //Voted_CPU Signals
     obi_req_t  voted_core_instr_req_o;
@@ -188,8 +189,11 @@ safe_FSM safe_FSM_i (
     always @(*) begin
         
         if (bus_config_s == 0) begin
+            //Instruction
             core_instr_req_o = core_instr_req;
             core_instr_resp = core_instr_resp_i;
+
+            //Data
             core_data_req_o[0] = xbar_core_data_req[0][0];
             core_data_req_o[1] = xbar_core_data_req[1][0];
             core_data_req_o[2] = xbar_core_data_req[2][0];
@@ -198,32 +202,30 @@ safe_FSM safe_FSM_i (
             xbar_core_data_resp[2][0] = core_data_resp_i[2];
         end
         else begin
-                //Instruction
-                core_instr_req_o[0] = voted_core_instr_req_o;
-                core_instr_req_o[1] = '0;
-                core_instr_req_o[2] = '0;
+            //Instruction
+            core_instr_req_o[0] = voted_core_instr_req_o;
+            core_instr_req_o[1] = '0;
+            core_instr_req_o[2] = '0;
+            core_instr_resp[0] = core_instr_resp_i[0];
+            core_instr_resp[1] = core_instr_resp_i[0];
+            core_instr_resp[2] = core_instr_resp_i[0];
 
-                core_instr_resp[0] = core_instr_resp_i[0];
-                core_instr_resp[1] = core_instr_resp_i[0];
-                core_instr_resp[2] = core_instr_resp_i[0];                                
-
-                //Data
-                core_data_req_o[0] = voted_core_data_req_o;
-                core_data_req_o[1] = '0;
-                core_data_req_o[2] = '0;
-
-                xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
-                xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
-                xbar_core_data_resp[2][0] = core_data_resp_i[0];    
+            //Data
+            core_data_req_o[0] = voted_core_data_req_o;
+            core_data_req_o[1] = '0;
+            core_data_req_o[2] = '0;
+            xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
+            xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
+            xbar_core_data_resp[2][0] = core_data_resp_i[0];    
         end
     end
 /**********************************************************/
 
 
 //*********************Safety Voter***********************//
-assign core_data_req[0] = xbar_core_data_req[0][0];
-assign core_data_req[1] = xbar_core_data_req[1][0];
-assign core_data_req[2] = xbar_core_data_req[2][0];
+assign xbar_core_data_req_s[0] = xbar_core_data_req[0][0];
+assign xbar_core_data_req_s[1] = xbar_core_data_req[1][0];
+assign xbar_core_data_req_s[2] = xbar_core_data_req[2][0];
 
     tmr_voter #(
 
@@ -233,7 +235,7 @@ assign core_data_req[2] = xbar_core_data_req[2][0];
         .voted_core_instr_req_o(voted_core_instr_req_o),
         
         // Data Bus
-        .core_data_req_i(core_data_req),
+        .core_data_req_i(xbar_core_data_req_s),
         .voted_core_data_req_o(voted_core_data_req_o),
     
         .error_o(),

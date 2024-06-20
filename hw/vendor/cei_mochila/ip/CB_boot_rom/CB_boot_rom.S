@@ -63,6 +63,10 @@ shadow_loop:
 
 
 halt_boot:
+       //ACK Debug Rom
+       li   t5,0xFF000000
+       li  t6, 0x1
+       sw   t6,0(t5)
 
        //Control & Status Register//
        li   t5,0xF0108000

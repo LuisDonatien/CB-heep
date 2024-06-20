@@ -27,6 +27,11 @@ volatile unsigned int *P=0xF0109000;
         //Entering Safe mode TMR
         TMR_Safe_Activate();
 
+        //Generate_failure 2 harts Id are equal and the remain hart are diferent ID.
+        
+        CSR_READ(CSR_REG_MHARTID,P);        
+
+
         //End Safe mode TMR
         TMR_Safe_Stop();
 
@@ -46,6 +51,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         //Starting Configuration
         *Safe_config_reg = 0x1;
         *(Safe_config_reg+1) = 0x1;
+        *(Safe_config_reg+2) = 0x4;
         
         *Priv_Reg =0x0;
 
