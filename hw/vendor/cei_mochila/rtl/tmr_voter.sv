@@ -18,6 +18,8 @@ module tmr_voter
     input   obi_req_t  [NHARTS-1 : 0] core_data_req_i,
     output  obi_req_t   voted_core_data_req_o,
 
+    input   logic enable_i,
+
     output  logic   error_o,
     output  [NHARTS-1:0]   error_id_o
 );
@@ -80,29 +82,29 @@ always_comb begin
     data_error_s = '0;
     error_s = '0;
 
-    //Instruction
-    for(int i=0; i<NHARTS;i++) begin : instr_bus_checker 
-        if ((voted_core_instr_req_s.addr != core_instr_req_i[i].addr) ||
-            (voted_core_instr_req_s.wdata != core_instr_req_i[i].wdata) ||
-            (voted_core_instr_req_s.be != core_instr_req_i[i].be) ||
-            (voted_core_instr_req_s.we != core_instr_req_i[i].we) ||
-            (voted_core_instr_req_s.req != core_instr_req_i[i].req)) begin
-            instr_error_s[i] = 1'b1;
-            error_s[i] = 1'b1;    
+        //Instruction
+        for(int i=0; i<NHARTS;i++) begin : instr_bus_checker 
+            if (((voted_core_instr_req_s.addr != core_instr_req_i[i].addr) ||
+                (voted_core_instr_req_s.wdata != core_instr_req_i[i].wdata) ||
+                (voted_core_instr_req_s.be != core_instr_req_i[i].be) ||
+                (voted_core_instr_req_s.we != core_instr_req_i[i].we) ||
+                (voted_core_instr_req_s.req != core_instr_req_i[i].req)) && enable_i) begin
+                instr_error_s[i] = 1'b1;
+                error_s[i] = 1'b1;    
+            end
         end
-    end
-
-    //Data
-    for(int i=0; i<NHARTS;i++) begin : data_bus_checker 
-        if ((voted_core_data_req_s.addr != core_data_req_i[i].addr) ||
-            (voted_core_data_req_s.wdata != core_data_req_i[i].wdata) ||
-            (voted_core_data_req_s.be != core_data_req_i[i].be) ||
-            (voted_core_data_req_s.we != core_data_req_i[i].we) ||
-            (voted_core_data_req_s.req != core_data_req_i[i].req)) begin
-            data_error_s[i] = 1'b1;
-            error_s[3+i] = 1'b1;    
-        end
-    end      
+    
+        //Data
+        for(int i=0; i<NHARTS;i++) begin : data_bus_checker 
+            if (((voted_core_data_req_s.addr != core_data_req_i[i].addr) ||
+                (voted_core_data_req_s.wdata != core_data_req_i[i].wdata) ||
+                (voted_core_data_req_s.be != core_data_req_i[i].be) ||
+                (voted_core_data_req_s.we != core_data_req_i[i].we) ||
+                (voted_core_data_req_s.req != core_data_req_i[i].req)) && enable_i) begin
+                data_error_s[i] = 1'b1;
+                error_s[3+i] = 1'b1;    
+            end
+        end      
 end  
 
 

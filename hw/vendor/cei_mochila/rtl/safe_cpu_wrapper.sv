@@ -8,7 +8,7 @@ module safe_cpu_wrapper
   import cei_mochila_pkg::*;
 #(
     parameter NHARTS = 3,
-    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200
+    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -32,7 +32,7 @@ module safe_cpu_wrapper
     input logic [NHARTS-1 : 0] debug_req_i
 );
 
-
+localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
 
     //Signals//
 
@@ -45,6 +45,8 @@ module safe_cpu_wrapper
     logic [NHARTS-1:0] Hart_ack_s;
     logic [NHARTS-1:0] Hart_wfi_s;
     logic [NHARTS-1:0] Hart_intc_ack_s;
+    logic [NHARTS-1:0] Reset_core_FSM_s;
+    logic [NHARTS-1:0][0:0] Select_boot_addr_s;
     logic [NHARTS-1:0] master_core_s;
     logic safe_mode_s;
     logic safe_configuration_s;
@@ -68,7 +70,16 @@ module safe_cpu_wrapper
 
     //Voted_CPU Signals
     obi_req_t  voted_core_instr_req_o;
-    obi_req_t  voted_core_data_req_o;    
+    obi_req_t  voted_core_data_req_o; 
+    logic tmr_error_s;
+    logic [2:0] tmr_errorid_s;
+    logic tmr_voter_enable_s;
+    logic [2:0] tmr_dmr_config_s;
+    logic dual_mode_tmr_s;
+
+    //Compared CPU Signals
+    obi_req_t  [NRCOMPARATORS-1:0] compared_core_instr_req_o;
+    obi_req_t  [NRCOMPARATORS-1:0] compared_core_data_req_o;   
 
     // CPU Private Regs
     reg_pkg::reg_req_t  [NHARTS-1 : 0]cpu_reg_req;
@@ -89,7 +100,8 @@ ext_cpu_system #(
     )ext_cpu_system_i(
     .clk_i,
     .rst_ni,
-
+    .Reset_core_FSM_i(Reset_core_FSM_s),
+    .Select_boot_addr_i(Select_boot_addr_s),
     // Instruction memory interface
     .core_instr_req_o(core_instr_req),
     .core_instr_resp_i(core_instr_resp),
@@ -108,6 +120,8 @@ ext_cpu_system #(
     .intc_core2(intr[2]),
 
     .sleep_o(sleep_s),
+
+    .ext_prefetch_eni (~1'b0),
     // Debug Interface
     .debug_req_i(debug_req)
 );
@@ -162,20 +176,28 @@ safe_FSM safe_FSM_i (
     .Initial_Sync_Master_i(Initial_Sync_Master_s), 
     .Halt_ack_i(Hart_ack_s), 
     .Hart_wfi_i(sleep_s),
-    .Hart_intc_ack_i(Hart_intc_ack_s),  
+    .Hart_intc_ack_i(Hart_intc_ack_s),
+    .Reset_core_FSM_o       (Reset_core_FSM_s), 
+    .Select_boot_addr_o(Select_boot_addr_s),
     .Master_Core_i(master_core_s),      
     .Interrupt_Sync_o(intc_sync_s),     
     .Interrupt_Halt_o(intc_halt_s),
-    .Single_Bus_o(bus_config_s)
+    .tmr_error(tmr_error_s),
+    .voter_id_error(tmr_errorid_s),
+    .Single_Bus_o(bus_config_s),
+    .Tmr_voter_enable_o(tmr_voter_enable_s),
+    .Dmr_comparator_enable_o(),
+    .Tmr_dmr_config_o(tmr_dmr_config_s),
+    .Dual_mode_tmr_o(dual_mode_tmr_s)
 );
       assign intr[0] = {
-    2'b0, intc_sync_s[0] , 29'b0
+    13'b0,  intc_sync_s[0],1'b0, 17'b0 
   };
       assign intr[1] = {
-    2'b0, intc_sync_s[1] , 29'b0
+    13'b0,  intc_sync_s[1],1'b0, 17'b0 
   };
       assign intr[2] = {
-    2'b0, intc_sync_s[2] , 29'b0
+    13'b0,  intc_sync_s[2],1'b0, 17'b0 
   };
 
   assign debug_req[0] = debug_req_i[0] || intc_halt_s[0];
@@ -202,21 +224,95 @@ safe_FSM safe_FSM_i (
             xbar_core_data_resp[2][0] = core_data_resp_i[2];
         end
         else begin
-            //Instruction
-            core_instr_req_o[0] = voted_core_instr_req_o;
-            core_instr_req_o[1] = '0;
-            core_instr_req_o[2] = '0;
-            core_instr_resp[0] = core_instr_resp_i[0];
-            core_instr_resp[1] = core_instr_resp_i[0];
-            core_instr_resp[2] = core_instr_resp_i[0];
-
-            //Data
-            core_data_req_o[0] = voted_core_data_req_o;
-            core_data_req_o[1] = '0;
-            core_data_req_o[2] = '0;
-            xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
-            xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
-            xbar_core_data_resp[2][0] = core_data_resp_i[0];    
+                //TMR_Config_Default    //Todo Depends on FSM output
+            if (tmr_voter_enable_s == 1'b1) begin
+                if(dual_mode_tmr_s == 1'b0) begin
+                    //Instruction
+                    core_instr_req_o[0] = voted_core_instr_req_o;
+                    core_instr_req_o[1] = '0;
+                    core_instr_req_o[2] = '0;
+                    core_instr_resp[0] = core_instr_resp_i[0];
+                    core_instr_resp[1] = core_instr_resp_i[0];
+                    core_instr_resp[2] = core_instr_resp_i[0];
+        
+                    //Data
+                    core_data_req_o[0] = voted_core_data_req_o;
+                    core_data_req_o[1] = '0;
+                    core_data_req_o[2] = '0;
+                    xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
+                    xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
+                    xbar_core_data_resp[2][0] = core_data_resp_i[0];    
+                end
+                else begin
+                    if (tmr_dmr_config_s == 3'b011) begin   //Comparator cpu0_cpu1
+                        //Instruction
+                        core_instr_req_o[0] = compared_core_instr_req_o[0];
+                        core_instr_req_o[1] = core_instr_req[1];
+                        core_instr_req_o[2] = '0;
+                        core_instr_resp[0] = core_instr_resp_i[0];
+                        core_instr_resp[1] = core_instr_resp_i[0];
+                        core_instr_resp[2] = core_instr_resp_i[1];
+            
+                        //Data
+                        core_data_req_o[0] = compared_core_data_req_o[0];
+                        core_data_req_o[1] = xbar_core_data_req[2][0];
+                        core_data_req_o[2] = '0;
+                        xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
+                        xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
+                        xbar_core_data_resp[2][0] = core_data_resp_i[1];     
+                    end
+                    else if (tmr_dmr_config_s == 3'b110) begin   //Comparator cpu1_cpu2
+                    //Instruction
+                    core_instr_req_o[0] = compared_core_instr_req_o[1];
+                    core_instr_req_o[1] = core_instr_req[0];
+                    core_instr_req_o[2] = '0;
+                    core_instr_resp[0] = core_instr_resp_i[1];
+                    core_instr_resp[1] = core_instr_resp_i[0];
+                    core_instr_resp[2] = core_instr_resp_i[0];
+        
+                    //Data
+                    core_data_req_o[0] = compared_core_data_req_o[1];
+                    core_data_req_o[1] = xbar_core_data_req[0][0];
+                    core_data_req_o[2] = '0;
+                    xbar_core_data_resp[0][0] = core_data_resp_i[1];
+                    xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
+                    xbar_core_data_resp[2][0] = core_data_resp_i[0];     
+                    end
+                    else begin                              //Comparator cpu0_cpu2
+                        //Instruction
+                        core_instr_req_o[0] = compared_core_instr_req_o[2];
+                        core_instr_req_o[1] = core_instr_req[1];
+                        core_instr_req_o[2] = '0;
+                        core_instr_resp[0] = core_instr_resp_i[0];
+                        core_instr_resp[1] = core_instr_resp_i[1];
+                        core_instr_resp[2] = core_instr_resp_i[0];
+            
+                        //Data
+                        core_data_req_o[0] = compared_core_data_req_o[2];
+                        core_data_req_o[1] = xbar_core_data_req[1][0];
+                        core_data_req_o[2] = '0;
+                        xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
+                        xbar_core_data_resp[1][0] = core_data_resp_i[1]; 
+                        xbar_core_data_resp[2][0] = core_data_resp_i[0];                         
+                    end    
+                end
+            end
+            else begin
+                //Instruction
+                core_instr_req_o[0] = compared_core_instr_req_o[0];
+                core_instr_req_o[1] = '0;
+                core_instr_req_o[2] = '0;
+                core_instr_resp[0] = core_instr_resp_i[0];
+                core_instr_resp[1] = core_instr_resp_i[0];
+                core_instr_resp[2] = core_instr_resp_i[0];
+                        //Data
+                core_data_req_o[0] = compared_core_data_req_o[0];
+                core_data_req_o[1] = '0;
+                core_data_req_o[2] = '0;
+                xbar_core_data_resp[0][0] = core_data_resp_i[0]; 
+                xbar_core_data_resp[1][0] = core_data_resp_i[0]; 
+                xbar_core_data_resp[2][0] = core_data_resp_i[0]; 
+            end
         end
     end
 /**********************************************************/
@@ -233,19 +329,67 @@ assign xbar_core_data_req_s[2] = xbar_core_data_req[2][0];
         // Instruction Bus
         .core_instr_req_i(core_instr_req),
         .voted_core_instr_req_o(voted_core_instr_req_o),
-        
+        .enable_i(tmr_voter_enable_s),
         // Data Bus
         .core_data_req_i(xbar_core_data_req_s),
         .voted_core_data_req_o(voted_core_data_req_o),
     
-        .error_o(),
-        .error_id_o()
+        .error_o(tmr_error_s),
+        .error_id_o(tmr_errorid_s)
+    );
+
+//******************Safety Comparator********************//
+
+for(genvar i=0; i<NRCOMPARATORS; i++) begin :dmr_comparator
+
+obi_req_t  [1 : 0] dmr_core_instr_req_i;
+obi_req_t  [1 : 0] dmr_core_data_req_i;
+
+if (NHARTS == 3) begin
+    if(i == 0) begin : core0_core1
+        assign dmr_core_instr_req_i[0] = core_instr_req[0];   
+        assign dmr_core_instr_req_i[1] = core_instr_req[1];     
+        assign dmr_core_data_req_i[0] = core_data_req[0];   
+        assign dmr_core_data_req_i[1] = core_data_req[1]; 
+    end
+    else if(i == 1) begin : core1_core2
+        assign dmr_core_instr_req_i[0] = core_instr_req[1];   
+        assign dmr_core_instr_req_i[1] = core_instr_req[2];     
+        assign dmr_core_data_req_i[0] = core_data_req[1];   
+        assign dmr_core_data_req_i[1] = core_data_req[2];    
+    end
+    else begin : core0_core2    
+        assign dmr_core_instr_req_i[0] = core_instr_req[0];   
+        assign dmr_core_instr_req_i[1] = core_instr_req[2];
+        assign dmr_core_data_req_i[0] = core_data_req[0];   
+        assign dmr_core_data_req_i[1] = core_data_req[2];  
+    end
+end
+else begin : core0_core1
+    assign dmr_core_instr_req_i[0] = core_instr_req[0];   
+    assign dmr_core_instr_req_i[1] = core_instr_req[1];
+    assign dmr_core_data_req_i[0] = core_data_req[0];   
+    assign dmr_core_data_req_i[1] = core_data_req[1];          
+end
+
+    dmr_comparator #(    
+                        
+    ) dmr_comparator_i (
+    .core_instr_req_i(dmr_core_instr_req_i),
+    .compared_core_instr_req_o(compared_core_instr_req_o[i]),
+    .core_data_req_i(dmr_core_data_req_i),
+    .compared_core_data_req_o(compared_core_data_req_o[i]),
+    .error_o()
     );
 
 
-// Private CPU Register
+end
 
-// Core 0
+
+
+//*******************************************************//
+
+// Private CPU Register
 
 for(genvar i=0; i<NHARTS;i++) begin :priv_reg
 
@@ -311,7 +455,7 @@ for(genvar i=0; i<NHARTS;i++) begin :priv_reg
     .Hart_ack_o(Hart_ack_s[i]),
     .Initial_Sync_Master_o(Initial_Sync_Master_s[i]),
     .Hart_intc_ack_o(Hart_intc_ack_s[i]),
-    .Debug_ext_req_i      (intc_halt_s[i]) //Check if debug_req comes from FSM or external debug
+    .Debug_ext_req_i(intc_halt_s[i]) //Check if debug_req comes from FSM or external debug
     );
 
 end

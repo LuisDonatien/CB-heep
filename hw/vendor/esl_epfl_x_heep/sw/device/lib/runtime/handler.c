@@ -81,10 +81,10 @@ __attribute__((weak)) void handler_irq_external(void) {
   while (1) {
   }
 }
-__attribute__((weak)) void handler_safe_fsm(void) {
-  volatile unsigned int *Priv_Reg = 0xFF000008;
-  *Priv_Reg = 0x1;
-}
+//__attribute__((weak)) void handler_safe_fsm(void) {
+//  volatile unsigned int *Priv_Reg = 0xFF000008;
+//  *Priv_Reg = 0x1;
+//}
 
 __attribute__((weak)) void handler_instr_acc_fault(void) {
   const char fault_msg[] =

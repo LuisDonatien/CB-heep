@@ -8,7 +8,7 @@ module mochila_top
   import core_v_mini_mcu_pkg::*;
   import cei_mochila_pkg::*;
 #(
-    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200,
+    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50,
     parameter NHARTS = 3,
     parameter N_BANKS = 2
     

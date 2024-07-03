@@ -21,8 +21,15 @@ module safe_FSM
     input logic  [NHARTS-1:0] Master_Core_i,
     output logic [NHARTS-1:0] Interrupt_Sync_o,
     output logic [NHARTS-1:0] Interrupt_Halt_o,
-    output logic Single_Bus_o
-
+    output logic [NHARTS-1:0] Reset_core_FSM_o,
+    output logic [NHARTS-1:0][0:0] Select_boot_addr_o,
+    output logic Single_Bus_o,
+    output logic [NHARTS-1:0] Tmr_dmr_config_o,
+    output logic Dual_mode_tmr_o,
+    output logic Tmr_voter_enable_o,
+    output logic Dmr_comparator_enable_o,
+    input logic [NHARTS-1:0] voter_id_error,
+    input logic tmr_error
 );
   // FSM state encoding
   typedef enum logic [3:0] {
@@ -34,9 +41,17 @@ module safe_FSM
     TMR_WAIT_SH, TMR_MS_INTRSYNC, TMR_SYNC, TMR_END_SYNC
   } ctrl_tmr_fsm_e;
 
+  typedef enum logic [3:0] {
+    TMR_REC_RESET, TMR_REC_IDLE, TMR_REC_DMODE,TMR_REC_SHRST,
+    TMR_REC_SHWFI
+  } ctrl_tmr_recovery_fsm_e;
+
   ctrl_safe_fsm_e ctrl_safe_fsm_cs, ctrl_safe_fsm_ns;
   ctrl_tmr_fsm_e [NHARTS-1:0] ctrl_tmr_fsm_cs;
   ctrl_tmr_fsm_e [NHARTS-1:0]ctrl_tmr_fsm_ns;
+
+  ctrl_tmr_recovery_fsm_e [NHARTS-1:0] ctrl_tmr_rec_fsm_cs;
+  ctrl_tmr_recovery_fsm_e [NHARTS-1:0] ctrl_tmr_rec_fsm_ns;
 
 
   logic [NHARTS-1:0] enable_interrupt_halt_s;
@@ -52,7 +67,9 @@ module safe_FSM
   logic  halt_req_s;
   logic [NHARTS-1:0] dbg_halt_req_s;
   logic [NHARTS-1:0] single_bus_s;
-
+  logic [NHARTS-1:0] tmr_voter_enable_s;
+  logic [NHARTS-1:0] dmr_comparator_enable_s;
+  logic [NHARTS-1:0] dual_mode_tmr_s;
 
       always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
@@ -111,7 +128,7 @@ module safe_FSM
 // TMR Safe FSM 
 // Mealy FSM depending on Master Core for different outputs behavior
 
-  for(genvar i=0; i<NHARTS;i++) begin : TMR_FSM_Initial_Sync
+  for(genvar i=0; i<NHARTS;i++) begin : TMR_FSM_NormalBehaviour
 
       always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
@@ -204,6 +221,7 @@ module safe_FSM
         Interrupt_Sync_o[i] = 1'b0;
         single_bus_s[i]     = 1'b0;
         dbg_halt_req_s[i]   = 1'b0;
+        tmr_voter_enable_s[i] = 1'b0;
         unique case (ctrl_tmr_fsm_cs[i])
   
           TMR_SH_HALT:
@@ -218,11 +236,13 @@ module safe_FSM
           begin
             Interrupt_Sync_o[i] = 1'b1;
             single_bus_s[i]  = 1'b1;
+            tmr_voter_enable_s[i] = 1'b1;
           end 
 
           TMR_SYNC:
           begin
             single_bus_s[i]  = 1'b1;
+            tmr_voter_enable_s[i] = 1'b1;
           end
 
           TMR_END_SYNC:
@@ -238,12 +258,119 @@ module safe_FSM
 
   end
 
+//****************************************************************//
+//***********************TMR Recovery FSM*************************//
+//****************************************************************//
+//****************************************************************//
+  for(genvar i=0; i<NHARTS;i++) begin : TMR_FSM_Recovery
+
+      always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (!rst_ni) begin
+          ctrl_tmr_rec_fsm_cs[i] <= TMR_REC_RESET;
+        end else begin
+          ctrl_tmr_rec_fsm_cs[i] <= ctrl_tmr_rec_fsm_ns[i];
+        end
+      end
+
+// Safe FSM 
+
+      always_comb begin
+        
+        ctrl_tmr_rec_fsm_ns[i] = ctrl_tmr_rec_fsm_cs[i];
+        
+        unique case (ctrl_tmr_rec_fsm_cs[i])
+
+          TMR_REC_RESET:
+          begin
+            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;           
+          end
+
+          TMR_REC_IDLE:
+          begin
+            if( tmr_error == 1'b1 && ctrl_tmr_fsm_cs[i] == TMR_SYNC) begin
+              if(voter_id_error[i] == 1'b0) 
+                ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;
+              else
+                ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SHRST;
+            end
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
+          end
+          TMR_REC_SHRST:
+          begin
+            ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SHWFI;         
+          end
+          TMR_REC_SHWFI:
+          begin
+            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHWFI;
+          end
+          TMR_REC_DMODE:
+          begin
+            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;
+          end
+
+          default: begin
+            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
+          end
+        endcase
+      end
+
+    always_comb begin
+      dmr_comparator_enable_s[i] = 1'b0;
+      Reset_core_FSM_o[i] = 1'b1;
+      Tmr_dmr_config_o[i] = 1'b0;
+      dual_mode_tmr_s[i] = 1'b0;
+      Select_boot_addr_o[i] = 1'b0;
+
+      unique case (ctrl_tmr_rec_fsm_cs[i])
+
+        TMR_REC_DMODE:
+        begin
+            dmr_comparator_enable_s[i] = 1'b1;  
+            Tmr_dmr_config_o[i] = 1'b1;
+            dual_mode_tmr_s[i] = 1'b1;       
+        end
+        TMR_REC_SHRST:
+        begin
+          Reset_core_FSM_o[i] = 1'b0;
+          Select_boot_addr_o[i] = 1'b1;
+        end 
+
+        TMR_REC_SHWFI:
+        begin
+          Select_boot_addr_o[i] = 1'b1;
+        end
+
+
+        default: begin  end 
+        
+        endcase
+      end
+
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Inter-FSM Signals operation
 assign halt_req_s = dbg_halt_req_s[0] || dbg_halt_req_s[1] || dbg_halt_req_s[2];
 
 // In-Out FSM Signals operation
 assign Single_Bus_o = single_bus_s[0] || single_bus_s[1] || single_bus_s[2];
-
+assign Tmr_voter_enable_o = tmr_voter_enable_s[0] || tmr_voter_enable_s[1] || tmr_voter_enable_s[2];
+assign Dmr_comparator_enable_o = dmr_comparator_enable_s[0] || dmr_comparator_enable_s[1] || dmr_comparator_enable_s[2];
+assign Dual_mode_tmr_o = dual_mode_tmr_s[0] || dual_mode_tmr_s[1] || dual_mode_tmr_s[2];
 always_comb begin
   Interrupt_Halt_o = '0;
   if (enable_interrupt_halt_s[0] == 1'b1 || enable_interrupt_halt_s[1] == 1'b1 || enable_interrupt_halt_s[2] == 1'b1) begin

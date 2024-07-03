@@ -7,14 +7,16 @@ module ext_cpu_system
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS,
+    parameter BASE_BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS,
+    parameter WFI_BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200,
     parameter NHARTS = 3,
-    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200
+    parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50
 ) (
     // Clock and Reset
     input logic clk_i,
     input logic rst_ni,
-
+    input logic [NHARTS-1 : 0] Reset_core_FSM_i,
+    input logic [NHARTS-1 : 0][0:0] Select_boot_addr_i,
     // Instruction memory interface 
     output obi_req_t  [NHARTS-1 : 0] core_instr_req_o,
     input  obi_resp_t [NHARTS-1 : 0] core_instr_resp_i,
@@ -32,13 +34,24 @@ module ext_cpu_system
     input logic [31:0] intc_core2,
 
     output logic     [NHARTS-1:0]   sleep_o,
+
+    input  logic    ext_prefetch_eni,
     // Debug Interface
     input logic [NHARTS-1 : 0] debug_req_i
 );
 
-
+  logic fetch_enable; 
+  logic [NHARTS-1:0][31:0] boot_address;
   // CPU Control Signals
-  logic fetch_enable;
+
+  for(genvar i=0; i<NHARTS;i++) begin : Mux_boot_address
+    always_comb begin
+        if (Select_boot_addr_i[i] == 1'b0)
+            boot_address[i] = BASE_BOOT_ADDR;
+        else
+            boot_address[i] = WFI_BOOT_ADDR; 
+    end
+  end
 
   assign fetch_enable = 1'b1;
   
@@ -56,6 +69,12 @@ module ext_cpu_system
   assign core_instr_req_o[2].wdata = '0;
   assign core_instr_req_o[2].we    = '0;
   assign core_instr_req_o[2].be    = 4'b1111;  
+
+always_comb begin
+
+end
+
+
   
   // instantiate the core 0
     cve2_top #(
@@ -63,13 +82,13 @@ module ext_cpu_system
         .DmExceptionAddr('0)
     ) cv32e20_core0 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni),
+        .rst_ni(rst_ni & Reset_core_FSM_i[0]),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h2),
-        .boot_addr_i(BOOT_ADDR),
+        .hart_id_i  (32'h1),
+        .boot_addr_i(boot_address[0]),
 
         .instr_addr_o  (core_instr_req_o[0].addr),
         .instr_req_o   (core_instr_req_o[0].req),
@@ -91,14 +110,14 @@ module ext_cpu_system
         .irq_software_i(),
         .irq_timer_i   (),
         .irq_external_i(),
-        .irq_fast_i    (intc_core0[30:15]),
+        .irq_fast_i    (intc_core0[31:16]),
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i[0]),
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-
+        .ext_prefetch_eni  (ext_prefetch_eni),
         .core_sleep_o(sleep_o[0])
     );
   
@@ -109,13 +128,13 @@ module ext_cpu_system
         .DmExceptionAddr('0)
     ) cv32e20_core1 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni),
+        .rst_ni(rst_ni & Reset_core_FSM_i[1]),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h2),
-        .boot_addr_i(BOOT_ADDR),
+        .hart_id_i  (32'h3),
+        .boot_addr_i(boot_address[1]),
 
         .instr_addr_o  (core_instr_req_o[1].addr),
         .instr_req_o   (core_instr_req_o[1].req),
@@ -137,14 +156,14 @@ module ext_cpu_system
         .irq_software_i(),
         .irq_timer_i   (),
         .irq_external_i(),
-        .irq_fast_i    (intc_core1[30:15]),
+        .irq_fast_i    (intc_core1[31:16]),
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i[1]),
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-
+        .ext_prefetch_eni(1'b1),
         .core_sleep_o(sleep_o[1])
     );
 
@@ -154,13 +173,13 @@ module ext_cpu_system
         .DmExceptionAddr('0)
     ) cv32e20_core2 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni),
+        .rst_ni(rst_ni & Reset_core_FSM_i[2]),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h1),
-        .boot_addr_i(BOOT_ADDR),
+        .hart_id_i  (32'h3),
+        .boot_addr_i(boot_address[2]),
 
         .instr_addr_o  (core_instr_req_o[2].addr),
         .instr_req_o   (core_instr_req_o[2].req),
@@ -182,14 +201,14 @@ module ext_cpu_system
         .irq_software_i(),
         .irq_timer_i   (),
         .irq_external_i(),
-        .irq_fast_i    (intc_core2[30:15]),
+        .irq_fast_i    (intc_core2[31:16]),
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i[2]),
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-
+        .ext_prefetch_eni  (1'b1),
         .core_sleep_o(sleep_o[2])
     );
 endmodule

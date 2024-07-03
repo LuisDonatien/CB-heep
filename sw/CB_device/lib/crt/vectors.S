@@ -52,9 +52,9 @@ vector_table:
 	// 16 : fast interrupt 
 	j __no_irq_handler
 	// 17 : fast interrupt 
-	j __no_irq_handler
+	j handler_tmr_recoverysync
 	// 18 : fast interrupt 
-	j __no_irq_handler
+	j handler_safe_fsm
 	// 19 : fast interrupt 
 	j __no_irq_handler
 	// 20 : fast interrupt 
@@ -78,7 +78,7 @@ vector_table:
 	// 29 : fast interrupt 
 	j __no_irq_handler
 	// 30 : fast interrupt - Safe_FSM_handler
-	j handler_safe_fsm
+	j __no_irq_handler
 	// vendor interrupts: on Ibex interrupt id 31 is for non-maskable interrupts
 	j __no_irq_handler
 	// 64-32 : not connected on Ibex

@@ -8,9 +8,13 @@ SECTIONS {
     .text 0x0 : {
         *(.text)
         . = ALIGN(4); /* Alinea la posición actual a un múltiplo de 4 bytes */
-        FILL(0x00)
-        . += 0x200 - .;
+        FILL(0x00000013)
+        . += 0x50 - .;
         *(.debug_entry)
+        . = ALIGN(4); /* Alinea la posición actual a un múltiplo de 4 bytes */
+        FILL(0x00000013)
+        . += 0x200 - .;        
+        *(.shadow_wfi)
     } > rom
 
 }

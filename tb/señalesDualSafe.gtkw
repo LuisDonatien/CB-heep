@@ -1,33 +1,49 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Fri Jun  7 09:17:14 2024
+[*] Fri Jun 28 15:06:05 2024
 [*]
 [dumpfile] "/home/luis/Documents/PhD/CB-heep/build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator/waveform.vcd"
-[dumpfile_mtime] "Fri Jun  7 09:10:45 2024"
-[dumpfile_size] 8743462
+[dumpfile_mtime] "Fri Jun 28 14:16:36 2024"
+[dumpfile_size] 12808482
 [savefile] "/home/luis/Documents/PhD/CB-heep/tb/señalesDualSafe.gtkw"
-[timestart] 239468
+[timestart] 240734
 [size] 1920 1043
 [pos] -1 -1
-*-2.411420 239482 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-2.411420 240747 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.testharness.
 [treeopen] TOP.testharness.CB_heep_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[0].dmr_core_data_req_i(0).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.compared_core_data_req_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[2].dmr_comparator_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[2].dmr_comparator_i.compared_core_data_req_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[2].dmr_core_data_req_i(0).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_req_o(0).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_req_o(1).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_req_o(2).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_resp_i(0).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_resp_i(1).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(0).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(1).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(0).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(1).
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(2).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.crash_dump_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mstatus_d.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.u_mepc_csr.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.if_stage_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.if_stage_i.prefetch_buffer_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.mstatus_q.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.register_file_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core2.u_cve2_core.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core2.u_cve2_core.cs_registers_i.
@@ -41,6 +57,9 @@
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.priv_reg[1].cpu_private_reg_i.cpu_private_reg_top_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.priv_reg[1].cpu_private_reg_i.cpu_private_reg_top_i.reg2hw.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_data_req_o.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_instr_req_o.
 [sst_width] 430
 [signals_width] 333
 [sst_expanded] 1
@@ -103,13 +122,23 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core
 [color] 2
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_resp_i(0).rvalid
 @22
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.crash_dump_o.current_pc[31:0]
+@23
 [color] 2
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(0).addr[31:0]
+@28
+[color] 2
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(0).req
+@22
 [color] 2
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(0).rdata[31:0]
 @28
 [color] 2
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(0).rvalid
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.if_stage_i.prefetch_buffer_i.req_i
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.ctrl_busy
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.if_busy
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.lsu_busy
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.clk_i
 @22
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_req_o(1).addr[31:0]
@@ -122,6 +151,9 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_data_resp_i(1).rvalid
 @22
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(1).addr[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_req_o(1).req
+@22
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(1).rdata[31:0]
 @28
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(1).rvalid
@@ -148,6 +180,45 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core
 @28
 [color] 2
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.core_instr_resp_i(2).rvalid
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(1).addr[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(1).wdata[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(1).we
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(1).req
+@22
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_data_req_o.addr[31:0]
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_data_req_o.wdata[31:0]
+@28
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_data_req_o.we
+@22
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_instr_req_o.addr[31:0]
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_instr_req_o.wdata[31:0]
+@28
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.voted_core_instr_req_o.we
+[color] 3
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_i.enable_i
+@22
+[color] 7
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.compared_core_data_req_o.addr[31:0]
+[color] 7
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.compared_core_data_req_o.wdata[31:0]
+@28
+[color] 7
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.compared_core_data_req_o.we
+[color] 7
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dmr_comparator[1].dmr_comparator_i.error_o
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).addr[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).wdata[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(0).we
 @100c00028
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_fsm_cs(0)[3:0]
 @28
@@ -159,6 +230,7 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_f
 -group_end
 @100000028
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_fsm_cs(1)[3:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_fsm_cs(2)[3:0]
 @100c00028
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_safe_fsm_cs[3:0]
 @28
@@ -168,6 +240,10 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_safe_
 (3)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_safe_fsm_cs[3:0]
 @1401200
 -group_end
+@100000028
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_rec_fsm_cs(0)[3:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_rec_fsm_cs(1)[3:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.ctrl_tmr_rec_fsm_cs(2)[3:0]
 @c00028
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.Initial_Sync_Master_i[2:0]
 @28
@@ -186,8 +262,57 @@ TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.intc
 @28
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.Single_Bus_o
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.Interrupt_Sync_o[2:0]
-@29
 TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.safe_FSM_i.Hart_intc_ack_i[2:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.dual_mode_tmr_s
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_dmr_config_s[2:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_error_s
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_errorid_s[2:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.tmr_voter_enable_s
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.intc_core0[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.intc_core1[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.intc_core2[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mie_q.irq_external
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.u_mie_csr.rd_data_o[18:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mstatus_d.mie
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mstatus_d.mpie
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.mstatus_q.tw
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_external
+@c00022
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+@28
+(0)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(1)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(2)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(3)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(4)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(5)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(6)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(7)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(8)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(9)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(10)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(11)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(12)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(13)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(14)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+(15)TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+@1401200
+-group_end
+@100000028
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.mstatus_q.mpp[1:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.mstatus_q.mprv
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.cs_registers_i.mstatus_q.tw
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mie_q.irq_fast[15:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.mip.irq_fast[15:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.u_mepc_csr.rd_data_o[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.cs_registers_i.u_mtvec_csr.rd_data_o[31:0]
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg_q(31)[31:0]
 @200
 -
 [pattern_trace] 1

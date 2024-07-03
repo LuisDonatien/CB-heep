@@ -71,7 +71,7 @@ INTERRUPT_HANDLER_ABI void handler_irq_timer(void);
  */
 INTERRUPT_HANDLER_ABI void handler_irq_external(void);
 
-INTERRUPT_HANDLER_ABI void handler_safe_fsm(void);
+//INTERRUPT_HANDLER_ABI void handler_safe_fsm(void);
 /**
  * Instruction access fault.
  *

@@ -61,7 +61,7 @@ module cve2_core import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
   output logic                         irq_pending_o,
-
+  input  logic                         ext_prefetch_eni,
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
@@ -344,7 +344,7 @@ module cve2_core import cve2_pkg::*; #(
   assign perf_iside_wait = id_in_ready & ~instr_valid_id;
 
   // For non secure Ibex only the bottom bit of fetch enable is considered
-  assign instr_req_gated = instr_req_int;
+  assign instr_req_gated = instr_req_int & ext_prefetch_eni;
 
   //////////////
   // ID stage //

@@ -10,35 +10,41 @@
 #include "csr.h"
 #include "csr_registers.h"
 
+#define INTERRUPT_HANDLER_ABI __attribute__((aligned(4), interrupt))
+
+
 #define PRIVATE_REG_BASEADDRESS 0xFF000000 
 #define SAFE_REG_BASEADDRESS    0xF0020000
 
-
-void TMR_Safe_Activate(void);
-void TMR_Safe_Stop(void);
-
+__attribute__((aligned(4))) void TMR_Safe_Activate(void);
+__attribute__((aligned(4))) void TMR_Safe_Stop(void);
+INTERRUPT_HANDLER_ABI void handler_tmr_recoverysync(void);
+INTERRUPT_HANDLER_ABI void handler_safe_fsm(void);
 int main(int argc, char *argv[])
 {
 
 volatile unsigned int *P=0xF0109000;
         CSR_READ(CSR_REG_MHARTID,P);
-   
+int ID=0;   
         printf("Hart: %d init the program...\n",*P); 
         //Entering Safe mode TMR
         TMR_Safe_Activate();
-
         //Generate_failure 2 harts Id are equal and the remain hart are diferent ID.
-        
-        CSR_READ(CSR_REG_MHARTID,P);        
-
-
+        CSR_READ(CSR_REG_MHARTID,&ID);
+int c=8;
+int d=9;
+        *P=ID;
+        *P=c;
+        *P=d;
+        *P=15; 
+        *P=20;
         //End Safe mode TMR
         TMR_Safe_Stop();
-
+ 
 
         CSR_READ(CSR_REG_MHARTID,P);
 
-        printf("Hart: %d finish the program...\n",*P); 
+        printf("Hart: %d finish the program...%d\n",*P); 
     
         return EXIT_SUCCESS;
 }
@@ -51,20 +57,20 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         //Starting Configuration
         *Safe_config_reg = 0x1;
         *(Safe_config_reg+1) = 0x1;
-        *(Safe_config_reg+2) = 0x4;
         
         *Priv_Reg =0x0;
 
-        //Activate Interrupt
+        //Activate Interrupt 
         // Enable interrupt on processor side
         // Enable global interrupt for machine-level interrupts
-        asm volatile("li   t6,0x8");
+        asm volatile("csrr t6, mstatus");
+        asm volatile("ori t6,t6,0x08");
         asm volatile("csrw mstatus, t6"); 
         // Set mie.MEIE bit to one to enable machine-level external interrupts
-        asm volatile("li   t6,0x40000000"); 
+        asm volatile("li   t6,0xFFFF0000"); 
         asm volatile("csrw mie, t6"); //mask = 1 << 31
 
- 
+        
     //Control & Status Register
     //Set Base Address
         asm volatile("li   t5,0xF0108000");
@@ -76,7 +82,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
     //Machine Interrupt Enable
     //mie       0x304
         asm volatile("csrr t6, mie");
-        asm volatile("sw    t6,4(t5)");
+        asm volatile("sw    t6,4(t5)"); 
 
     //Machine Trap-Vector
     //mtvec     0x305
@@ -221,6 +227,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
 
         //Master Sync Priv Reg
         *(Priv_Reg+1) = 0x1;
+        asm volatile(".ALIGN(2)");
         //PC Program Counter
         asm volatile("auipc t5, 0");
         asm volatile("sw t5, 124(t6)");
@@ -238,4 +245,41 @@ volatile unsigned int *Safe_config_reg= SAFE_REG_BASEADDRESS;
         *(Safe_config_reg+1) = 0x0;
         *(Safe_config_reg+2) = 0x2;
         asm volatile("wfi");
+}
+
+void handler_tmr_recoverysync(void){
+  //ACK INTC
+  volatile unsigned int *Priv_Reg = 0xFF000008;
+  *Priv_Reg = 0x1;
+  *Priv_Reg = 0x0; 
+          //Modify mepc
+        asm volatile("li t6,0xF0010030");
+        asm volatile("csrw mepc, t6");
+ 
+//        asm volatile("li   t6,0x08");
+//        asm volatile("csrw mstatus, t6"); 
+        //Activate Interrupt
+        // Enable interrupt on processor side 
+        // Enable global interrupt for machine-level interrupts 
+        // Set mie.MEIE bit to one to enable machine-level external interrupts
+//Return to the new PC ->Bootrom    
+}
+
+void handler_safe_fsm(void) {
+
+  volatile unsigned int *Priv_Reg = 0xFF000008;
+  *Priv_Reg = 0x1;
+  *Priv_Reg = 0x0;
+
+//        asm volatile("li   t6,0x00");
+//        asm volatile("csrw mstatus, t6"); 
+//        asm volatile("li   t6,0x08");
+//        asm volatile("csrw mstatus, t6"); 
+        // Set mie.MEIE bit to one to enable machine-level external interrupts
+        //Activate Interrupt
+        // Enable interrupt on processor side
+        // Enable global interrupt for machine-level interrupts
+//        asm volatile("li   t6,0x08");
+//        asm volatile("csrw mstatus, t6"); 
+        // Set mie.MEIE bit to one to enable machine-level external interrupts
 }
