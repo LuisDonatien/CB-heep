@@ -76,6 +76,9 @@ module safe_wrapper_ctrl_reg_top #(
   logic [2:0] master_core_qs;
   logic [2:0] master_core_wd;
   logic master_core_we;
+  logic critical_section_qs;
+  logic critical_section_wd;
+  logic critical_section_we;
 
   // Register instances
   // R[safe_configuration]: V(False)
@@ -159,14 +162,42 @@ module safe_wrapper_ctrl_reg_top #(
   );
 
 
+  // R[critical_section]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_critical_section (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (critical_section_we),
+    .wd     (critical_section_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.critical_section.q ),
+
+    // to register interface (read)
+    .qs     (critical_section_qs)
+  );
 
 
-  logic [2:0] addr_hit;
+
+
+  logic [3:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_OFFSET);
     addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_MODE_OFFSET);
     addr_hit[2] = (reg_addr == SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET);
+    addr_hit[3] = (reg_addr == SAFE_WRAPPER_CTRL_CRITICAL_SECTION_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -176,7 +207,8 @@ module safe_wrapper_ctrl_reg_top #(
     wr_err = (reg_we &
               ((addr_hit[0] & (|(SAFE_WRAPPER_CTRL_PERMIT[0] & ~reg_be))) |
                (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be))) |
-               (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be)))));
+               (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be))) |
+               (addr_hit[3] & (|(SAFE_WRAPPER_CTRL_PERMIT[3] & ~reg_be)))));
   end
 
   assign safe_configuration_we = addr_hit[0] & reg_we & !reg_error;
@@ -187,6 +219,9 @@ module safe_wrapper_ctrl_reg_top #(
 
   assign master_core_we = addr_hit[2] & reg_we & !reg_error;
   assign master_core_wd = reg_wdata[2:0];
+
+  assign critical_section_we = addr_hit[3] & reg_we & !reg_error;
+  assign critical_section_wd = reg_wdata[0];
 
   // Read data return
   always_comb begin
@@ -202,6 +237,10 @@ module safe_wrapper_ctrl_reg_top #(
 
       addr_hit[2]: begin
         reg_rdata_next[2:0] = master_core_qs;
+      end
+
+      addr_hit[3]: begin
+        reg_rdata_next[0] = critical_section_qs;
       end
 
       default: begin

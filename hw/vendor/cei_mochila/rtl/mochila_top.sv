@@ -26,7 +26,8 @@ module mochila_top
     input  obi_resp_t   ext_slave_resp_i,
 
     // Debug Interface
-    input logic [NHARTS-1 : 0] debug_req_i
+    input logic [NHARTS-1 : 0] debug_req_i,
+    output logic force_error_o
 );
 
 
@@ -80,7 +81,8 @@ periph_system periph_system_i(
     .clk_i,
     .rst_ni,
     .slave_req_i(peripheral_slave_req),
-    .slave_resp_o(peripheral_slave_resp)
+    .slave_resp_o(peripheral_slave_resp),
+    .force_error_o(force_error_o)
 );
 
 memory_sys memory_sys_i(

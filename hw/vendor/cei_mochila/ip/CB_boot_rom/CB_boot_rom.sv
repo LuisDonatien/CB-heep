@@ -22,15 +22,18 @@ module CB_boot_rom
 );
   import core_v_mini_mcu_pkg::*;
 
-  localparam int unsigned RomSize = 133;
+  localparam int unsigned RomSize = 136;
 
   logic [RomSize-1:0][31:0] mem;
   assign mem = {
-    32'hff1ff06f,
+    32'hfe5ff06f,
     32'h00000013,
     32'h00000013,
     32'h00000013,
     32'h10500073,
+    32'h00000013,
+    32'h00000013,
+    32'h00000013,
     32'h13000000,
     32'h13000000,
     32'h13000000,
@@ -72,10 +75,10 @@ module CB_boot_rom
     32'h13000000,
     32'h13000000,
     32'h13000000,
-    32'h13000000,
-    32'h13000000,
-    32'h13000000,
-    32'hf31ff06f,
+    32'hf25ff06f,
+    32'h00000013,
+    32'h00000013,
+    32'h00000013,
     32'h00000013,
     32'h7b200073,
     32'h7b1f1073,

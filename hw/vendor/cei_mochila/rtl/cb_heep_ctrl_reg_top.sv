@@ -10,7 +10,7 @@
 module cb_heep_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 3
+  parameter int AW = 4
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -74,6 +74,9 @@ module cb_heep_ctrl_reg_top #(
   logic [31:0] boot_address_qs;
   logic [31:0] boot_address_wd;
   logic boot_address_we;
+  logic force_soft_error_qs;
+  logic force_soft_error_wd;
+  logic force_soft_error_we;
 
   // Register instances
   // R[exit_loop]: V(False)
@@ -96,7 +99,7 @@ module cb_heep_ctrl_reg_top #(
 
     // to internal hardware
     .qe     (),
-    .q      (reg2hw.exit_loop.q ),
+    .q      (),
 
     // to register interface (read)
     .qs     (exit_loop_qs)
@@ -130,13 +133,41 @@ module cb_heep_ctrl_reg_top #(
   );
 
 
+  // R[force_soft_error]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_force_soft_error (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (force_soft_error_we),
+    .wd     (force_soft_error_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.force_soft_error.q ),
+
+    // to register interface (read)
+    .qs     (force_soft_error_qs)
+  );
 
 
-  logic [1:0] addr_hit;
+
+
+  logic [2:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == CB_HEEP_CTRL_EXIT_LOOP_OFFSET);
     addr_hit[1] = (reg_addr == CB_HEEP_CTRL_BOOT_ADDRESS_OFFSET);
+    addr_hit[2] = (reg_addr == CB_HEEP_CTRL_FORCE_SOFT_ERROR_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -145,7 +176,8 @@ module cb_heep_ctrl_reg_top #(
   always_comb begin
     wr_err = (reg_we &
               ((addr_hit[0] & (|(CB_HEEP_CTRL_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(CB_HEEP_CTRL_PERMIT[1] & ~reg_be)))));
+               (addr_hit[1] & (|(CB_HEEP_CTRL_PERMIT[1] & ~reg_be))) |
+               (addr_hit[2] & (|(CB_HEEP_CTRL_PERMIT[2] & ~reg_be)))));
   end
 
   assign exit_loop_we = addr_hit[0] & reg_we & !reg_error;
@@ -153,6 +185,9 @@ module cb_heep_ctrl_reg_top #(
 
   assign boot_address_we = addr_hit[1] & reg_we & !reg_error;
   assign boot_address_wd = reg_wdata[31:0];
+
+  assign force_soft_error_we = addr_hit[2] & reg_we & !reg_error;
+  assign force_soft_error_wd = reg_wdata[0];
 
   // Read data return
   always_comb begin
@@ -164,6 +199,10 @@ module cb_heep_ctrl_reg_top #(
 
       addr_hit[1]: begin
         reg_rdata_next[31:0] = boot_address_qs;
+      end
+
+      addr_hit[2]: begin
+        reg_rdata_next[0] = force_soft_error_qs;
       end
 
       default: begin
@@ -188,7 +227,7 @@ endmodule
 
 module cb_heep_ctrl_reg_top_intf
 #(
-  parameter int AW = 3,
+  parameter int AW = 4,
   localparam int DW = 32
 ) (
   input logic clk_i,

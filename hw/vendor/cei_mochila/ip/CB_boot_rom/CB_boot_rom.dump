@@ -98,13 +98,10 @@ Disassembly of section .text:
  140:	7b1f1073          	csrw	dpc,t5
  144:	7b200073          	dret
  148:	00000013          	nop
- 14c:	f31ff06f          	j	7c <halt_boot>
- 150:	0000                	unimp
- 152:	1300                	addi	s0,sp,416
- 154:	0000                	unimp
- 156:	1300                	addi	s0,sp,416
- 158:	0000                	unimp
- 15a:	1300                	addi	s0,sp,416
+ 14c:	00000013          	nop
+ 150:	00000013          	nop
+ 154:	00000013          	nop
+ 158:	f25ff06f          	j	7c <halt_boot>
  15c:	0000                	unimp
  15e:	1300                	addi	s0,sp,416
  160:	0000                	unimp
@@ -189,8 +186,11 @@ Disassembly of section .text:
  1fe:	1300                	addi	s0,sp,416
 
 00000200 <shadow_wfi>:
- 200:	10500073          	wfi
+ 200:	00000013          	nop
  204:	00000013          	nop
  208:	00000013          	nop
- 20c:	00000013          	nop
- 210:	ff1ff06f          	j	200 <shadow_wfi>
+ 20c:	10500073          	wfi
+ 210:	00000013          	nop
+ 214:	00000013          	nop
+ 218:	00000013          	nop
+ 21c:	fe5ff06f          	j	200 <shadow_wfi>

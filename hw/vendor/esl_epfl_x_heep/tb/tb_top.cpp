@@ -169,15 +169,14 @@ int main (int argc, char * argv[])
   } else {
     std::cout<<"Waiting for GDB"<< std::endl;
   }
-     runCycles(350000, dut, m_trace); 
-      dut->jtag_tck_i = 1;
-    runCycles(14, dut, m_trace);
-      dut->jtag_tck_i = 0;
   if(run_all==false) {
     runCycles(max_sim_time, dut, m_trace);
   } else {
     while(dut->exit_valid_o!=1) {
-      runCycles(500, dut, m_trace);
+      runCycles(2, dut, m_trace);
+      {
+        /* code */
+      }
     }
   }
 

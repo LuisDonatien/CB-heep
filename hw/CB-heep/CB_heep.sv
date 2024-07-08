@@ -29,6 +29,7 @@ module CB_heep
     output logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_no,
 
     output logic [31:0] exit_value_o,
+    output logic force_error_o,
 
     // eXtension interface
     if_xif.cpu_compressed xif_compressed_if,
@@ -246,7 +247,8 @@ module CB_heep
       //Bus External Slave
       .ext_slave_req_o(ext_slave_bus_req),
       .ext_slave_resp_i(ext_slave_bus_resp),
-      .debug_req_i(debug_req)
+      .debug_req_i(debug_req),
+      .force_error_o(force_error_o)
   );
 
 

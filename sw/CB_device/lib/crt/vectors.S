@@ -50,13 +50,13 @@ vector_table:
 	// 15 : unmapped
 	j __no_irq_handler
 	// 16 : fast interrupt 
-	j __no_irq_handler
-	// 17 : fast interrupt 
 	j handler_tmr_recoverysync
-	// 18 : fast interrupt 
+	// 17 : fast interrupt 
 	j handler_safe_fsm
+	// 18 : fast interrupt 
+	j handler_tmr_dmcontext_copy
 	// 19 : fast interrupt 
-	j __no_irq_handler
+	j handler_tmr_dmshsync
 	// 20 : fast interrupt 
 	j __no_irq_handler
 	// 21 : fast interrupt 

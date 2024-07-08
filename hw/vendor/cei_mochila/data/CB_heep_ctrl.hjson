@@ -11,7 +11,7 @@
     { name:     "exit_loop",
       desc:     "exit_sw_loop",
       swaccess: "rw",
-      hwaccess: "hrw",
+      hwaccess: "hwo",
       fields: [
         { bits: "0", name: "EXIT_LOOP", desc: "EXIT_LOOP" }
       ]
@@ -24,6 +24,16 @@
       fields: [
         { bits: "31:0", name: "BOOT_ADDR", desc: "BOOT_ADDR" }
       ]
+    },
+    { name:     "force_soft_error",
+      desc:     "force_soft_error",
+      resval:   "0x0"
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "force_soft_error", desc: "force_soft_error" }
+      ]
     }
+
    ]
 }

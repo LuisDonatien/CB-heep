@@ -45,11 +45,14 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
     logic [NHARTS-1:0] Hart_ack_s;
     logic [NHARTS-1:0] Hart_wfi_s;
     logic [NHARTS-1:0] Hart_intc_ack_s;
-    logic [NHARTS-1:0] Reset_core_FSM_s;
-    logic [NHARTS-1:0][0:0] Select_boot_addr_s;
+    logic [NHARTS-1:0] Interrupt_swResync_s;
+    logic [NHARTS-1:0] Interrupt_CpyResync_s;
+    logic [NHARTS-1:0] Interrupt_DMSH_Sync_s;
+    logic [NHARTS-1:0][0:0] Select_wfi_core_s;
     logic [NHARTS-1:0] master_core_s;
     logic safe_mode_s;
     logic safe_configuration_s;
+    logic critical_section_s;
     logic [NHARTS-1:0] intc_sync_s;
     logic [NHARTS-1:0] intc_halt_s;
     logic [NHARTS-1:0] sleep_s;
@@ -100,8 +103,6 @@ ext_cpu_system #(
     )ext_cpu_system_i(
     .clk_i,
     .rst_ni,
-    .Reset_core_FSM_i(Reset_core_FSM_s),
-    .Select_boot_addr_i(Select_boot_addr_s),
     // Instruction memory interface
     .core_instr_req_o(core_instr_req),
     .core_instr_resp_i(core_instr_resp),
@@ -139,7 +140,8 @@ safe_wrapper_ctrl #(
 
     .master_core_o(master_core_s),
     .safe_mode_o         (safe_mode_s),
-    .safe_configuration_o(safe_configuration_s)
+    .safe_configuration_o(safe_configuration_s),
+    .critical_section_o(critical_section_s)
     );
 
 periph_to_reg #(
@@ -170,18 +172,20 @@ safe_FSM safe_FSM_i (
     // Clock and Reset
     .clk_i,
     .rst_ni,
-
+    .tmr_critical_section_i (critical_section_s),
     .Safe_mode_i          (safe_mode_s),
     .Safe_configuration_i (safe_configuration_s),
     .Initial_Sync_Master_i(Initial_Sync_Master_s), 
     .Halt_ack_i(Hart_ack_s), 
     .Hart_wfi_i(sleep_s),
     .Hart_intc_ack_i(Hart_intc_ack_s),
-    .Reset_core_FSM_o       (Reset_core_FSM_s), 
-    .Select_boot_addr_o(Select_boot_addr_s),
+    .Select_wfi_core_o      (Select_wfi_core_s),
     .Master_Core_i(master_core_s),      
-    .Interrupt_Sync_o(intc_sync_s),     
+    .Interrupt_Sync_o(intc_sync_s),   
+    .Interrupt_swResync_o(Interrupt_swResync_s),  
     .Interrupt_Halt_o(intc_halt_s),
+    .Interrupt_CpyResync_o(Interrupt_CpyResync_s),
+    .Interrupt_DMSH_Sync_o(Interrupt_DMSH_Sync_s),
     .tmr_error(tmr_error_s),
     .voter_id_error(tmr_errorid_s),
     .Single_Bus_o(bus_config_s),
@@ -191,13 +195,13 @@ safe_FSM safe_FSM_i (
     .Dual_mode_tmr_o(dual_mode_tmr_s)
 );
       assign intr[0] = {
-    13'b0,  intc_sync_s[0],1'b0, 17'b0 
+    12'b0, Interrupt_DMSH_Sync_s[0], Interrupt_CpyResync_s[0], intc_sync_s[0], Interrupt_swResync_s[0], 16'b0 
   };
       assign intr[1] = {
-    13'b0,  intc_sync_s[1],1'b0, 17'b0 
+    12'b0, Interrupt_DMSH_Sync_s[1], Interrupt_CpyResync_s[1], intc_sync_s[1], Interrupt_swResync_s[1], 16'b0 
   };
       assign intr[2] = {
-    13'b0,  intc_sync_s[2],1'b0, 17'b0 
+    12'b0, Interrupt_DMSH_Sync_s[2], Interrupt_CpyResync_s[2], intc_sync_s[2], Interrupt_swResync_s[2], 16'b0 
   };
 
   assign debug_req[0] = debug_req_i[0] || intc_halt_s[0];
@@ -231,10 +235,36 @@ safe_FSM safe_FSM_i (
                     core_instr_req_o[0] = voted_core_instr_req_o;
                     core_instr_req_o[1] = '0;
                     core_instr_req_o[2] = '0;
-                    core_instr_resp[0] = core_instr_resp_i[0];
-                    core_instr_resp[1] = core_instr_resp_i[0];
-                    core_instr_resp[2] = core_instr_resp_i[0];
-        
+
+                    if (Select_wfi_core_s == 3'b001) begin
+                        core_instr_resp[0].rvalid = 1'b1;
+                        core_instr_resp[0].gnt = 1'b1;
+                        core_instr_resp[0].rdata = 32'h10500073; //wfi instruction
+
+                        core_instr_resp[1] = core_instr_resp_i[0];
+                        core_instr_resp[2] = core_instr_resp_i[0];
+                    end 
+                    else if (Select_wfi_core_s == 3'b010) begin
+                        core_instr_resp[1].rvalid = 1'b1;
+                        core_instr_resp[1].gnt = 1'b1;
+                        core_instr_resp[1].rdata = 32'h10500073; //wfi instruction
+
+                        core_instr_resp[0] = core_instr_resp_i[0];
+                        core_instr_resp[2] = core_instr_resp_i[0];
+                    end 
+                    else if (Select_wfi_core_s == 3'b100) begin
+                        core_instr_resp[2].rvalid = 1'b1;
+                        core_instr_resp[2].gnt = 1'b1;
+                        core_instr_resp[2].rdata = 32'h10500073; //wfi instruction
+
+                        core_instr_resp[0] = core_instr_resp_i[0];
+                        core_instr_resp[1] = core_instr_resp_i[0];
+                    end 
+                    else begin 
+                        core_instr_resp[0] = core_instr_resp_i[0];
+                        core_instr_resp[1] = core_instr_resp_i[0];
+                        core_instr_resp[2] = core_instr_resp_i[0];
+                    end
                     //Data
                     core_data_req_o[0] = voted_core_data_req_o;
                     core_data_req_o[1] = '0;
@@ -247,8 +277,9 @@ safe_FSM safe_FSM_i (
                     if (tmr_dmr_config_s == 3'b011) begin   //Comparator cpu0_cpu1
                         //Instruction
                         core_instr_req_o[0] = compared_core_instr_req_o[0];
-                        core_instr_req_o[1] = core_instr_req[1];
+                        core_instr_req_o[1] = core_instr_req[2];
                         core_instr_req_o[2] = '0;
+
                         core_instr_resp[0] = core_instr_resp_i[0];
                         core_instr_resp[1] = core_instr_resp_i[0];
                         core_instr_resp[2] = core_instr_resp_i[1];
@@ -266,10 +297,12 @@ safe_FSM safe_FSM_i (
                     core_instr_req_o[0] = compared_core_instr_req_o[1];
                     core_instr_req_o[1] = core_instr_req[0];
                     core_instr_req_o[2] = '0;
+
                     core_instr_resp[0] = core_instr_resp_i[1];
                     core_instr_resp[1] = core_instr_resp_i[0];
                     core_instr_resp[2] = core_instr_resp_i[0];
-        
+
+
                     //Data
                     core_data_req_o[0] = compared_core_data_req_o[1];
                     core_data_req_o[1] = xbar_core_data_req[0][0];

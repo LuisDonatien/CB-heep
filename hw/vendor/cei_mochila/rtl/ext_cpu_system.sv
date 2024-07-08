@@ -7,16 +7,13 @@ module ext_cpu_system
   import obi_pkg::*;
   import core_v_mini_mcu_pkg::*;
 #(
-    parameter BASE_BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS,
-    parameter WFI_BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h200,
+    parameter BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS,
     parameter NHARTS = 3,
     parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50
 ) (
     // Clock and Reset
     input logic clk_i,
     input logic rst_ni,
-    input logic [NHARTS-1 : 0] Reset_core_FSM_i,
-    input logic [NHARTS-1 : 0][0:0] Select_boot_addr_i,
     // Instruction memory interface 
     output obi_req_t  [NHARTS-1 : 0] core_instr_req_o,
     input  obi_resp_t [NHARTS-1 : 0] core_instr_resp_i,
@@ -41,17 +38,8 @@ module ext_cpu_system
 );
 
   logic fetch_enable; 
-  logic [NHARTS-1:0][31:0] boot_address;
   // CPU Control Signals
 
-  for(genvar i=0; i<NHARTS;i++) begin : Mux_boot_address
-    always_comb begin
-        if (Select_boot_addr_i[i] == 1'b0)
-            boot_address[i] = BASE_BOOT_ADDR;
-        else
-            boot_address[i] = WFI_BOOT_ADDR; 
-    end
-  end
 
   assign fetch_enable = 1'b1;
   
@@ -82,13 +70,13 @@ end
         .DmExceptionAddr('0)
     ) cv32e20_core0 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni & Reset_core_FSM_i[0]),
+        .rst_ni(rst_ni),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
         .hart_id_i  (32'h1),
-        .boot_addr_i(boot_address[0]),
+        .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[0].addr),
         .instr_req_o   (core_instr_req_o[0].req),
@@ -128,13 +116,13 @@ end
         .DmExceptionAddr('0)
     ) cv32e20_core1 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni & Reset_core_FSM_i[1]),
+        .rst_ni(rst_ni),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
         .hart_id_i  (32'h3),
-        .boot_addr_i(boot_address[1]),
+        .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[1].addr),
         .instr_req_o   (core_instr_req_o[1].req),
@@ -173,13 +161,13 @@ end
         .DmExceptionAddr('0)
     ) cv32e20_core2 (
         .clk_i (clk_i),
-        .rst_ni(rst_ni & Reset_core_FSM_i[2]),
+        .rst_ni(rst_ni),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
         .hart_id_i  (32'h3),
-        .boot_addr_i(boot_address[2]),
+        .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[2].addr),
         .instr_req_o   (core_instr_req_o[2].req),

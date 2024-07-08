@@ -305,11 +305,17 @@ halt_boot:
        //Loop//
 
        nop
+       nop
+       nop
+       nop
        jal zero, halt_boot
 
 //Loop until HALT
 .section .shadow_wfi
 shadow_wfi:
+       nop
+       nop
+       nop 
        wfi
        nop
        nop

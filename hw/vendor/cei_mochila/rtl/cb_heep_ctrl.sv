@@ -13,14 +13,15 @@ module cb_heep_ctrl #(
 
     // Bus Interface
     input  reg_req_t reg_req_i,
-    output reg_rsp_t reg_rsp_o
+    output reg_rsp_t reg_rsp_o,
+    output logic force_error_o
 
 );
 
   import cb_heep_ctrl_reg_pkg::* ;
 
   cb_heep_ctrl_hw2reg_t hw2reg;
-
+  cb_heep_ctrl_reg2hw_t reg2hw; // Write
 `ifndef SYNTHESIS
   logic testbench_set_exit_loop[1];
   //forced by simulation for preloading, do not touch
@@ -36,8 +37,9 @@ module cb_heep_ctrl #(
 `else
   assign hw2reg.exit_loop.d = 1'b0;
   assign hw2reg.exit_loop.de = 1'b0;
-
 `endif
+
+assign force_error_o = reg2hw.force_soft_error.q;
 
   cb_heep_ctrl_reg_top #(
       .reg_req_t(reg_req_t),
@@ -48,7 +50,7 @@ module cb_heep_ctrl #(
       .reg_req_i,
       .reg_rsp_o,
       .hw2reg,
-      .reg2hw(),
+      .reg2hw,
       .devmode_i(1'b1)
   );
 

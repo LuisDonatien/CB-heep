@@ -17,7 +17,8 @@ module safe_wrapper_ctrl #(
 
     output logic [2:0] master_core_o,
     output logic safe_mode_o,
-    output logic safe_configuration_o
+    output logic safe_configuration_o,
+    output logic critical_section_o
 );
 
   import safe_wrapper_ctrl_reg_pkg::*;
@@ -40,5 +41,6 @@ module safe_wrapper_ctrl #(
   assign master_core_o = reg2hw.master_core.q;
   assign safe_mode_o = reg2hw.safe_mode.q;
   assign safe_configuration_o = reg2hw.safe_configuration.q;
+  assign critical_section_o = reg2hw.critical_section.q;
 
 endmodule : safe_wrapper_ctrl

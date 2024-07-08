@@ -12,7 +12,9 @@ module periph_system
     input logic rst_ni,
 
     input  obi_req_t  slave_req_i,
-    output obi_resp_t slave_resp_o
+    output obi_resp_t slave_resp_o,
+
+    output logic force_error_o
 );
 
   import cei_mochila_pkg::*;
@@ -114,6 +116,7 @@ module periph_system
     .rst_ni,
     // Bus Interface
     .reg_req_i(peripheral_slv_req[cei_mochila_pkg::CB_CTRL_IDX]),
-    .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::CB_CTRL_IDX])
+    .reg_rsp_o(peripheral_slv_rsp[cei_mochila_pkg::CB_CTRL_IDX]),
+    .force_error_o(force_error_o)
     );
 endmodule

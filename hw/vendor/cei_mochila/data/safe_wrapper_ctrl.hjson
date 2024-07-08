@@ -32,6 +32,15 @@
       fields: [
         { bits: "2:0", name: "Master_core", desc: "MASTER CORE" }
       ]
+    },
+    { name:     "critical_section",
+      desc:     "critical_section",
+      resval:   "0x0",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "critical_section", desc: "critical_section" }
+      ]
     }
    ]
 }

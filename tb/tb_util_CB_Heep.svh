@@ -10,6 +10,7 @@ export "DPI-C" task tb_CBwritetoSram0;
 export "DPI-C" task tb_CBwritetoSram1;
 export "DPI-C" task tb_CBgetMemSize;
 export "DPI-C" task tb_CBset_exit_loop;
+//export "DPI-C" task tb_force_soft_error;
 
 import cei_mochila_pkg::*;
 
@@ -97,3 +98,15 @@ task tb_CBset_exit_loop;
 `endif
 endtask
 `endif
+
+/*
+task tb_force_soft_error;
+input integer core;
+if (core == 0)
+  CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core0.u_cve2_core.register_file_i.rf_reg_q[28] = 32'hdeadbeef; //Register x28 t3
+if (core == 1)
+  CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core1.u_cve2_core.register_file_i.rf_reg_q[28] = 32'hdeadbeef; //Register x28 t3
+else
+  CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.ext_cpu_system_i.cv32e20_core2.u_cve2_core.register_file_i.rf_reg_q[28] = 32'hdeadbeef; //Register x28 t3
+endtask 
+*/

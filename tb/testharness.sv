@@ -27,7 +27,8 @@ module testharness #(
     input  wire         jtag_tdi_i,
     output wire         jtag_tdo_o,
     output logic [31:0] exit_value_o,
-    inout  wire         exit_valid_o
+    inout  wire         exit_valid_o,
+    inout wire        force_error_o
 );
 
   `include "tb_util.svh"  
@@ -221,7 +222,8 @@ module testharness #(
       .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n),
       .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
       .ext_dma_slot_tx_i(iffifo_in_ready),
-      .ext_dma_slot_rx_i(iffifo_out_valid)
+      .ext_dma_slot_rx_i(iffifo_out_valid),
+      .force_error_o(force_error_o)
   );
 
   // Testbench external bus

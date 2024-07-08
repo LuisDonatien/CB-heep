@@ -13,6 +13,7 @@ module safe_FSM
     input logic rst_ni,
 
     input logic Safe_mode_i,
+    input logic tmr_critical_section_i,
     input logic Safe_configuration_i,
     input logic [NHARTS-1:0] Initial_Sync_Master_i,
     input logic [NHARTS-1:0] Halt_ack_i,
@@ -20,9 +21,11 @@ module safe_FSM
     input logic [NHARTS-1:0] Hart_intc_ack_i,
     input logic  [NHARTS-1:0] Master_Core_i,
     output logic [NHARTS-1:0] Interrupt_Sync_o,
+    output logic [NHARTS-1:0] Interrupt_swResync_o,
+    output logic [NHARTS-1:0] Interrupt_CpyResync_o,
+    output logic [NHARTS-1:0] Interrupt_DMSH_Sync_o,    
     output logic [NHARTS-1:0] Interrupt_Halt_o,
-    output logic [NHARTS-1:0] Reset_core_FSM_o,
-    output logic [NHARTS-1:0][0:0] Select_boot_addr_o,
+    output logic [NHARTS-1:0][0:0] Select_wfi_core_o,
     output logic Single_Bus_o,
     output logic [NHARTS-1:0] Tmr_dmr_config_o,
     output logic Dual_mode_tmr_o,
@@ -42,8 +45,8 @@ module safe_FSM
   } ctrl_tmr_fsm_e;
 
   typedef enum logic [3:0] {
-    TMR_REC_RESET, TMR_REC_IDLE, TMR_REC_DMODE,TMR_REC_SHRST,
-    TMR_REC_SHWFI
+    TMR_REC_RESET, TMR_REC_IDLE, TMR_REC_DMODE,TMR_REC_SHSTP, TMR_REC_SYNCINTC,
+    TMR_REC_SHWFI, TMR_REC_SWSYNC, TMR_REC_DMCPY, TMR_REC_DMWAITSH, TMR_REC_SH_HALT, TMR_REC_DMSH_SYNCINTC, TMR_REC_DMWFI, TMR_REC_DM_HALT_SH, TMR_REC_SH_HALTWFI
   } ctrl_tmr_recovery_fsm_e;
 
   ctrl_safe_fsm_e ctrl_safe_fsm_cs, ctrl_safe_fsm_ns;
@@ -55,6 +58,8 @@ module safe_FSM
 
 
   logic [NHARTS-1:0] enable_interrupt_halt_s;
+  logic [NHARTS-1:0] enable_interrupt_tmr_halt_s;
+  logic [NHARTS-1:0] enable_interrupt_tmr_SHhalt_s;
 
   logic DMR_Mode_s, TMR_Mode_s;
 
@@ -66,10 +71,13 @@ module safe_FSM
 
   logic  halt_req_s;
   logic [NHARTS-1:0] dbg_halt_req_s;
+  logic [NHARTS-1:0] dbg_halt_req_tmr_s;
+  logic [NHARTS-1:0] dbg_halt_req_general_s;
   logic [NHARTS-1:0] single_bus_s;
   logic [NHARTS-1:0] tmr_voter_enable_s;
   logic [NHARTS-1:0] dmr_comparator_enable_s;
   logic [NHARTS-1:0] dual_mode_tmr_s;
+  logic [NHARTS-1:0] DMR_Mode_SHWFI_s;
 
       always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
@@ -288,26 +296,105 @@ module safe_FSM
           TMR_REC_IDLE:
           begin
             if( tmr_error == 1'b1 && ctrl_tmr_fsm_cs[i] == TMR_SYNC) begin
-              if(voter_id_error[i] == 1'b0) 
-                ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;
-              else
-                ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SHRST;
+              if (tmr_critical_section_i == 1'b0)
+                ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SYNCINTC;                
+              else begin
+                if(voter_id_error[i] == 1'b0) 
+                  ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;
+                else
+                  ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SHWFI;
+              end
             end
             else
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
           end
-          TMR_REC_SHRST:
+          //SW TMR Recovery//
+          TMR_REC_SYNCINTC:
           begin
-            ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SHWFI;         
+            if (Hart_intc_ack_i[0] && Hart_intc_ack_i[1] && Hart_intc_ack_i[2])
+              ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SWSYNC; 
+            else
+              ctrl_tmr_rec_fsm_ns[i]= TMR_REC_SYNCINTC;               
           end
+          TMR_REC_SWSYNC:
+          begin
+            if(~Hart_intc_ack_i[0] && ~Hart_intc_ack_i[1] && ~Hart_intc_ack_i[2])
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SWSYNC;
+          end
+          //***************//
+          //HW TMR Recovery//
           TMR_REC_SHWFI:
           begin
-            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHWFI;
+            if (Hart_wfi_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHSTP;         
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHWFI;               
           end
+          TMR_REC_SHSTP:
+          begin
+            if (Hart_wfi_i[i] == 1'b0)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALT;              
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHSTP;
+          end
+          TMR_REC_SH_HALT:
+          begin
+            if (Halt_ack_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALTWFI;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALT;
+          end
+          TMR_REC_SH_HALTWFI:
+          begin
+            if (Hart_wfi_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMSH_SYNCINTC;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALTWFI;
+          end
+
+
           TMR_REC_DMODE:
           begin
-            ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;
+            if (tmr_critical_section_i == 1'b0)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMCPY;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;              
           end
+          TMR_REC_DMCPY:
+          begin
+            if (Hart_intc_ack_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMWFI;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMCPY;              
+          end
+          TMR_REC_DMWFI:
+          begin
+            if (Hart_wfi_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DM_HALT_SH;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMWFI;              
+          end
+          TMR_REC_DM_HALT_SH:
+          begin
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMWAITSH;             
+          end
+          TMR_REC_DMWAITSH:
+          begin
+            if (Hart_wfi_i[0] == 1'b1 && Hart_wfi_i[1] == 1'b1 && Hart_wfi_i[2] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMSH_SYNCINTC;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMWAITSH;
+          end
+          TMR_REC_DMSH_SYNCINTC:
+          begin
+            if (Hart_intc_ack_i[0] == 1'b1 && Hart_intc_ack_i[1] == 1'b1 && Hart_intc_ack_i[2] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
+            else
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMSH_SYNCINTC;
+          end         
+
 
           default: begin
             ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
@@ -317,11 +404,16 @@ module safe_FSM
 
     always_comb begin
       dmr_comparator_enable_s[i] = 1'b0;
-      Reset_core_FSM_o[i] = 1'b1;
+      enable_interrupt_tmr_halt_s[i] = 1'b0;
+      enable_interrupt_tmr_SHhalt_s[i] = 1'b0;
       Tmr_dmr_config_o[i] = 1'b0;
       dual_mode_tmr_s[i] = 1'b0;
-      Select_boot_addr_o[i] = 1'b0;
-
+      DMR_Mode_SHWFI_s[i] = 1'b0;
+      Select_wfi_core_o[i] = 1'b0;
+      Interrupt_swResync_o[i] = 1'b0;
+      Interrupt_CpyResync_o[i] = 1'b0;
+      Interrupt_DMSH_Sync_o[i] = 1'b0;
+      dbg_halt_req_tmr_s[i] = 1'b0;
       unique case (ctrl_tmr_rec_fsm_cs[i])
 
         TMR_REC_DMODE:
@@ -330,15 +422,68 @@ module safe_FSM
             Tmr_dmr_config_o[i] = 1'b1;
             dual_mode_tmr_s[i] = 1'b1;       
         end
-        TMR_REC_SHRST:
+        TMR_REC_SHSTP:
         begin
-          Reset_core_FSM_o[i] = 1'b0;
-          Select_boot_addr_o[i] = 1'b1;
+          DMR_Mode_SHWFI_s[i] = 1'b1;
         end 
 
         TMR_REC_SHWFI:
         begin
-          Select_boot_addr_o[i] = 1'b1;
+          Select_wfi_core_o[i] = 1'b1;
+        end
+
+        TMR_REC_DMCPY:
+        begin
+          Interrupt_CpyResync_o[i] = 1'b1;
+          DMR_Mode_SHWFI_s[i] = 1'b1; 
+          dmr_comparator_enable_s[i] = 1'b1;  
+          Tmr_dmr_config_o[i] = 1'b1;
+          dual_mode_tmr_s[i] = 1'b1;              
+        end
+
+
+
+        TMR_REC_DMWFI:
+        begin
+          DMR_Mode_SHWFI_s[i] = 1'b1; 
+          dmr_comparator_enable_s[i] = 1'b1;  
+          Tmr_dmr_config_o[i] = 1'b1;
+          dual_mode_tmr_s[i] = 1'b1;              
+        end
+
+        TMR_REC_DM_HALT_SH:
+        begin
+          enable_interrupt_tmr_halt_s[i] = 1'b1;
+          DMR_Mode_SHWFI_s[i] = 1'b1; 
+          dmr_comparator_enable_s[i] = 1'b1;  
+          Tmr_dmr_config_o[i] = 1'b1;
+          dual_mode_tmr_s[i] = 1'b1;  
+        end
+
+        TMR_REC_DMSH_SYNCINTC:
+        begin
+          Interrupt_DMSH_Sync_o[i] = 1'b1; 
+        end
+
+
+        TMR_REC_DMWAITSH:
+        begin
+          DMR_Mode_SHWFI_s[i] = 1'b1; 
+          dmr_comparator_enable_s[i] = 1'b1;  
+          Tmr_dmr_config_o[i] = 1'b1;
+          dual_mode_tmr_s[i] = 1'b1;            
+        end
+
+        TMR_REC_SH_HALT:
+        begin
+          enable_interrupt_tmr_SHhalt_s[i] = 1'b1;      
+        end
+
+
+        //Software
+        TMR_REC_SYNCINTC:
+        begin
+          Interrupt_swResync_o[i] = 1'b1;
         end
 
 
@@ -368,17 +513,25 @@ assign halt_req_s = dbg_halt_req_s[0] || dbg_halt_req_s[1] || dbg_halt_req_s[2];
 
 // In-Out FSM Signals operation
 assign Single_Bus_o = single_bus_s[0] || single_bus_s[1] || single_bus_s[2];
-assign Tmr_voter_enable_o = tmr_voter_enable_s[0] || tmr_voter_enable_s[1] || tmr_voter_enable_s[2];
-assign Dmr_comparator_enable_o = dmr_comparator_enable_s[0] || dmr_comparator_enable_s[1] || dmr_comparator_enable_s[2];
-assign Dual_mode_tmr_o = dual_mode_tmr_s[0] || dual_mode_tmr_s[1] || dual_mode_tmr_s[2];
+assign Tmr_voter_enable_o = (tmr_voter_enable_s[0] || tmr_voter_enable_s[1] || tmr_voter_enable_s[2]);
+assign Dmr_comparator_enable_o = (dmr_comparator_enable_s[0] || dmr_comparator_enable_s[1] || dmr_comparator_enable_s[2]) && (DMR_Mode_SHWFI_s[0] || DMR_Mode_SHWFI_s[1] || DMR_Mode_SHWFI_s[2]);
+assign Dual_mode_tmr_o = (dual_mode_tmr_s[0] || dual_mode_tmr_s[1] || dual_mode_tmr_s[2]) && (DMR_Mode_SHWFI_s[0] || DMR_Mode_SHWFI_s[1] || DMR_Mode_SHWFI_s[2]);
+
 always_comb begin
-  Interrupt_Halt_o = '0;
+  dbg_halt_req_general_s = '0;
   if (enable_interrupt_halt_s[0] == 1'b1 || enable_interrupt_halt_s[1] == 1'b1 || enable_interrupt_halt_s[2] == 1'b1) begin
-    Interrupt_Halt_o= ~Initial_Sync_Master_i;
+    dbg_halt_req_general_s= ~Initial_Sync_Master_i;
   end
 end
 
+always_comb begin
+  dbg_halt_req_tmr_s = '0;
+  if (enable_interrupt_tmr_halt_s[0] == 1'b1 || enable_interrupt_tmr_halt_s[1] == 1'b1 || enable_interrupt_tmr_halt_s[2] == 1'b1) begin
+    dbg_halt_req_tmr_s= ~enable_interrupt_tmr_halt_s;
+  end
+end
 
+assign Interrupt_Halt_o = dbg_halt_req_general_s | dbg_halt_req_tmr_s |  enable_interrupt_tmr_SHhalt_s;
 endmodule
 
 
