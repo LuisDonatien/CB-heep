@@ -71,7 +71,6 @@ module cpu_subsystem
 
         .hart_id_i  (32'h0),
         .boot_addr_i(BOOT_ADDR),
-        .ext_prefetch_eni  (1'b1),
         .instr_addr_o  (core_instr_req_o.addr),
         .instr_req_o   (core_instr_req_o.req),
         .instr_rdata_i (core_instr_resp_i.rdata),

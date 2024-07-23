@@ -96,7 +96,6 @@ module cve2_top import cve2_pkg::*; #(
 
   // CPU Control Signals
   input  logic                         fetch_enable_i,
-  input  logic                         ext_prefetch_eni,
   output logic                         core_sleep_o
 );
 
@@ -171,7 +170,6 @@ module cve2_top import cve2_pkg::*; #(
 
     .hart_id_i,
     .boot_addr_i,
-    .ext_prefetch_eni,
     .instr_req_o,
     .instr_gnt_i,
     .instr_rvalid_i,

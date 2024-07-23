@@ -122,7 +122,6 @@ ext_cpu_system #(
 
     .sleep_o(sleep_s),
 
-    .ext_prefetch_eni (~1'b0),
     // Debug Interface
     .debug_req_i(debug_req)
 );

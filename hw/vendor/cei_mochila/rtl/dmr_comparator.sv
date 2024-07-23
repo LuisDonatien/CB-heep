@@ -47,7 +47,7 @@ always_comb begin
 end  
 
 //D-Gated-Output
-//Output is gated with a flip-flop to ensure that an error doesnt propagate to the rest of the circuit.
+//Output is gated with a flip-flop to ensure that an error does not propagate to the rest of the circuit.
 always_comb begin
     if (error_s[0] || error_s[1]) begin
         compared_core_instr_req_o   = '0;

@@ -32,7 +32,6 @@ module ext_cpu_system
 
     output logic     [NHARTS-1:0]   sleep_o,
 
-    input  logic    ext_prefetch_eni,
     // Debug Interface
     input logic [NHARTS-1 : 0] debug_req_i
 );
@@ -105,7 +104,6 @@ end
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-        .ext_prefetch_eni  (ext_prefetch_eni),
         .core_sleep_o(sleep_o[0])
     );
   
@@ -151,7 +149,6 @@ end
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-        .ext_prefetch_eni(1'b1),
         .core_sleep_o(sleep_o[1])
     );
 
@@ -196,7 +193,6 @@ end
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),
-        .ext_prefetch_eni  (1'b1),
         .core_sleep_o(sleep_o[2])
     );
 endmodule

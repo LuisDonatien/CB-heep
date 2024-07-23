@@ -61,7 +61,6 @@ module cve2_core import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
   output logic                         irq_pending_o,
-  input  logic                         ext_prefetch_eni,
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
@@ -278,7 +277,7 @@ module cve2_core import cve2_pkg::*; #(
 
   // Before going to sleep, wait for I- and D-side
   // interfaces to finish ongoing operations.
-  assign core_busy_o = ctrl_busy | if_busy | lsu_busy;
+  assign core_busy_o = ctrl_busy | if_busy | lsu_busy | new_irq;
 
   //////////////
   // IF stage //
@@ -344,7 +343,7 @@ module cve2_core import cve2_pkg::*; #(
   assign perf_iside_wait = id_in_ready & ~instr_valid_id;
 
   // For non secure Ibex only the bottom bit of fetch enable is considered
-  assign instr_req_gated = instr_req_int & ext_prefetch_eni;
+  assign instr_req_gated = instr_req_int;
 
   //////////////
   // ID stage //
@@ -605,7 +604,7 @@ module cve2_core import cve2_pkg::*; #(
   // Crash dump output //
   ///////////////////////
 
-  assign crash_dump_o.current_pc     = pc_id;
+  assign crash_dump_o.current_pc     = pc_id ;
   assign crash_dump_o.next_pc        = pc_if;
   assign crash_dump_o.last_data_addr = lsu_addr_last;
   assign crash_dump_o.exception_addr = csr_mepc;
@@ -811,7 +810,7 @@ module cve2_core import cve2_pkg::*; #(
     assign pmp_req_err[PMP_I2] = 1'b0;
     assign pmp_req_err[PMP_D]  = 1'b0;
   end
-
+  logic            new_irq;
 `ifdef RVFI
   // When writeback stage is present RVFI information is emitted when instruction is finished in
   // third stage but some information must be captured whilst the instruction is in the second
@@ -1282,6 +1281,7 @@ module cve2_core import cve2_pkg::*; #(
   logic unused_instr_new_id, unused_instr_id_done;
   assign unused_instr_id_done = instr_id_done;
   assign unused_instr_new_id = instr_new_id;
+  assign new_irq = irq_pending_o & csr_mstatus_mie & ~nmi_mode & ~debug_mode;
 `endif
 
 endmodule
