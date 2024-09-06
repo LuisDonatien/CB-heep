@@ -10,8 +10,8 @@ module mochila_top
 #(
     parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50,
     parameter NHARTS = 3,
+    parameter HARTID = 32'h01,
     parameter N_BANKS = 2
-    
 ) (
     // Clock and Reset
     input logic clk_i,
@@ -26,8 +26,9 @@ module mochila_top
     input  obi_resp_t   ext_slave_resp_i,
 
     // Debug Interface
-    input logic [NHARTS-1 : 0] debug_req_i,
+    input logic         debug_req_i,
     output logic force_error_o
+
 );
 
 
@@ -55,6 +56,7 @@ module mochila_top
 
 //CPU_System
 safe_cpu_wrapper #(
+        .HARTID(HARTID),
         .DM_HALTADDRESS  (DM_HALTADDRESS)
     )safe_cpu_wrapper_i(
     .clk_i,

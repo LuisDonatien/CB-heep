@@ -16,10 +16,8 @@ module cpu_private_reg #(
     output reg_rsp_t reg_rsp_o,
 
     //Output
-    output logic Hart_ack_o,
-    output logic Initial_Sync_Master_o,
-    output logic Hart_intc_ack_o,
-    input logic Debug_ext_req_i
+    input logic [2:0] Core_id_i,
+    output logic Hart_intc_ack_o
 
 );
 
@@ -41,15 +39,12 @@ module cpu_private_reg #(
       .devmode_i(1'b1)
   );
 
-//Reg2Hw read
-assign Hart_ack_o = reg2hw.hart_ack.q;
-assign Hart_intc_ack_o = reg2hw.hart_intc_ack.q;
-assign Initial_Sync_Master_o = reg2hw.initial_sync_master.q;
-
-//Hw2Reg always write
-assign hw2reg.external_debug_req.d = Debug_ext_req_i;    
-assign hw2reg.external_debug_req.de = 1'b1;
-
+  //Reg2Hw read
+  assign Hart_intc_ack_o = reg2hw.hart_intc_ack.q;
+  
+  //Hw2Reg always write
+  assign hw2reg.core_id.d = Core_id_i;
+  assign hw2reg.core_id.de = 1'b1;
 
 
 endmodule : cpu_private_reg

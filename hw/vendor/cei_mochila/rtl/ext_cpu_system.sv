@@ -9,6 +9,7 @@ module ext_cpu_system
 #(
     parameter BOOT_ADDR = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS,
     parameter NHARTS = 3,
+    parameter HARTID = 32'h01,
     parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50
 ) (
     // Clock and Reset
@@ -27,13 +28,16 @@ module ext_cpu_system
     input logic [31:0] intc_core0,
     //Core 1
     input logic [31:0] intc_core1,
-
+    //Core 2
     input logic [31:0] intc_core2,
+
+    output logic [NHARTS-1:0] new_irq_o,
 
     output logic     [NHARTS-1:0]   sleep_o,
 
     // Debug Interface
-    input logic [NHARTS-1 : 0] debug_req_i
+    input logic [NHARTS-1 : 0] debug_req_i,
+    output logic [NHARTS-1 : 0] debug_mode_o
 );
 
   logic fetch_enable; 
@@ -74,7 +78,7 @@ end
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h1),
+        .hart_id_i  (HARTID),
         .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[0].addr),
@@ -99,9 +103,11 @@ end
         .irq_external_i(),
         .irq_fast_i    (intc_core0[31:16]),
         .irq_nm_i      (1'b0),
+        .new_irq_o(new_irq_o[0]),
 
         .debug_req_i (debug_req_i[0]),
         .crash_dump_o(),
+        .debug_mode_o(debug_mode_o[0]),
 
         .fetch_enable_i(fetch_enable),
         .core_sleep_o(sleep_o[0])
@@ -119,7 +125,7 @@ end
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h3),
+        .hart_id_i  (HARTID),
         .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[1].addr),
@@ -144,9 +150,11 @@ end
         .irq_external_i(),
         .irq_fast_i    (intc_core1[31:16]),
         .irq_nm_i      (1'b0),
+        .new_irq_o(new_irq_o[1]),
 
         .debug_req_i (debug_req_i[1]),
         .crash_dump_o(),
+        .debug_mode_o(debug_mode_o[1]),
 
         .fetch_enable_i(fetch_enable),
         .core_sleep_o(sleep_o[1])
@@ -163,7 +171,7 @@ end
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
-        .hart_id_i  (32'h3),
+        .hart_id_i  (HARTID),
         .boot_addr_i(BOOT_ADDR),
 
         .instr_addr_o  (core_instr_req_o[2].addr),
@@ -188,9 +196,11 @@ end
         .irq_external_i(),
         .irq_fast_i    (intc_core2[31:16]),
         .irq_nm_i      (1'b0),
+        .new_irq_o(new_irq_o[2]),
 
         .debug_req_i (debug_req_i[2]),
         .crash_dump_o(),
+        .debug_mode_o(debug_mode_o[2]),
 
         .fetch_enable_i(fetch_enable),
         .core_sleep_o(sleep_o[2])

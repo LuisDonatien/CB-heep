@@ -10,7 +10,7 @@
 module cpu_private_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 4
+  parameter int AW = 3
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -68,69 +68,35 @@ module cpu_private_reg_top #(
   // Define SW related signals
   // Format: <reg>_<field>_{wd|we|qs}
   //        or <reg>_{wd|we|qs} if field == 1 or 0
-  logic hart_ack_qs;
-  logic hart_ack_wd;
-  logic hart_ack_we;
-  logic initial_sync_master_qs;
-  logic initial_sync_master_wd;
-  logic initial_sync_master_we;
+  logic [2:0] core_id_qs;
   logic hart_intc_ack_qs;
   logic hart_intc_ack_wd;
   logic hart_intc_ack_we;
-  logic external_debug_req_qs;
 
   // Register instances
-  // R[hart_ack]: V(False)
+  // R[core_id]: V(False)
 
   prim_subreg #(
-    .DW      (1),
-    .SWACCESS("RW"),
-    .RESVAL  (1'h0)
-  ) u_hart_ack (
+    .DW      (3),
+    .SWACCESS("RO"),
+    .RESVAL  (3'h0)
+  ) u_core_id (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
 
-    // from register interface
-    .we     (hart_ack_we),
-    .wd     (hart_ack_wd),
+    .we     (1'b0),
+    .wd     ('0  ),
 
     // from internal hardware
-    .de     (1'b0),
-    .d      ('0  ),
+    .de     (hw2reg.core_id.de),
+    .d      (hw2reg.core_id.d ),
 
     // to internal hardware
     .qe     (),
-    .q      (reg2hw.hart_ack.q ),
+    .q      (),
 
     // to register interface (read)
-    .qs     (hart_ack_qs)
-  );
-
-
-  // R[initial_sync_master]: V(False)
-
-  prim_subreg #(
-    .DW      (1),
-    .SWACCESS("RW"),
-    .RESVAL  (1'h0)
-  ) u_initial_sync_master (
-    .clk_i   (clk_i    ),
-    .rst_ni  (rst_ni  ),
-
-    // from register interface
-    .we     (initial_sync_master_we),
-    .wd     (initial_sync_master_wd),
-
-    // from internal hardware
-    .de     (1'b0),
-    .d      ('0  ),
-
-    // to internal hardware
-    .qe     (),
-    .q      (reg2hw.initial_sync_master.q ),
-
-    // to register interface (read)
-    .qs     (initial_sync_master_qs)
+    .qs     (core_id_qs)
   );
 
 
@@ -161,41 +127,13 @@ module cpu_private_reg_top #(
   );
 
 
-  // R[external_debug_req]: V(False)
-
-  prim_subreg #(
-    .DW      (1),
-    .SWACCESS("RO"),
-    .RESVAL  (1'h0)
-  ) u_external_debug_req (
-    .clk_i   (clk_i    ),
-    .rst_ni  (rst_ni  ),
-
-    .we     (1'b0),
-    .wd     ('0  ),
-
-    // from internal hardware
-    .de     (hw2reg.external_debug_req.de),
-    .d      (hw2reg.external_debug_req.d ),
-
-    // to internal hardware
-    .qe     (),
-    .q      (),
-
-    // to register interface (read)
-    .qs     (external_debug_req_qs)
-  );
 
 
-
-
-  logic [3:0] addr_hit;
+  logic [1:0] addr_hit;
   always_comb begin
     addr_hit = '0;
-    addr_hit[0] = (reg_addr == CPU_PRIVATE_HART_ACK_OFFSET);
-    addr_hit[1] = (reg_addr == CPU_PRIVATE_INITIAL_SYNC_MASTER_OFFSET);
-    addr_hit[2] = (reg_addr == CPU_PRIVATE_HART_INTC_ACK_OFFSET);
-    addr_hit[3] = (reg_addr == CPU_PRIVATE_EXTERNAL_DEBUG_REQ_OFFSET);
+    addr_hit[0] = (reg_addr == CPU_PRIVATE_CORE_ID_OFFSET);
+    addr_hit[1] = (reg_addr == CPU_PRIVATE_HART_INTC_ACK_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -204,18 +142,10 @@ module cpu_private_reg_top #(
   always_comb begin
     wr_err = (reg_we &
               ((addr_hit[0] & (|(CPU_PRIVATE_PERMIT[0] & ~reg_be))) |
-               (addr_hit[1] & (|(CPU_PRIVATE_PERMIT[1] & ~reg_be))) |
-               (addr_hit[2] & (|(CPU_PRIVATE_PERMIT[2] & ~reg_be))) |
-               (addr_hit[3] & (|(CPU_PRIVATE_PERMIT[3] & ~reg_be)))));
+               (addr_hit[1] & (|(CPU_PRIVATE_PERMIT[1] & ~reg_be)))));
   end
 
-  assign hart_ack_we = addr_hit[0] & reg_we & !reg_error;
-  assign hart_ack_wd = reg_wdata[0];
-
-  assign initial_sync_master_we = addr_hit[1] & reg_we & !reg_error;
-  assign initial_sync_master_wd = reg_wdata[0];
-
-  assign hart_intc_ack_we = addr_hit[2] & reg_we & !reg_error;
+  assign hart_intc_ack_we = addr_hit[1] & reg_we & !reg_error;
   assign hart_intc_ack_wd = reg_wdata[0];
 
   // Read data return
@@ -223,19 +153,11 @@ module cpu_private_reg_top #(
     reg_rdata_next = '0;
     unique case (1'b1)
       addr_hit[0]: begin
-        reg_rdata_next[0] = hart_ack_qs;
+        reg_rdata_next[2:0] = core_id_qs;
       end
 
       addr_hit[1]: begin
-        reg_rdata_next[0] = initial_sync_master_qs;
-      end
-
-      addr_hit[2]: begin
         reg_rdata_next[0] = hart_intc_ack_qs;
-      end
-
-      addr_hit[3]: begin
-        reg_rdata_next[0] = external_debug_req_qs;
       end
 
       default: begin
@@ -260,7 +182,7 @@ endmodule
 
 module cpu_private_reg_top_intf
 #(
-  parameter int AW = 4,
+  parameter int AW = 3,
   localparam int DW = 32
 ) (
   input logic clk_i,

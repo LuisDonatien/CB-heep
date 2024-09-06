@@ -27,14 +27,13 @@ int main(int argc, char *argv[])
 
 volatile unsigned int *P=0xF0109000;
 volatile unsigned int *Safe_config_reg= SAFE_REG_BASEADDRESS;        
-        printf("Hart: %d init the program...\n",*P); 
+//        printf("Hart: %d init the program...\n",*P); 
         
         //Entering Safe mode TMR
         TMR_Safe_Activate();
-
+/*
         *(Safe_config_reg+3) = 0; //Critical Section
         asm volatile("fence");
-
         asm volatile("csrr t3, mhartid");      
         asm volatile("li a6, 0xF0109000");
         asm volatile("sw t3, 0(a6)");
@@ -61,12 +60,13 @@ int h=*P;
         *(Safe_config_reg+3) = 0x0; //Critical Section
         asm volatile("fence");
         //End Safe mode TMR
+*/
         TMR_Safe_Stop();
  
 
         CSR_READ(CSR_REG_MHARTID,P);
-
-        printf("Hart: %d finish the program...%d\n",*P); 
+        //while(1){}
+//        printf("Hart: %d finish the program...%d\n",*P); 
     
         return EXIT_SUCCESS;
 }
@@ -79,8 +79,6 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         //Starting Configuration
         *Safe_config_reg = 0x1;
         *(Safe_config_reg+1) = 0x1;
-        
-        *Priv_Reg =0x0;
 
         //Activate Interrupt 
         // Enable interrupt on processor side
@@ -249,7 +247,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         asm volatile("sw t6, 120(t6)");
 
         //Master Sync Priv Reg
-        *(Priv_Reg+1) = 0x1;
+        *(Safe_config_reg+5) = 0x1;
         asm volatile(".ALIGN(2)");
         //PC Program Counter
         asm volatile("auipc t5, 0");
@@ -259,7 +257,6 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         asm volatile("wfi");  
 
         //Reset Values
-        *(Priv_Reg+2) = 0x0;
         *(Priv_Reg+1) = 0x0;
 }
 
@@ -267,14 +264,14 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
 void TMR_Safe_Stop(void){
 volatile unsigned int *Safe_config_reg= SAFE_REG_BASEADDRESS;
         *(Safe_config_reg+1) = 0x0;
-        *(Safe_config_reg+2) = 0x2;
+        *(Safe_config_reg+2) = 0x4;
         asm volatile("fence");
         asm volatile("wfi");
 }
 
 void handler_tmr_recoverysync(void){ 
   //ACK INTC
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;      //Handshake ACK 
           //Modify mepc
   
@@ -451,7 +448,7 @@ void handler_tmr_recoverysync(void){
 
 void handler_safe_fsm(void) { 
 
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
   *Priv_Reg = 0x0;
 
@@ -469,7 +466,7 @@ void handler_safe_fsm(void) {
 }
 
 void handler_tmr_dmcontext_copy(void){
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
   *Priv_Reg = 0x0;
 
@@ -637,7 +634,7 @@ void handler_tmr_dmcontext_copy(void){
 
 }
 void handler_tmr_dmshsync(void){
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
   *Priv_Reg = 0x0;
 

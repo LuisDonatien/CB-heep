@@ -56,10 +56,12 @@ module cve2_top import cve2_pkg::*; #(
   input  logic                         irq_external_i,
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
+  output logic                         new_irq_o,
 
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
+  output logic                         debug_mode_o,
 
   // RISC-V Formal Interface
   // Does not comply with the coding standards of _i/_o suffixes, but follows
@@ -193,9 +195,11 @@ module cve2_top import cve2_pkg::*; #(
     .irq_fast_i,
     .irq_nm_i,
     .irq_pending_o(irq_pending),
+    .new_irq_o,
 
     .debug_req_i,
     .crash_dump_o,
+    .debug_mode_o,
 
 `ifdef RVFI
     .rvfi_valid,

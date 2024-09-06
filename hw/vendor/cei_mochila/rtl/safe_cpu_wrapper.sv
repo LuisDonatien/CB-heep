@@ -8,6 +8,7 @@ module safe_cpu_wrapper
   import cei_mochila_pkg::*;
 #(
     parameter NHARTS = 3,
+    parameter HARTID = 32'h01,
     parameter DM_HALTADDRESS = cei_mochila_pkg::DEBUG_BOOTROM_START_ADDRESS + 32'h50
 ) (
     // Clock and Reset
@@ -29,7 +30,7 @@ module safe_cpu_wrapper
 
 
     // Debug Interface
-    input logic [NHARTS-1 : 0] debug_req_i
+    input logic       debug_req_i
 );
 
 localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
@@ -40,8 +41,8 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
 
     logic [NHARTS-1:0][31:0] intr;
     logic [NHARTS-1:0] debug_req;
-
-    logic [NHARTS-1:0] Initial_Sync_Master_s;
+    logic en_ext_debug_s;
+    logic Initial_Sync_Master_s;
     logic [NHARTS-1:0] Hart_ack_s;
     logic [NHARTS-1:0] Hart_wfi_s;
     logic [NHARTS-1:0] Hart_intc_ack_s;
@@ -56,7 +57,8 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
     logic [NHARTS-1:0] intc_sync_s;
     logic [NHARTS-1:0] intc_halt_s;
     logic [NHARTS-1:0] sleep_s;
-
+    logic [NHARTS-1:0] debug_mode_s;
+    logic [NHARTS-1:0] new_irq_s;
 
     // CPU ports
     obi_req_t  [NHARTS-1 : 0] core_instr_req;
@@ -93,12 +95,18 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
     reg_pkg::reg_rsp_t  reg_rsp;
 
 
+    //Configuration IDs Cores
 
+    logic [2:0][NHARTS-1:0] Core_ID;
+    assign Core_ID[0] = {3'b001};
+    assign Core_ID[1] = {3'b010};
+    assign Core_ID[2] = {3'b100};
 
 
 //Cores System//
 
 ext_cpu_system #(
+        .HARTID        (HARTID),
         .DM_HALTADDRESS  (DM_HALTADDRESS)
     )ext_cpu_system_i(
     .clk_i,
@@ -120,10 +128,13 @@ ext_cpu_system #(
     //Core 2
     .intc_core2(intr[2]),
 
+    .new_irq_o(new_irq_s),
+
     .sleep_o(sleep_s),
 
     // Debug Interface
-    .debug_req_i(debug_req)
+    .debug_req_i(debug_req),
+    .debug_mode_o(debug_mode_s)
 );
 
 safe_wrapper_ctrl #(
@@ -140,8 +151,12 @@ safe_wrapper_ctrl #(
     .master_core_o(master_core_s),
     .safe_mode_o         (safe_mode_s),
     .safe_configuration_o(safe_configuration_s),
-    .critical_section_o(critical_section_s)
+    .critical_section_o(critical_section_s),
+    .Initial_Sync_Master_o(Initial_Sync_Master_s),
+    //.Debug_ext_req_i(debug_req_i), //Check if debug_req comes from FSM or external debug Todo: change to 1 the extenal req
+    .en_ext_debug_i(en_ext_debug_s) //Todo: other more elegant solution for debugging
     );
+
 
 periph_to_reg #(
       .req_t(reg_pkg::reg_req_t),
@@ -175,7 +190,7 @@ safe_FSM safe_FSM_i (
     .Safe_mode_i          (safe_mode_s),
     .Safe_configuration_i (safe_configuration_s),
     .Initial_Sync_Master_i(Initial_Sync_Master_s), 
-    .Halt_ack_i(Hart_ack_s), 
+    .Halt_ack_i(debug_mode_s), 
     .Hart_wfi_i(sleep_s),
     .Hart_intc_ack_i(Hart_intc_ack_s),
     .Select_wfi_core_o      (Select_wfi_core_s),
@@ -191,7 +206,8 @@ safe_FSM safe_FSM_i (
     .Tmr_voter_enable_o(tmr_voter_enable_s),
     .Dmr_comparator_enable_o(),
     .Tmr_dmr_config_o(tmr_dmr_config_s),
-    .Dual_mode_tmr_o(dual_mode_tmr_s)
+    .Dual_mode_tmr_o(dual_mode_tmr_s),
+    .en_ext_debug_req_o(en_ext_debug_s)
 );
       assign intr[0] = {
     12'b0, Interrupt_DMSH_Sync_s[0], Interrupt_CpyResync_s[0], intc_sync_s[0], Interrupt_swResync_s[0], 16'b0 
@@ -203,9 +219,10 @@ safe_FSM safe_FSM_i (
     12'b0, Interrupt_DMSH_Sync_s[2], Interrupt_CpyResync_s[2], intc_sync_s[2], Interrupt_swResync_s[2], 16'b0 
   };
 
-  assign debug_req[0] = debug_req_i[0] || intc_halt_s[0];
-  assign debug_req[1] = debug_req_i[1] || intc_halt_s[1];
-  assign debug_req[2] = debug_req_i[2] || intc_halt_s[2];
+  //Todo future posibility to debug during TMR_SYNC or DMR_IDLE_SYNC
+  assign debug_req[0] = (debug_req_i && en_ext_debug_s && master_core_s[0]) || intc_halt_s[0];
+  assign debug_req[1] = (debug_req_i && en_ext_debug_s && master_core_s[1]) || intc_halt_s[1];
+  assign debug_req[2] = (debug_req_i && en_ext_debug_s && master_core_s[2]) || intc_halt_s[2];
 
 
 //*****************Safety_Multiplexer*********************//
@@ -422,9 +439,7 @@ end
 //*******************************************************//
 
 // Private CPU Register
-
 for(genvar i=0; i<NHARTS;i++) begin :priv_reg
-
   // ARCHITECTURE
   // ------------
   //                ,---- SLAVE[0] (System Bus)
@@ -484,10 +499,8 @@ for(genvar i=0; i<NHARTS;i++) begin :priv_reg
     .reg_req_i(cpu_reg_req[i]),
     .reg_rsp_o(cpu_reg_rsp[i]),
 
-    .Hart_ack_o(Hart_ack_s[i]),
-    .Initial_Sync_Master_o(Initial_Sync_Master_s[i]),
-    .Hart_intc_ack_o(Hart_intc_ack_s[i]),
-    .Debug_ext_req_i(intc_halt_s[i]) //Check if debug_req comes from FSM or external debug
+    .Core_id_i(Core_ID[i]), 
+    .Hart_intc_ack_o(Hart_intc_ack_s[i])
     );
 
 end

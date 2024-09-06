@@ -10,7 +10,7 @@
 module safe_wrapper_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 4
+  parameter int AW = 5
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -18,6 +18,7 @@ module safe_wrapper_ctrl_reg_top #(
   output reg_rsp_t reg_rsp_o,
   // To HW
   output safe_wrapper_ctrl_reg_pkg::safe_wrapper_ctrl_reg2hw_t reg2hw, // Write
+  input  safe_wrapper_ctrl_reg_pkg::safe_wrapper_ctrl_hw2reg_t hw2reg, // Read
 
 
   // Config
@@ -79,6 +80,10 @@ module safe_wrapper_ctrl_reg_top #(
   logic critical_section_qs;
   logic critical_section_wd;
   logic critical_section_we;
+  logic external_debug_req_qs;
+  logic initial_sync_master_qs;
+  logic initial_sync_master_wd;
+  logic initial_sync_master_we;
 
   // Register instances
   // R[safe_configuration]: V(False)
@@ -189,15 +194,70 @@ module safe_wrapper_ctrl_reg_top #(
   );
 
 
+  // R[external_debug_req]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RO"),
+    .RESVAL  (1'h0)
+  ) u_external_debug_req (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    .we     (1'b0),
+    .wd     ('0  ),
+
+    // from internal hardware
+    .de     (hw2reg.external_debug_req.de),
+    .d      (hw2reg.external_debug_req.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (external_debug_req_qs)
+  );
 
 
-  logic [3:0] addr_hit;
+  // R[initial_sync_master]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_initial_sync_master (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (initial_sync_master_we),
+    .wd     (initial_sync_master_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.initial_sync_master.q ),
+
+    // to register interface (read)
+    .qs     (initial_sync_master_qs)
+  );
+
+
+
+
+  logic [5:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_OFFSET);
     addr_hit[1] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_MODE_OFFSET);
     addr_hit[2] = (reg_addr == SAFE_WRAPPER_CTRL_MASTER_CORE_OFFSET);
     addr_hit[3] = (reg_addr == SAFE_WRAPPER_CTRL_CRITICAL_SECTION_OFFSET);
+    addr_hit[4] = (reg_addr == SAFE_WRAPPER_CTRL_EXTERNAL_DEBUG_REQ_OFFSET);
+    addr_hit[5] = (reg_addr == SAFE_WRAPPER_CTRL_INITIAL_SYNC_MASTER_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -208,7 +268,9 @@ module safe_wrapper_ctrl_reg_top #(
               ((addr_hit[0] & (|(SAFE_WRAPPER_CTRL_PERMIT[0] & ~reg_be))) |
                (addr_hit[1] & (|(SAFE_WRAPPER_CTRL_PERMIT[1] & ~reg_be))) |
                (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be))) |
-               (addr_hit[3] & (|(SAFE_WRAPPER_CTRL_PERMIT[3] & ~reg_be)))));
+               (addr_hit[3] & (|(SAFE_WRAPPER_CTRL_PERMIT[3] & ~reg_be))) |
+               (addr_hit[4] & (|(SAFE_WRAPPER_CTRL_PERMIT[4] & ~reg_be))) |
+               (addr_hit[5] & (|(SAFE_WRAPPER_CTRL_PERMIT[5] & ~reg_be)))));
   end
 
   assign safe_configuration_we = addr_hit[0] & reg_we & !reg_error;
@@ -222,6 +284,9 @@ module safe_wrapper_ctrl_reg_top #(
 
   assign critical_section_we = addr_hit[3] & reg_we & !reg_error;
   assign critical_section_wd = reg_wdata[0];
+
+  assign initial_sync_master_we = addr_hit[5] & reg_we & !reg_error;
+  assign initial_sync_master_wd = reg_wdata[0];
 
   // Read data return
   always_comb begin
@@ -241,6 +306,14 @@ module safe_wrapper_ctrl_reg_top #(
 
       addr_hit[3]: begin
         reg_rdata_next[0] = critical_section_qs;
+      end
+
+      addr_hit[4]: begin
+        reg_rdata_next[0] = external_debug_req_qs;
+      end
+
+      addr_hit[5]: begin
+        reg_rdata_next[0] = initial_sync_master_qs;
       end
 
       default: begin
@@ -265,7 +338,7 @@ endmodule
 
 module safe_wrapper_ctrl_reg_top_intf
 #(
-  parameter int AW = 4,
+  parameter int AW = 5,
   localparam int DW = 32
 ) (
   input logic clk_i,
@@ -273,6 +346,7 @@ module safe_wrapper_ctrl_reg_top_intf
   REG_BUS.in  regbus_slave,
   // To HW
   output safe_wrapper_ctrl_reg_pkg::safe_wrapper_ctrl_reg2hw_t reg2hw, // Write
+  input  safe_wrapper_ctrl_reg_pkg::safe_wrapper_ctrl_hw2reg_t hw2reg, // Read
   // Config
   input devmode_i // If 1, explicit error return for unmapped register access
 );
@@ -306,6 +380,7 @@ module safe_wrapper_ctrl_reg_top_intf
     .reg_req_i(s_reg_req),
     .reg_rsp_o(s_reg_rsp),
     .reg2hw, // Write
+    .hw2reg, // Read
     .devmode_i
   );
   

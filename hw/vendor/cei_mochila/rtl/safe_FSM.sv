@@ -15,7 +15,7 @@ module safe_FSM
     input logic Safe_mode_i,
     input logic tmr_critical_section_i,
     input logic Safe_configuration_i,
-    input logic [NHARTS-1:0] Initial_Sync_Master_i,
+    input logic Initial_Sync_Master_i,
     input logic [NHARTS-1:0] Halt_ack_i,
     input logic [NHARTS-1:0] Hart_wfi_i,
     input logic [NHARTS-1:0] Hart_intc_ack_i,
@@ -32,7 +32,8 @@ module safe_FSM
     output logic Tmr_voter_enable_o,
     output logic Dmr_comparator_enable_o,
     input logic [NHARTS-1:0] voter_id_error,
-    input logic tmr_error
+    input logic tmr_error,
+    output logic en_ext_debug_req_o
 );
   // FSM state encoding
   typedef enum logic [3:0] {
@@ -133,6 +134,19 @@ module safe_FSM
         endcase
       end
 
+      always_comb begin
+        en_ext_debug_req_o = 1'b0;
+
+        unique case (ctrl_safe_fsm_cs)  
+          IDLE:
+          begin
+            en_ext_debug_req_o = 1'b1;          
+          end
+          default: begin
+          en_ext_debug_req_o = 1'b0;     
+          end
+        endcase  
+      end
 // TMR Safe FSM 
 // Mealy FSM depending on Master Core for different outputs behavior
 
@@ -160,7 +174,7 @@ module safe_FSM
           TMR_IDLE:
           begin
             if (ctrl_safe_fsm_cs == TMR_MODE && Safe_mode_i == 1'b1 ) begin
-              if (Master_Core_i[i] == 1'b1 && Initial_Sync_Master_i[i] == 1'b1)
+              if (Master_Core_i[i] == 1'b1 && Initial_Sync_Master_i == 1'b1)
                 ctrl_tmr_fsm_ns[i] = TMR_SH_HALT;
               else if (Master_Core_i[i] == 1'b0 && (halt_req_s) == 1'b1)
                 ctrl_tmr_fsm_ns[i] = TMR_SH_HALT; 
@@ -318,7 +332,7 @@ module safe_FSM
           end
           TMR_REC_SWSYNC:
           begin
-            if(~Hart_intc_ack_i[0] && ~Hart_intc_ack_i[1] && ~Hart_intc_ack_i[2])
+            if(~Hart_intc_ack_i[0] && ~Hart_intc_ack_i[1] && ~Hart_intc_ack_i[2] /*&& tmr_error == 1'b0*/)
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
             else
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SWSYNC;
@@ -520,7 +534,7 @@ assign Dual_mode_tmr_o = (dual_mode_tmr_s[0] || dual_mode_tmr_s[1] || dual_mode_
 always_comb begin
   dbg_halt_req_general_s = '0;
   if (enable_interrupt_halt_s[0] == 1'b1 || enable_interrupt_halt_s[1] == 1'b1 || enable_interrupt_halt_s[2] == 1'b1) begin
-    dbg_halt_req_general_s= ~Initial_Sync_Master_i;
+    dbg_halt_req_general_s= ~Master_Core_i;
   end
 end
 

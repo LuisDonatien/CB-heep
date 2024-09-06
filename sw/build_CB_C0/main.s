@@ -19,249 +19,244 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
    8:	c398                	sw	a4,0(a5)
         *(Safe_config_reg+1) = 0x1;
    a:	c3d8                	sw	a4,4(a5)
-        
-        *Priv_Reg =0x0;
-   c:	ff0007b7          	lui	a5,0xff000
-  10:	0007a023          	sw	zero,0(a5) # ff000000 <.LASF2+0xfefffe6a>
 
         //Activate Interrupt 
         // Enable interrupt on processor side
         // Enable global interrupt for machine-level interrupts
         asm volatile("csrr t6, mstatus");
-  14:	30002ff3          	csrr	t6,mstatus
+   c:	30002ff3          	csrr	t6,mstatus
         asm volatile("ori t6,t6,0x08");
-  18:	008fef93          	ori	t6,t6,8
+  10:	008fef93          	ori	t6,t6,8
         asm volatile("csrw mstatus, t6"); 
-  1c:	300f9073          	csrw	mstatus,t6
+  14:	300f9073          	csrw	mstatus,t6
         // Set mie.MEIE bit to one to enable machine-level external interrupts
         asm volatile("li   t6,0xFFFF0000"); 
-  20:	7fc1                	lui	t6,0xffff0
+  18:	7fc1                	lui	t6,0xffff0
         asm volatile("csrw mie, t6"); //mask = 1 << 31
-  22:	304f9073          	csrw	mie,t6
+  1a:	304f9073          	csrw	mie,t6
 
         
     //Control & Status Register
     //Set Base Address
         asm volatile("li   t5,0xF0108000");
-  26:	f0108f37          	lui	t5,0xf0108
+  1e:	f0108f37          	lui	t5,0xf0108
     //Machine Status
     //mstatus   0x300
         asm volatile("csrr t6, mstatus");
-  2a:	30002ff3          	csrr	t6,mstatus
+  22:	30002ff3          	csrr	t6,mstatus
         asm volatile("sw    t6,0(t5)");
-  2e:	01ff2023          	sw	t6,0(t5) # f0108000 <.LASF2+0xf0107e6a>
+  26:	01ff2023          	sw	t6,0(t5) # f0108000 <.LFE6+0xf0107e9a>
 
     //Machine Interrupt Enable
     //mie       0x304
         asm volatile("csrr t6, mie");
-  32:	30402ff3          	csrr	t6,mie
+  2a:	30402ff3          	csrr	t6,mie
         asm volatile("sw    t6,4(t5)"); 
-  36:	01ff2223          	sw	t6,4(t5)
+  2e:	01ff2223          	sw	t6,4(t5)
 
     //Machine Trap-Vector
     //mtvec     0x305
         asm volatile("csrr t6, mtvec");
-  3a:	30502ff3          	csrr	t6,mtvec
+  32:	30502ff3          	csrr	t6,mtvec
         asm volatile("sw    t6,8(t5)");
-  3e:	01ff2423          	sw	t6,8(t5)
+  36:	01ff2423          	sw	t6,8(t5)
 
     //Machine Exception Program Counter
     //mepc      0x341
         asm volatile("csrr t6, mepc");
-  42:	34102ff3          	csrr	t6,mepc
+  3a:	34102ff3          	csrr	t6,mepc
         asm volatile("sw    t6,12(t5)"); 
-  46:	01ff2623          	sw	t6,12(t5)
+  3e:	01ff2623          	sw	t6,12(t5)
 
     //Machine Trap Value Register
     //mtval     0x343
         asm volatile("csrr t6, mtval");
-  4a:	34302ff3          	csrr	t6,mtval
+  42:	34302ff3          	csrr	t6,mtval
         asm volatile("sw    t6,16(t5)");
-  4e:	01ff2823          	sw	t6,16(t5)
+  46:	01ff2823          	sw	t6,16(t5)
 
 
     //Register File
         //x1    ra
         asm volatile("li t6, 0xF0108100");
-  52:	f0108fb7          	lui	t6,0xf0108
-  56:	100f8f93          	addi	t6,t6,256 # f0108100 <.LASF2+0xf0107f6a>
+  4a:	f0108fb7          	lui	t6,0xf0108
+  4e:	100f8f93          	addi	t6,t6,256 # f0108100 <.LFE6+0xf0107f9a>
         asm volatile("sw ra, 0(t6)");
-  5a:	001fa023          	sw	ra,0(t6)
+  52:	001fa023          	sw	ra,0(t6)
 
         //x2    sp
 //        asm volatile("li t6, 0xC804");
         asm volatile("sw sp, 4(t6)");
-  5e:	002fa223          	sw	sp,4(t6)
+  56:	002fa223          	sw	sp,4(t6)
 
         //x3    gp
 //        asm volatile("li t6, 0xC808");
         asm volatile("sw gp, 8(t6)"); 
-  62:	003fa423          	sw	gp,8(t6)
+  5a:	003fa423          	sw	gp,8(t6)
 
         //x4    tp
 //        asm volatile("li t6, 0xC80C");
         asm volatile("sw tp, 12(t6)");
-  66:	004fa623          	sw	tp,12(t6)
+  5e:	004fa623          	sw	tp,12(t6)
 
         //x5    t0
 //        asm volatile("li t6, 0xC810");
         asm volatile("sw t0, 16(t6)");   
-  6a:	005fa823          	sw	t0,16(t6)
+  62:	005fa823          	sw	t0,16(t6)
 
         //x6    t1
 //        asm volatile("li t6, 0xC814");
         asm volatile("sw t1, 20(t6)");       
-  6e:	006faa23          	sw	t1,20(t6)
+  66:	006faa23          	sw	t1,20(t6)
 
         //x7    t2
 //        asm volatile("li t6, 0xC818");
         asm volatile("sw t2, 24(t6)");
-  72:	007fac23          	sw	t2,24(t6)
+  6a:	007fac23          	sw	t2,24(t6)
 
         //x8   s0/fp
 //        asm volatile("li t6, 0xC81C");
         asm volatile("sw s0, 28(t6)");
-  76:	008fae23          	sw	s0,28(t6)
+  6e:	008fae23          	sw	s0,28(t6)
 
         //x9    s1
 //        asm volatile("li t6, 0xC820");
         asm volatile("sw s1, 32(t6)");
-  7a:	029fa023          	sw	s1,32(t6)
+  72:	029fa023          	sw	s1,32(t6)
 
         //x10   a0 
 //        asm volatile("li t6, 0xC824");
         asm volatile("sw a0, 36(t6)");
-  7e:	02afa223          	sw	a0,36(t6)
+  76:	02afa223          	sw	a0,36(t6)
 
         //x11   a1 
 //        asm volatile("li t6, 0xC828");
         asm volatile("sw a1, 40(t6)");
-  82:	02bfa423          	sw	a1,40(t6)
+  7a:	02bfa423          	sw	a1,40(t6)
 
         //x12   a2 
 //        asm volatile("li t6, 0xC82C");
         asm volatile("sw a2, 44(t6)");
-  86:	02cfa623          	sw	a2,44(t6)
+  7e:	02cfa623          	sw	a2,44(t6)
 
         //x13   a3 
 //        asm volatile("li t6, 0xC830");
         asm volatile("sw a3, 48(t6)");
-  8a:	02dfa823          	sw	a3,48(t6)
+  82:	02dfa823          	sw	a3,48(t6)
 
 
         //x14   a4 
 //        asm volatile("li t6, 0xC834");
         asm volatile("sw a4, 52(t6)");
-  8e:	02efaa23          	sw	a4,52(t6)
+  86:	02efaa23          	sw	a4,52(t6)
 
         //x15   a5 
 //        asm volatile("li t6, 0xC838");
         asm volatile("sw a5, 56(t6)");
-  92:	02ffac23          	sw	a5,56(t6)
+  8a:	02ffac23          	sw	a5,56(t6)
 
         //x16   a6 
 //        asm volatile("li t6, 0xC83C");
         asm volatile("sw a6, 60(t6)");
-  96:	030fae23          	sw	a6,60(t6)
+  8e:	030fae23          	sw	a6,60(t6)
 
         //x17   a7 
 //        asm volatile("li t6, 0xC840");
         asm volatile("sw a7, 64(t6)");
-  9a:	051fa023          	sw	a7,64(t6)
+  92:	051fa023          	sw	a7,64(t6)
 
         //x18   s2 
 //        asm volatile("li t6, 0xC844");
         asm volatile("sw s2, 68(t6)");
-  9e:	052fa223          	sw	s2,68(t6)
+  96:	052fa223          	sw	s2,68(t6)
 
         //x19   s3 
 //        asm volatile("li t6, 0xC848");
         asm volatile("sw s3, 72(t6)");
-  a2:	053fa423          	sw	s3,72(t6)
+  9a:	053fa423          	sw	s3,72(t6)
 
         //x20   s4 
 //        asm volatile("li t6, 0xC84C");
         asm volatile("sw s4, 76(t6)");
-  a6:	054fa623          	sw	s4,76(t6)
+  9e:	054fa623          	sw	s4,76(t6)
 
         //x21   s5 
 //        asm volatile("li t6, 0xC850");
         asm volatile("sw s5, 80(t6)");
-  aa:	055fa823          	sw	s5,80(t6)
+  a2:	055fa823          	sw	s5,80(t6)
 
         //x22   s6 
 //        asm volatile("li t6, 0xC854");
         asm volatile("sw s6, 84(t6)");
-  ae:	056faa23          	sw	s6,84(t6)
+  a6:	056faa23          	sw	s6,84(t6)
 
         //x23   s7 
 //        asm volatile("li t6, 0xC858");
         asm volatile("sw s7, 88(t6)");
-  b2:	057fac23          	sw	s7,88(t6)
+  aa:	057fac23          	sw	s7,88(t6)
 
         //x24   s8 
 //        asm volatile("li t6, 0xC85C");
         asm volatile("sw s8, 92(t6)");
-  b6:	058fae23          	sw	s8,92(t6)
+  ae:	058fae23          	sw	s8,92(t6)
 
         //x25   s9 
 //        asm volatile("li t6, 0xC860");
         asm volatile("sw s9, 96(t6)");
-  ba:	079fa023          	sw	s9,96(t6)
+  b2:	079fa023          	sw	s9,96(t6)
 
         //x26   s10 
 //        asm volatile("li t6, 0xC864");
         asm volatile("sw s10, 100(t6)");
-  be:	07afa223          	sw	s10,100(t6)
+  b6:	07afa223          	sw	s10,100(t6)
 
         //x27   s11 
 //        asm volatile("li t6, 0xC868");
         asm volatile("sw s11, 104(t6)");
-  c2:	07bfa423          	sw	s11,104(t6)
+  ba:	07bfa423          	sw	s11,104(t6)
 
         //x28   t3 
 //        asm volatile("li t6, 0xC86C");
         asm volatile("sw t3, 108(t6)");
-  c6:	07cfa623          	sw	t3,108(t6)
+  be:	07cfa623          	sw	t3,108(t6)
 
         //x29   t4 
 //        asm volatile("li t6, 0xC870");
         asm volatile("sw t4, 112(t6)"); 
-  ca:	07dfa823          	sw	t4,112(t6)
+  c2:	07dfa823          	sw	t4,112(t6)
 
         //x30   t5  
 //        asm volatile("li t6, 0xC874");
         asm volatile("sw t5, 116(t6)"); 
-  ce:	07efaa23          	sw	t5,116(t6)
+  c6:	07efaa23          	sw	t5,116(t6)
 
         //x31   t6 
 //        asm volatile("li t6, 0xC878");
         asm volatile("sw t6, 120(t6)");
-  d2:	07ffac23          	sw	t6,120(t6)
+  ca:	07ffac23          	sw	t6,120(t6)
 
         //Master Sync Priv Reg
-        *(Priv_Reg+1) = 0x1;
-  d6:	c3d8                	sw	a4,4(a5)
-  d8:	0001                	nop
+        *(Safe_config_reg+5) = 0x1;
+  ce:	cbd8                	sw	a4,20(a5)
+  d0:	0001                	nop
         asm volatile(".ALIGN(2)");
         //PC Program Counter
         asm volatile("auipc t5, 0");
-  da:	00000f17          	auipc	t5,0x0
+  d2:	00000f17          	auipc	t5,0x0
         asm volatile("sw t5, 124(t6)");
-  de:	07efae23          	sw	t5,124(t6)
+  d6:	07efae23          	sw	t5,124(t6)
 
         asm volatile ("fence"); 
-  e2:	0ff0000f          	fence
+  da:	0ff0000f          	fence
         asm volatile("wfi");  
-  e6:	10500073          	wfi
+  de:	10500073          	wfi
 
         //Reset Values
-        *(Priv_Reg+2) = 0x0;
-  ea:	0007a423          	sw	zero,8(a5)
         *(Priv_Reg+1) = 0x0;
-  ee:	0007a223          	sw	zero,4(a5)
+  e2:	ff0007b7          	lui	a5,0xff000
+  e6:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
 }
-  f2:	8082                	ret
+  ea:	8082                	ret
 
 Disassembly of section .text.TMR_Safe_Stop:
 
@@ -275,9 +270,9 @@ void TMR_Safe_Stop(void){
 volatile unsigned int *Safe_config_reg= SAFE_REG_BASEADDRESS;
         *(Safe_config_reg+1) = 0x0;
    2:	f00207b7          	lui	a5,0xf0020
-   6:	0007a223          	sw	zero,4(a5) # f0020004 <.LASF2+0xf001fe6e>
-        *(Safe_config_reg+2) = 0x2;
-   a:	4709                	li	a4,2
+   6:	0007a223          	sw	zero,4(a5) # f0020004 <.LFE6+0xf001fe9e>
+        *(Safe_config_reg+2) = 0x4;
+   a:	4711                	li	a4,4
    c:	c798                	sw	a4,8(a5)
         asm volatile("fence");
    e:	0ff0000f          	fence
@@ -291,102 +286,28 @@ Disassembly of section .text.startup.main:
 00000000 <main>:
 {
    0:	1141                	addi	sp,sp,-16
-   2:	c422                	sw	s0,8(sp)
-        printf("Hart: %d init the program...\n",*P); 
-   4:	f0109437          	lui	s0,0xf0109
-   8:	400c                	lw	a1,0(s0)
-
-0000000a <.LVL3>:
-   a:	00000537          	lui	a0,0x0
-
-0000000e <.LVL4>:
-   e:	00050513          	mv	a0,a0
-{
-  12:	c606                	sw	ra,12(sp)
-        printf("Hart: %d init the program...\n",*P); 
-  14:	00000097          	auipc	ra,0x0
-  18:	000080e7          	jalr	ra # 14 <.LVL4+0x6>
-
-0000001c <.LVL5>:
+   2:	c606                	sw	ra,12(sp)
         TMR_Safe_Activate();
-  1c:	00000097          	auipc	ra,0x0
-  20:	000080e7          	jalr	ra # 1c <.LVL5>
+   4:	00000097          	auipc	ra,0x0
+   8:	000080e7          	jalr	ra # 4 <main+0x4>
 
-00000024 <.LVL6>:
-        *(Safe_config_reg+3) = 0; //Critical Section
-  24:	f00207b7          	lui	a5,0xf0020
-  28:	0007a623          	sw	zero,12(a5) # f002000c <.LASF2+0xf001fe76>
-        asm volatile("fence");
-  2c:	0ff0000f          	fence
-        asm volatile("csrr t3, mhartid");      
-  30:	f1402e73          	csrr	t3,mhartid
-        asm volatile("li a6, 0xF0109000");
-  34:	f0109837          	lui	a6,0xf0109
-        asm volatile("sw t3, 0(a6)");
-  38:	01c82023          	sw	t3,0(a6) # f0109000 <.LASF2+0xf0108e6a>
-        asm volatile("sw t3, 0(a6)");
-  3c:	01c82023          	sw	t3,0(a6)
-        asm volatile("sw t3, 0(a6)");
-  40:	01c82023          	sw	t3,0(a6)
-        asm volatile("sw t3, 0(a6)"); 
-  44:	01c82023          	sw	t3,0(a6)
-        *(Safe_config_reg+3) = 0x1; //Critical Section
-  48:	4705                	li	a4,1
-  4a:	c7d8                	sw	a4,12(a5)
-        asm volatile("fence");
-  4c:	0ff0000f          	fence
-        asm volatile("csrr t3, mhartid");      
-  50:	f1402e73          	csrr	t3,mhartid
-        asm volatile("li a6, 0xF0109000");
-  54:	f0109837          	lui	a6,0xf0109
-        asm volatile("sw t3, 0(a6)");
-  58:	01c82023          	sw	t3,0(a6) # f0109000 <.LASF2+0xf0108e6a>
-
-0000005c <.LVL7>:
-int h=*P;
-  5c:	4018                	lw	a4,0(s0)
-
-0000005e <.LVL8>:
-        for(j=0;j<1000;j++){
-  5e:	0007a6b7          	lui	a3,0x7a
-  62:	f2c68693          	addi	a3,a3,-212 # 79f2c <.LASF2+0x79d96>
-  66:	9736                	add	a4,a4,a3
-        *P=h;
-  68:	c018                	sw	a4,0(s0)
-        asm volatile("sw t3, 0(a6)");
-  6a:	01c82023          	sw	t3,0(a6)
-        asm volatile("sw t3, 0(a6)");
-  6e:	01c82023          	sw	t3,0(a6)
-        asm volatile("sw t3, 0(a6)");
-  72:	01c82023          	sw	t3,0(a6)
-        asm volatile("sw t3, 0(a6)");
-  76:	01c82023          	sw	t3,0(a6)
-        *(Safe_config_reg+3) = 0x0; //Critical Section
-  7a:	0007a623          	sw	zero,12(a5)
-        asm volatile("fence");
-  7e:	0ff0000f          	fence
+0000000c <.LVL3>:
         TMR_Safe_Stop();
-  82:	00000097          	auipc	ra,0x0
-  86:	000080e7          	jalr	ra # 82 <.LVL8+0x24>
+   c:	00000097          	auipc	ra,0x0
+  10:	000080e7          	jalr	ra # c <.LVL3>
 
-0000008a <.LVL9>:
+00000014 <.LVL4>:
         CSR_READ(CSR_REG_MHARTID,P);
-  8a:	f14027f3          	csrr	a5,mhartid
-  8e:	c01c                	sw	a5,0(s0)
-        printf("Hart: %d finish the program...%d\n",*P); 
-  90:	400c                	lw	a1,0(s0)
-  92:	00000537          	lui	a0,0x0
-  96:	00050513          	mv	a0,a0
-  9a:	00000097          	auipc	ra,0x0
-  9e:	000080e7          	jalr	ra # 9a <.LVL9+0x10>
-
-000000a2 <.LVL10>:
+  14:	f1402773          	csrr	a4,mhartid
 }
-  a2:	40b2                	lw	ra,12(sp)
-  a4:	4422                	lw	s0,8(sp)
-  a6:	4501                	li	a0,0
-  a8:	0141                	addi	sp,sp,16
-  aa:	8082                	ret
+  18:	40b2                	lw	ra,12(sp)
+        CSR_READ(CSR_REG_MHARTID,P);
+  1a:	f01097b7          	lui	a5,0xf0109
+  1e:	c398                	sw	a4,0(a5)
+}
+  20:	4501                	li	a0,0
+  22:	0141                	addi	sp,sp,16
+  24:	8082                	ret
 
 Disassembly of section .text.handler_tmr_recoverysync:
 
@@ -400,11 +321,11 @@ void handler_tmr_recoverysync(void){
    4:	c63a                	sw	a4,12(sp)
    6:	c43e                	sw	a5,8(sp)
   //ACK INTC
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;      //Handshake ACK 
    8:	4705                	li	a4,1
    a:	ff0007b7          	lui	a5,0xff000
-   e:	c798                	sw	a4,8(a5)
+   e:	c3d8                	sw	a4,4(a5)
           //Modify mepc
   
         //Push Stack//
@@ -658,7 +579,7 @@ void handler_tmr_recoverysync(void){
  154:	f8412f83          	lw	t6,-124(sp)
 
         *Priv_Reg = 0x0; //Handshake ACK  
- 158:	0007a423          	sw	zero,8(a5) # ff000008 <.LASF2+0xfefffe72>
+ 158:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
 }
  15c:	4732                	lw	a4,12(sp)
  15e:	47a2                	lw	a5,8(sp)
@@ -680,13 +601,13 @@ void handler_safe_fsm(void) {
    4:	c63a                	sw	a4,12(sp)
    6:	c43e                	sw	a5,8(sp)
 
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
    8:	4705                	li	a4,1
    a:	ff0007b7          	lui	a5,0xff000
-   e:	c798                	sw	a4,8(a5)
+   e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a423          	sw	zero,8(a5) # ff000008 <.LASF2+0xfefffe72>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
         // Enable interrupt on processor side
         // Enable global interrupt for machine-level interrupts
 //        asm volatile("li   t6,0x08");
@@ -712,13 +633,13 @@ void handler_tmr_dmcontext_copy(void){
    2:	1141                	addi	sp,sp,-16
    4:	c63a                	sw	a4,12(sp)
    6:	c43e                	sw	a5,8(sp)
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
    8:	4705                	li	a4,1
    a:	ff0007b7          	lui	a5,0xff000
-   e:	c798                	sw	a4,8(a5)
+   e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a423          	sw	zero,8(a5) # ff000008 <.LASF2+0xfefffe72>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
 
     //Control & Status Register
     //Set Base Address
@@ -732,7 +653,7 @@ void handler_tmr_dmcontext_copy(void){
         asm volatile("csrr t6, mie");
   18:	30402ff3          	csrr	t6,mie
         asm volatile("sw    t6,4(t5)"); 
-  1c:	01ff2223          	sw	t6,4(t5) # f0108004 <.LASF2+0xf0107e6e>
+  1c:	01ff2223          	sw	t6,4(t5) # f0108004 <.LFE6+0xf0107e9e>
 
     //Machine Trap-Vector
     //mtvec     0x305
@@ -750,7 +671,7 @@ void handler_tmr_dmcontext_copy(void){
 
         asm volatile("li t6, 0xF0010200");     //PC -> wfi Debug_Boot_ROM
   30:	f0010fb7          	lui	t6,0xf0010
-  34:	200f8f93          	addi	t6,t6,512 # f0010200 <.LASF2+0xf001006a>
+  34:	200f8f93          	addi	t6,t6,512 # f0010200 <.LFE6+0xf001009a>
         asm volatile("csrw  mepc, t6");
   38:	341f9073          	csrw	mepc,t6
     //Machine Trap Value Register
@@ -765,7 +686,7 @@ void handler_tmr_dmcontext_copy(void){
         //x1    ra
         asm volatile("li t6, 0xF0108100");
   44:	f0108fb7          	lui	t6,0xf0108
-  48:	100f8f93          	addi	t6,t6,256 # f0108100 <.LASF2+0xf0107f6a>
+  48:	100f8f93          	addi	t6,t6,256 # f0108100 <.LFE6+0xf0107f9a>
         asm volatile("sw ra, 0(t6)");
   4c:	001fa023          	sw	ra,0(t6)
 
@@ -915,7 +836,7 @@ void handler_tmr_dmcontext_copy(void){
         //PC -> 0xDebug_BootAddress + 0x200
         asm volatile("li t5, 0xF0010200"); 
   c4:	f0010f37          	lui	t5,0xf0010
-  c8:	200f0f13          	addi	t5,t5,512 # f0010200 <.LASF2+0xf001006a>
+  c8:	200f0f13          	addi	t5,t5,512 # f0010200 <.LFE6+0xf001009a>
         asm volatile("sw t5, 124(t6)");
   cc:	07efae23          	sw	t5,124(t6)
         //x30   t5  
@@ -948,13 +869,13 @@ void handler_tmr_dmshsync(void){
    2:	1141                	addi	sp,sp,-16
    4:	c63a                	sw	a4,12(sp)
    6:	c43e                	sw	a5,8(sp)
-  volatile unsigned int *Priv_Reg = 0xFF000008;
+  volatile unsigned int *Priv_Reg = 0xFF000004;
   *Priv_Reg = 0x1;
    8:	4705                	li	a4,1
    a:	ff0007b7          	lui	a5,0xff000
-   e:	c798                	sw	a4,8(a5)
+   e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a423          	sw	zero,8(a5) # ff000008 <.LASF2+0xfefffe72>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
 
     //Control & Status Register
     //Set Base Address
@@ -966,7 +887,7 @@ void handler_tmr_dmshsync(void){
         asm volatile("sw t5, -4(sp)");
   18:	ffe12e23          	sw	t5,-4(sp)
         asm volatile("lw t5, 12(t5)");
-  1c:	00cf2f03          	lw	t5,12(t5) # f010800c <.LASF2+0xf0107e76>
+  1c:	00cf2f03          	lw	t5,12(t5) # f010800c <.LFE6+0xf0107ea6>
         asm volatile("csrw mepc, t5"); 
   20:	341f1073          	csrw	mepc,t5
         asm volatile("lw t5, -4(sp)");

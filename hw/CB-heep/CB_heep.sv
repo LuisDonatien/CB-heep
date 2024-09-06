@@ -207,7 +207,7 @@ module CB_heep
   );
   localparam EXTERNALMASTERSIG = 4;
   localparam EXTERNALSLAVESIG = 1;
-  localparam NHARTS = 3;
+  localparam NHARTS = 1;
   //***External_Core*****//
   // Reset Signal
   logic                              external_cpu_subsystem_rst;

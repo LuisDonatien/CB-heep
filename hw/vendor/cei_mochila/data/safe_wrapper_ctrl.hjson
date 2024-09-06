@@ -27,7 +27,7 @@
     { name:     "Master_core",
       desc:     "Master Core Configuration",
       swaccess: "rw",
-      resval:   "0x1",
+      resval:   "0x1", //Core 0 0'b001
       hwaccess: "hro",
       fields: [
         { bits: "2:0", name: "Master_core", desc: "MASTER CORE" }
@@ -40,6 +40,23 @@
       hwaccess: "hro",
       fields: [
         { bits: "0", name: "critical_section", desc: "critical_section" }
+      ]
+    },
+    { name:     "External_Debug_Req",
+      desc:     "External Debug Request Signal",
+      resval:   "0x0",
+      swaccess: "ro",
+      hwaccess: "hwo",
+      fields: [
+        { bits: "0", name: "External_Debug_Req", desc: "External_Debug_Req" }
+      ]
+    },
+    { name:     "Initial_Sync_Master",
+      desc:     "Starting Sync Process as Master",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "0", name: "Initial_Sync_Master", desc: "Initial_Sync_Master" }
       ]
     }
    ]

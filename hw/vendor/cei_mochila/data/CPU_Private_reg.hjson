@@ -8,20 +8,12 @@
   ],
   regwidth: "32",
   registers: [
-    { name:     "Hart_ack",
-      desc:     "enter_debug_mode_operating",
-      swaccess: "rw",
-      hwaccess: "hro",
+    { name:     "Core_Id",
+      desc:     "Core_Id",
+      swaccess: "ro",
+      hwaccess: "hwo",
       fields: [
-        { bits: "0", name: "Hart_ack", desc: "Hart_ack" }
-      ]
-    },
-    { name:     "Initial_Sync_Master",
-      desc:     "Starting Sync Process as Master",
-      swaccess: "rw",
-      hwaccess: "hro",
-      fields: [
-        { bits: "0", name: "Initial_Sync_Master", desc: "Initial_Sync_Master" }
+        { bits: "2:0", name: "Core_Id", desc: "Core_Id" }
       ]
     },
     { name:     "Hart_intc_ack",
@@ -30,15 +22,6 @@
       hwaccess: "hro",
       fields: [
         { bits: "0", name: "Hart_intc_ack", desc: "Hart_intc_ack" }
-      ]
-    },
-    { name:     "External_Debug_Req",
-      desc:     "External Debug Request Signal",
-      resval  :"0x0",
-      swaccess: "ro",
-      hwaccess: "hwo",
-      fields: [
-        { bits: "0", name: "External_Debug_Req", desc: "External_Debug_Req" }
       ]
     }
    ]

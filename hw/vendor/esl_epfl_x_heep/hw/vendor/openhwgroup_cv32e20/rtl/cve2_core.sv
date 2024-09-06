@@ -61,9 +61,11 @@ module cve2_core import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
   output logic                         irq_pending_o,
+  output logic                         new_irq_o,
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
+  output logic                         debug_mode_o,
   // SEC_CM: EXCEPTION.CTRL_FLOW.LOCAL_ESC
   // SEC_CM: EXCEPTION.CTRL_FLOW.GLOBAL_ESC
 
@@ -277,7 +279,7 @@ module cve2_core import cve2_pkg::*; #(
 
   // Before going to sleep, wait for I- and D-side
   // interfaces to finish ongoing operations.
-  assign core_busy_o = ctrl_busy | if_busy | lsu_busy | new_irq;
+  assign core_busy_o = ctrl_busy | if_busy | lsu_busy;
 
   //////////////
   // IF stage //
@@ -1282,6 +1284,8 @@ module cve2_core import cve2_pkg::*; #(
   assign unused_instr_id_done = instr_id_done;
   assign unused_instr_new_id = instr_new_id;
   assign new_irq = irq_pending_o & csr_mstatus_mie & ~nmi_mode & ~debug_mode;
+  assign new_irq_o = new_irq;
+  assign debug_mode_o = debug_mode;
 `endif
 
 endmodule

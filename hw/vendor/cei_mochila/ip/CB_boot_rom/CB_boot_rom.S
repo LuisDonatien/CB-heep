@@ -27,8 +27,10 @@
        .option norvc
        .global entry 
 entry:
-       csrr   a0, mhartid
-       li     a1, 0x1
+       lui   a0, 0xFF000
+       lw    a0, 0(a0)
+       lui   a1, 0xF0020  
+       lw    a1, 8(a1)
        bne    a0, a1, shadow_wfi
        lui     a1, 0xF0011 
        lbu     a0, 0(a1)
@@ -73,20 +75,24 @@ entry:
        .global debug_exception
 
 debug_entry: 
-       lui     a0, 0xFF000      //Base Address CPU Private Registers
-       lw      a0, 12(a0)
+       csrw CSR_DSCRATCH1, a0       // Save a0 to allow loading arbitrary DM base
+       lui   a0, 0xF0020  
+       lw    a0, 16(a0)          //Base Address CPU Private Registers
+
        // Check whether debug_ext_req flag is 1, otherwise jump back to halt_switch routine 
-       bnez    a0, halt_boot
+       beqz    a0, halt_boot
         // This fence is required because the execution may have written something
         // into the Abstract Data or Program Buffer registers.
-        fence
+//       lui   a0, 0xF0020
+//       sw  zero,16(a0)
+       fence
         csrw CSR_DSCRATCH0, s0       // Save s0 to allow signaling MHARTID
 #ifdef SND_SCRATCH
-        csrw CSR_DSCRATCH1, a0       // Save a0 to allow loading arbitrary DM base
-        lui a0, 0x10000             // Load Upper Immediate Base Address of the Debug Module.
-        li  s0, 0x10000830
-        jr  s0 
-        nop
+//        csrw CSR_DSCRATCH1, a0       // Save a0 to allow loading arbitrary DM base
+       lui a0, 0x10000             // Load Upper Immediate Base Address of the Debug Module.
+       li  s0, 0x10000830
+       jr  s0 
+       nop
 #endif
 /*
         // We continue to let the hart know that we are halted in order that

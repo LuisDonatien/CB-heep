@@ -11,7 +11,7 @@ set_property -dict { PACKAGE_PIN V6    IOSTANDARD LVCMOS33 } [get_ports { clk_ou
 set_property -dict { PACKAGE_PIN U7    IOSTANDARD LVCMOS33 } [get_ports { exit_valid_o }];
 set_property -dict { PACKAGE_PIN T14   IOSTANDARD LVCMOS33 } [get_ports { exit_value_o }];
 set_property -dict { PACKAGE_PIN U12   IOSTANDARD LVCMOS33 } [get_ports { gpio_io[0]}];
-set_property -dict { PACKAGE_PIN U13   IOSTANDARD LVCMOS33 } [get_ports { Leds_Out[1] }];
+#set_property -dict { PACKAGE_PIN U13   IOSTANDARD LVCMOS33 } [get_ports { Leds_Out[1] }];
 #set_property -dict { PACKAGE_PIN V13   IOSTANDARD LVCMOS33 } [get_ports { gpio_io[2] }];
 
 # Switches
@@ -31,7 +31,7 @@ set_property -dict { PACKAGE_PIN V17   IOSTANDARD LVCMOS33 } [get_ports { gpio_i
 #set_property -dict { PACKAGE_PIN R17   IOSTANDARD LVCMOS33 } [get_ports { button[3] }];
 
 # 7 segments - SEGMENTS
-set_property -dict { PACKAGE_PIN V11   IOSTANDARD LVCMOS33 } [get_ports { Leds_Out[0]  }]; # a
+#set_property -dict { PACKAGE_PIN V11   IOSTANDARD LVCMOS33 } [get_ports { Leds_Out[0]  }]; # a
 set_property -dict { PACKAGE_PIN U10   IOSTANDARD LVCMOS33 } [get_ports { gpio_io[1] }]; # b
 set_property -dict { PACKAGE_PIN Y12   IOSTANDARD LVCMOS33 } [get_ports { gpio_io[2] }]; # c
 #set_property -dict { PACKAGE_PIN Y11   IOSTANDARD LVCMOS33 } [get_ports { segments[3] }]; # d

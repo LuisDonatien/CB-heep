@@ -93,9 +93,11 @@ module cpu_subsystem
         .irq_external_i(irq_i[11]),
         .irq_fast_i    (irq_i[31:16]),
         .irq_nm_i      (1'b0),
+        .new_irq_o     (),
 
         .debug_req_i (debug_req_i),
         .crash_dump_o(),
+        .debug_mode_o(),
 
         .fetch_enable_i(fetch_enable),
 
