@@ -1,5 +1,5 @@
 
-/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles/main.elf.dir/applications_CB_C0/TMR_Safe_CPU/main.c.obj:     file format elf32-littleriscv
+/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles/main.elf.dir/applications_CB_C0/TMR_Safe_CPU_GPIO/main.c.obj:     file format elf32-littleriscv
 
 
 Disassembly of section .text.TMR_Safe_Activate:
@@ -45,7 +45,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         asm volatile("csrr t6, mstatus");
   22:	30002ff3          	csrr	t6,mstatus
         asm volatile("sw    t6,0(t5)");
-  26:	01ff2023          	sw	t6,0(t5) # f0108000 <.LFE6+0xf0107e9a>
+  26:	01ff2023          	sw	t6,0(t5) # f0108000 <.LASF28+0xf0107bf4>
 
     //Machine Interrupt Enable
     //mie       0x304
@@ -80,7 +80,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         //x1    ra
         asm volatile("li t6, 0xF0108100");
   4a:	f0108fb7          	lui	t6,0xf0108
-  4e:	100f8f93          	addi	t6,t6,256 # f0108100 <.LFE6+0xf0107f9a>
+  4e:	100f8f93          	addi	t6,t6,256 # f0108100 <.LASF28+0xf0107cf4>
         asm volatile("sw ra, 0(t6)");
   52:	001fa023          	sw	ra,0(t6)
 
@@ -254,7 +254,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         //Reset Values
         *(Priv_Reg+1) = 0x0;
   e2:	ff0007b7          	lui	a5,0xff000
-  e6:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
+  e6:	0007a223          	sw	zero,4(a5) # ff000004 <.LASF28+0xfefffbf8>
 }
   ea:	8082                	ret
 
@@ -270,7 +270,7 @@ void TMR_Safe_Stop(void){
 volatile unsigned int *Safe_config_reg= SAFE_REG_BASEADDRESS;
         *(Safe_config_reg+1) = 0x0;
    2:	f00207b7          	lui	a5,0xf0020
-   6:	0007a223          	sw	zero,4(a5) # f0020004 <.LFE6+0xf001fe9e>
+   6:	0007a223          	sw	zero,4(a5) # f0020004 <.LASF28+0xf001fbf8>
         *(Safe_config_reg+2) = 0x4;
    a:	4711                	li	a4,4
    c:	c798                	sw	a4,8(a5)
@@ -285,29 +285,494 @@ Disassembly of section .text.startup.main:
 
 00000000 <main>:
 {
-   0:	1141                	addi	sp,sp,-16
-   2:	c606                	sw	ra,12(sp)
+   0:	7159                	addi	sp,sp,-112
+    gpio_cfg_t pin_cfg_Led0 = {
+   2:	c802                	sw	zero,16(sp)
+   4:	4799                	li	a5,6
+   6:	00f10823          	sb	a5,16(sp)
+    gpio_cfg_t pin_cfg_Led1 = {
+   a:	d002                	sw	zero,32(sp)
+   c:	4795                	li	a5,5
+    gpio_Led0 = gpio_config (pin_cfg_Led0);
+   e:	4641                	li	a2,16
+  10:	080c                	addi	a1,sp,16
+
+00000012 <.LVL3>:
+{
+  12:	d4a2                	sw	s0,104(sp)
+  14:	d2a6                	sw	s1,100(sp)
+    gpio_cfg_t pin_cfg_Led0 = {
+  16:	4405                	li	s0,1
+    gpio_cfg_t pin_cfg_Led1 = {
+  18:	02f10023          	sb	a5,32(sp)
+    gpio_cfg_t pin_cfg_Led2 = {
+  1c:	d802                	sw	zero,48(sp)
+    gpio_cfg_t pin_cfg_Led3 = {
+  1e:	478d                	li	a5,3
+  20:	c082                	sw	zero,64(sp)
+    gpio_cfg_t pin_cfg_Led2 = {
+  22:	4491                	li	s1,4
+    gpio_Led0 = gpio_config (pin_cfg_Led0);
+  24:	850a                	mv	a0,sp
+
+00000026 <.LVL4>:
+    gpio_cfg_t pin_cfg_Led3 = {
+  26:	04f10023          	sb	a5,64(sp)
+{
+  2a:	d686                	sw	ra,108(sp)
+  2c:	d0ca                	sw	s2,96(sp)
+  2e:	cece                	sw	s3,92(sp)
+    gpio_cfg_t pin_cfg_Led0 = {
+  30:	cc02                	sw	zero,24(sp)
+  32:	ce02                	sw	zero,28(sp)
+  34:	ca22                	sw	s0,20(sp)
+    gpio_cfg_t pin_cfg_Led1 = {
+  36:	d402                	sw	zero,40(sp)
+  38:	d602                	sw	zero,44(sp)
+  3a:	d222                	sw	s0,36(sp)
+    gpio_cfg_t pin_cfg_Led2 = {
+  3c:	dc02                	sw	zero,56(sp)
+  3e:	de02                	sw	zero,60(sp)
+  40:	02910823          	sb	s1,48(sp)
+  44:	da22                	sw	s0,52(sp)
+    gpio_cfg_t pin_cfg_Led3 = {
+  46:	c482                	sw	zero,72(sp)
+  48:	c682                	sw	zero,76(sp)
+  4a:	c2a2                	sw	s0,68(sp)
+    gpio_Led0 = gpio_config (pin_cfg_Led0);
+  4c:	00000097          	auipc	ra,0x0
+  50:	000080e7          	jalr	ra # 4c <.LVL4+0x26>
+
+00000054 <.LVL5>:
+  54:	850a                	mv	a0,sp
+  56:	00000097          	auipc	ra,0x0
+  5a:	000080e7          	jalr	ra # 56 <.LVL5+0x2>
+
+0000005e <.LVL6>:
+    gpio_Led1 = gpio_config (pin_cfg_Led1);
+  5e:	4641                	li	a2,16
+  60:	100c                	addi	a1,sp,32
+  62:	850a                	mv	a0,sp
+  64:	00000097          	auipc	ra,0x0
+  68:	000080e7          	jalr	ra # 64 <.LVL6+0x6>
+
+0000006c <.LVL7>:
+  6c:	850a                	mv	a0,sp
+  6e:	00000097          	auipc	ra,0x0
+  72:	000080e7          	jalr	ra # 6e <.LVL7+0x2>
+
+00000076 <.LVL8>:
+    gpio_Led2 = gpio_config (pin_cfg_Led2);
+  76:	4641                	li	a2,16
+  78:	180c                	addi	a1,sp,48
+  7a:	850a                	mv	a0,sp
+  7c:	00000097          	auipc	ra,0x0
+  80:	000080e7          	jalr	ra # 7c <.LVL8+0x6>
+
+00000084 <.LVL9>:
+  84:	850a                	mv	a0,sp
+  86:	00000097          	auipc	ra,0x0
+  8a:	000080e7          	jalr	ra # 86 <.LVL9+0x2>
+
+0000008e <.LVL10>:
+    gpio_Led3 = gpio_config (pin_cfg_Led3);    
+  8e:	4641                	li	a2,16
+  90:	008c                	addi	a1,sp,64
+  92:	850a                	mv	a0,sp
+  94:	00000097          	auipc	ra,0x0
+  98:	000080e7          	jalr	ra # 94 <.LVL10+0x6>
+
+0000009c <.LVL11>:
+  9c:	850a                	mv	a0,sp
+  9e:	00000097          	auipc	ra,0x0
+  a2:	000080e7          	jalr	ra # 9e <.LVL11+0x2>
+
+000000a6 <.LVL12>:
+    if((*Priv_Reg)==1){ 
+  a6:	ff0007b7          	lui	a5,0xff000
+  aa:	4398                	lw	a4,0(a5)
+  ac:	08871763          	bne	a4,s0,13a <.L52>
+
+000000b0 <.LBB2>:
+        if((*i)<50000){
+  b0:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+  b2:	64e1                	lui	s1,0x18
+
+000000b4 <.LBE2>:
+  b4:	49a9                	li	s3,10
+
+000000b6 <.LBB3>:
+        if((*i)<50000){
+  b6:	6421                	lui	s0,0x8
+  b8:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+  bc:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+000000c0 <.L10>:
+        if((*i)<50000){
+  c0:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED0, true);        
+  c2:	4585                	li	a1,1
+        if((*i)<50000){
+  c4:	00f97663          	bgeu	s2,a5,d0 <.L57>
+        }else if((*i)<100000){
+  c8:	403c                	lw	a5,64(s0)
+  ca:	00f4ec63          	bltu	s1,a5,e2 <.L8>
+            gpio_write(GPIO_LED0, false);
+  ce:	4581                	li	a1,0
+
+000000d0 <.L57>:
+  d0:	4519                	li	a0,6
+  d2:	00000097          	auipc	ra,0x0
+  d6:	000080e7          	jalr	ra # d2 <.L57+0x2>
+
+000000da <.LVL14>:
+        (*i)++;
+  da:	403c                	lw	a5,64(s0)
+  dc:	0785                	addi	a5,a5,1
+  de:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+  e0:	b7c5                	j	c0 <.L10>
+
+000000e2 <.L8>:
+        (*i)=0;
+  e2:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+
+000000e6 <.LVL15>:
+    for(int j=0;j<10;j++){
+  e6:	19fd                	addi	s3,s3,-1
+
+000000e8 <.LVL16>:
+  e8:	fc099ce3          	bnez	s3,c0 <.L10>
+
+000000ec <.L9>:
         TMR_Safe_Activate();
-   4:	00000097          	auipc	ra,0x0
-   8:	000080e7          	jalr	ra # 4 <main+0x4>
+  ec:	00000097          	auipc	ra,0x0
+  f0:	000080e7          	jalr	ra # ec <.L9>
 
-0000000c <.LVL3>:
+000000f4 <.LVL18>:
         TMR_Safe_Stop();
-   c:	00000097          	auipc	ra,0x0
-  10:	000080e7          	jalr	ra # c <.LVL3>
+  f4:	00000097          	auipc	ra,0x0
+  f8:	000080e7          	jalr	ra # f4 <.LVL18>
 
-00000014 <.LVL4>:
-        CSR_READ(CSR_REG_MHARTID,P);
-  14:	f1402773          	csrr	a4,mhartid
+000000fc <.LVL19>:
+    if((*Priv_Reg)==1){ 
+  fc:	ff0007b7          	lui	a5,0xff000
+ 100:	4394                	lw	a3,0(a5)
+ 102:	4705                	li	a4,1
+ 104:	0ce69d63          	bne	a3,a4,1de <.L54>
+
+00000108 <.LBB4>:
+        if((*i)<50000){
+ 108:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+ 10a:	64e1                	lui	s1,0x18
+
+0000010c <.LBE4>:
+ 10c:	49a9                	li	s3,10
+
+0000010e <.LBB5>:
+        if((*i)<50000){
+ 10e:	6421                	lui	s0,0x8
+ 110:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+ 114:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+00000118 <.L28>:
+        if((*i)<50000){
+ 118:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED0, true);        
+ 11a:	4585                	li	a1,1
+        if((*i)<50000){
+ 11c:	00f97663          	bgeu	s2,a5,128 <.L60>
+        }else if((*i)<100000){
+ 120:	403c                	lw	a5,64(s0)
+ 122:	0af4e163          	bltu	s1,a5,1c4 <.L26>
+            gpio_write(GPIO_LED0, false);
+ 126:	4581                	li	a1,0
+
+00000128 <.L60>:
+ 128:	4519                	li	a0,6
+ 12a:	00000097          	auipc	ra,0x0
+ 12e:	000080e7          	jalr	ra # 12a <.L60+0x2>
+
+00000132 <.LVL21>:
+        (*i)++;
+ 132:	403c                	lw	a5,64(s0)
+ 134:	0785                	addi	a5,a5,1
+ 136:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+ 138:	b7c5                	j	118 <.L28>
+
+0000013a <.L52>:
+     }else if((*Priv_Reg)==2){
+ 13a:	4394                	lw	a3,0(a5)
+ 13c:	4709                	li	a4,2
+ 13e:	04e69163          	bne	a3,a4,180 <.L53>
+
+00000142 <.LBB6>:
+        if((*i)<50000){
+ 142:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+ 144:	64e1                	lui	s1,0x18
+
+00000146 <.LBE6>:
+ 146:	49a9                	li	s3,10
+
+00000148 <.LBB7>:
+        if((*i)<50000){
+ 148:	6421                	lui	s0,0x8
+ 14a:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+ 14e:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+00000152 <.LVL22>:
+ 152:	a031                	j	15e <.L16>
+
+00000154 <.L15>:
+        (*i)=0;
+ 154:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+
+00000158 <.LVL24>:
+    for(int j=0;j<10;j++){
+ 158:	19fd                	addi	s3,s3,-1
+
+0000015a <.LVL25>:
+ 15a:	f80989e3          	beqz	s3,ec <.L9>
+
+0000015e <.L16>:
+        if((*i)<50000){
+ 15e:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED1, true);        
+ 160:	4585                	li	a1,1
+        if((*i)<50000){
+ 162:	00f97663          	bgeu	s2,a5,16e <.L58>
+        }else if((*i)<100000){
+ 166:	403c                	lw	a5,64(s0)
+ 168:	fef4e6e3          	bltu	s1,a5,154 <.L15>
+            gpio_write(GPIO_LED1, false);
+ 16c:	4581                	li	a1,0
+
+0000016e <.L58>:
+ 16e:	4515                	li	a0,5
+ 170:	00000097          	auipc	ra,0x0
+ 174:	000080e7          	jalr	ra # 170 <.L58+0x2>
+
+00000178 <.LVL27>:
+        (*i)++;
+ 178:	403c                	lw	a5,64(s0)
+ 17a:	0785                	addi	a5,a5,1
+ 17c:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+ 17e:	b7c5                	j	15e <.L16>
+
+00000180 <.L53>:
+     }else if((*Priv_Reg)==4){
+ 180:	439c                	lw	a5,0(a5)
+ 182:	f69795e3          	bne	a5,s1,ec <.L9>
+
+00000186 <.LBB8>:
+        if((*i)<50000){
+ 186:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+ 188:	64e1                	lui	s1,0x18
+
+0000018a <.LBE8>:
+ 18a:	49a9                	li	s3,10
+
+0000018c <.LBB9>:
+        if((*i)<50000){
+ 18c:	6421                	lui	s0,0x8
+ 18e:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+ 192:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+00000196 <.LVL28>:
+ 196:	a031                	j	1a2 <.L21>
+
+00000198 <.L20>:
+        (*i)=0;
+ 198:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+
+0000019c <.LVL30>:
+    for(int j=0;j<10;j++){
+ 19c:	19fd                	addi	s3,s3,-1
+
+0000019e <.LVL31>:
+ 19e:	f40987e3          	beqz	s3,ec <.L9>
+
+000001a2 <.L21>:
+        if((*i)<50000){
+ 1a2:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED2, true);        
+ 1a4:	4585                	li	a1,1
+        if((*i)<50000){
+ 1a6:	00f97663          	bgeu	s2,a5,1b2 <.L59>
+        }else if((*i)<100000){
+ 1aa:	403c                	lw	a5,64(s0)
+ 1ac:	fef4e6e3          	bltu	s1,a5,198 <.L20>
+            gpio_write(GPIO_LED2, false);
+ 1b0:	4581                	li	a1,0
+
+000001b2 <.L59>:
+ 1b2:	4511                	li	a0,4
+ 1b4:	00000097          	auipc	ra,0x0
+ 1b8:	000080e7          	jalr	ra # 1b4 <.L59+0x2>
+
+000001bc <.LVL33>:
+        (*i)++;
+ 1bc:	403c                	lw	a5,64(s0)
+ 1be:	0785                	addi	a5,a5,1
+ 1c0:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+ 1c2:	b7c5                	j	1a2 <.L21>
+
+000001c4 <.L26>:
+        (*i)=0;
+ 1c4:	04042023          	sw	zero,64(s0)
+
+000001c8 <.LVL34>:
+    for(int j=0;j<10;j++){
+ 1c8:	19fd                	addi	s3,s3,-1
+
+000001ca <.LVL35>:
+ 1ca:	f40997e3          	bnez	s3,118 <.L28>
+
+000001ce <.L27>:
 }
-  18:	40b2                	lw	ra,12(sp)
-        CSR_READ(CSR_REG_MHARTID,P);
-  1a:	f01097b7          	lui	a5,0xf0109
-  1e:	c398                	sw	a4,0(a5)
-}
-  20:	4501                	li	a0,0
-  22:	0141                	addi	sp,sp,16
-  24:	8082                	ret
+ 1ce:	50b6                	lw	ra,108(sp)
+ 1d0:	5426                	lw	s0,104(sp)
+ 1d2:	5496                	lw	s1,100(sp)
+ 1d4:	5906                	lw	s2,96(sp)
+ 1d6:	49f6                	lw	s3,92(sp)
+ 1d8:	4501                	li	a0,0
+ 1da:	6165                	addi	sp,sp,112
+ 1dc:	8082                	ret
+
+000001de <.L54>:
+     }else if((*Priv_Reg)==2){
+ 1de:	4394                	lw	a3,0(a5)
+ 1e0:	4709                	li	a4,2
+ 1e2:	04e69163          	bne	a3,a4,224 <.L55>
+
+000001e6 <.LBB11>:
+        if((*i)<50000){
+ 1e6:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+ 1e8:	64e1                	lui	s1,0x18
+
+000001ea <.LBE11>:
+ 1ea:	49a9                	li	s3,10
+
+000001ec <.LBB12>:
+        if((*i)<50000){
+ 1ec:	6421                	lui	s0,0x8
+ 1ee:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+ 1f2:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+000001f6 <.LVL37>:
+ 1f6:	a031                	j	202 <.L34>
+
+000001f8 <.L33>:
+        (*i)=0;
+ 1f8:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+
+000001fc <.LVL39>:
+    for(int j=0;j<10;j++){
+ 1fc:	19fd                	addi	s3,s3,-1
+
+000001fe <.LVL40>:
+ 1fe:	fc0988e3          	beqz	s3,1ce <.L27>
+
+00000202 <.L34>:
+        if((*i)<50000){
+ 202:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED1, true);        
+ 204:	4585                	li	a1,1
+        if((*i)<50000){
+ 206:	00f97663          	bgeu	s2,a5,212 <.L61>
+        }else if((*i)<100000){
+ 20a:	403c                	lw	a5,64(s0)
+ 20c:	fef4e6e3          	bltu	s1,a5,1f8 <.L33>
+            gpio_write(GPIO_LED1, false);
+ 210:	4581                	li	a1,0
+
+00000212 <.L61>:
+ 212:	4515                	li	a0,5
+ 214:	00000097          	auipc	ra,0x0
+ 218:	000080e7          	jalr	ra # 214 <.L61+0x2>
+
+0000021c <.LVL42>:
+        (*i)++;
+ 21c:	403c                	lw	a5,64(s0)
+ 21e:	0785                	addi	a5,a5,1
+ 220:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+ 222:	b7c5                	j	202 <.L34>
+
+00000224 <.L55>:
+     }else if((*Priv_Reg)==4){
+ 224:	4398                	lw	a4,0(a5)
+ 226:	4791                	li	a5,4
+ 228:	faf713e3          	bne	a4,a5,1ce <.L27>
+
+0000022c <.LBB13>:
+        if((*i)<50000){
+ 22c:	6931                	lui	s2,0xc
+        }else if((*i)<100000){
+ 22e:	64e1                	lui	s1,0x18
+
+00000230 <.LBE13>:
+ 230:	49a9                	li	s3,10
+
+00000232 <.LBB14>:
+        if((*i)<50000){
+ 232:	6421                	lui	s0,0x8
+ 234:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+        }else if((*i)<100000){
+ 238:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+
+0000023c <.LVL43>:
+ 23c:	a031                	j	248 <.L39>
+
+0000023e <.L38>:
+        (*i)=0;
+ 23e:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+
+00000242 <.LVL45>:
+    for(int j=0;j<10;j++){
+ 242:	19fd                	addi	s3,s3,-1
+
+00000244 <.LVL46>:
+ 244:	f80985e3          	beqz	s3,1ce <.L27>
+
+00000248 <.L39>:
+        if((*i)<50000){
+ 248:	403c                	lw	a5,64(s0)
+            gpio_write(GPIO_LED2, true);        
+ 24a:	4585                	li	a1,1
+        if((*i)<50000){
+ 24c:	00f97663          	bgeu	s2,a5,258 <.L62>
+        }else if((*i)<100000){
+ 250:	403c                	lw	a5,64(s0)
+ 252:	fef4e6e3          	bltu	s1,a5,23e <.L38>
+            gpio_write(GPIO_LED2, false);
+ 256:	4581                	li	a1,0
+
+00000258 <.L62>:
+ 258:	4511                	li	a0,4
+ 25a:	00000097          	auipc	ra,0x0
+ 25e:	000080e7          	jalr	ra # 25a <.L62+0x2>
+
+00000262 <.LVL48>:
+        (*i)++;
+ 262:	403c                	lw	a5,64(s0)
+ 264:	0785                	addi	a5,a5,1
+ 266:	c03c                	sw	a5,64(s0)
+        if((*i)<50000){
+ 268:	b7c5                	j	248 <.L39>
 
 Disassembly of section .text.handler_tmr_recoverysync:
 
@@ -579,7 +1044,7 @@ void handler_tmr_recoverysync(void){
  154:	f8412f83          	lw	t6,-124(sp)
 
         *Priv_Reg = 0x0; //Handshake ACK  
- 158:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
+ 158:	0007a223          	sw	zero,4(a5) # ff000004 <.LASF28+0xfefffbf8>
 }
  15c:	4732                	lw	a4,12(sp)
  15e:	47a2                	lw	a5,8(sp)
@@ -607,7 +1072,7 @@ void handler_safe_fsm(void) {
    a:	ff0007b7          	lui	a5,0xff000
    e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LASF28+0xfefffbf8>
         // Enable interrupt on processor side
         // Enable global interrupt for machine-level interrupts
 //        asm volatile("li   t6,0x08");
@@ -639,7 +1104,7 @@ void handler_tmr_dmcontext_copy(void){
    a:	ff0007b7          	lui	a5,0xff000
    e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LASF28+0xfefffbf8>
 
     //Control & Status Register
     //Set Base Address
@@ -653,7 +1118,7 @@ void handler_tmr_dmcontext_copy(void){
         asm volatile("csrr t6, mie");
   18:	30402ff3          	csrr	t6,mie
         asm volatile("sw    t6,4(t5)"); 
-  1c:	01ff2223          	sw	t6,4(t5) # f0108004 <.LFE6+0xf0107e9e>
+  1c:	01ff2223          	sw	t6,4(t5) # f0108004 <.LASF28+0xf0107bf8>
 
     //Machine Trap-Vector
     //mtvec     0x305
@@ -671,7 +1136,7 @@ void handler_tmr_dmcontext_copy(void){
 
         asm volatile("li t6, 0xF0010200");     //PC -> wfi Debug_Boot_ROM
   30:	f0010fb7          	lui	t6,0xf0010
-  34:	200f8f93          	addi	t6,t6,512 # f0010200 <.LFE6+0xf001009a>
+  34:	200f8f93          	addi	t6,t6,512 # f0010200 <.LASF28+0xf000fdf4>
         asm volatile("csrw  mepc, t6");
   38:	341f9073          	csrw	mepc,t6
     //Machine Trap Value Register
@@ -686,7 +1151,7 @@ void handler_tmr_dmcontext_copy(void){
         //x1    ra
         asm volatile("li t6, 0xF0108100");
   44:	f0108fb7          	lui	t6,0xf0108
-  48:	100f8f93          	addi	t6,t6,256 # f0108100 <.LFE6+0xf0107f9a>
+  48:	100f8f93          	addi	t6,t6,256 # f0108100 <.LASF28+0xf0107cf4>
         asm volatile("sw ra, 0(t6)");
   4c:	001fa023          	sw	ra,0(t6)
 
@@ -836,7 +1301,7 @@ void handler_tmr_dmcontext_copy(void){
         //PC -> 0xDebug_BootAddress + 0x200
         asm volatile("li t5, 0xF0010200"); 
   c4:	f0010f37          	lui	t5,0xf0010
-  c8:	200f0f13          	addi	t5,t5,512 # f0010200 <.LFE6+0xf001009a>
+  c8:	200f0f13          	addi	t5,t5,512 # f0010200 <.LASF28+0xf000fdf4>
         asm volatile("sw t5, 124(t6)");
   cc:	07efae23          	sw	t5,124(t6)
         //x30   t5  
@@ -875,7 +1340,7 @@ void handler_tmr_dmshsync(void){
    a:	ff0007b7          	lui	a5,0xff000
    e:	c3d8                	sw	a4,4(a5)
   *Priv_Reg = 0x0;
-  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LFE6+0xfefffe9e>
+  10:	0007a223          	sw	zero,4(a5) # ff000004 <.LASF28+0xfefffbf8>
 
     //Control & Status Register
     //Set Base Address
@@ -887,7 +1352,7 @@ void handler_tmr_dmshsync(void){
         asm volatile("sw t5, -4(sp)");
   18:	ffe12e23          	sw	t5,-4(sp)
         asm volatile("lw t5, 12(t5)");
-  1c:	00cf2f03          	lw	t5,12(t5) # f010800c <.LFE6+0xf0107ea6>
+  1c:	00cf2f03          	lw	t5,12(t5) # f010800c <.LASF28+0xf0107c00>
         asm volatile("csrw mepc, t5"); 
   20:	341f1073          	csrw	mepc,t5
         asm volatile("lw t5, -4(sp)");

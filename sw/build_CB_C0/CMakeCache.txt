@@ -136,7 +136,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=TMR_Safe_CPU
+CMAKE_PROJECT_NAME:STATIC=TMR_Safe_CPU_GPIO
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/home/luis/tools/riscv/bin/riscv32-unknown-elf-ranlib
@@ -266,7 +266,7 @@ LINKER:STRING=on_chip
 LINK_FOLDER:STRING=/home/luis/Documents/PhD/CB-heep/sw/linker_CB_C0
 
 //No help, variable specified on the command line.
-PROJECT:STRING=TMR_Safe_CPU
+PROJECT:STRING=TMR_Safe_CPU_GPIO
 
 //No help, variable specified on the command line.
 RISCV:STRING=/home/luis/tools/riscv
@@ -291,6 +291,15 @@ TARGET:UNINITIALIZED=sim
 
 //Value Computed by CMake
 TMR_Safe_CPU_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+TMR_Safe_CPU_GPIO_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+TMR_Safe_CPU_GPIO_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+TMR_Safe_CPU_GPIO_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
 
 //Value Computed by CMake
 TMR_Safe_CPU_IS_TOP_LEVEL:STATIC=ON
