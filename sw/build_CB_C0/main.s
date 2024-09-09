@@ -391,7 +391,7 @@ Disassembly of section .text.startup.main:
     if((*Priv_Reg)==1){ 
   a6:	ff0007b7          	lui	a5,0xff000
   aa:	4398                	lw	a4,0(a5)
-  ac:	08871763          	bne	a4,s0,13a <.L52>
+  ac:	08871c63          	bne	a4,s0,144 <.L52>
 
 000000b0 <.LBB2>:
         if((*i)<50000){
@@ -452,327 +452,331 @@ Disassembly of section .text.startup.main:
   f0:	000080e7          	jalr	ra # ec <.L9>
 
 000000f4 <.LVL18>:
+        CSR_READ(CSR_REG_MHARTID,P);
+  f4:	f1402773          	csrr	a4,mhartid
+  f8:	f01097b7          	lui	a5,0xf0109
+  fc:	c398                	sw	a4,0(a5)
         TMR_Safe_Stop();
-  f4:	00000097          	auipc	ra,0x0
-  f8:	000080e7          	jalr	ra # f4 <.LVL18>
+  fe:	00000097          	auipc	ra,0x0
+ 102:	000080e7          	jalr	ra # fe <.LVL18+0xa>
 
-000000fc <.LVL19>:
+00000106 <.LVL19>:
     if((*Priv_Reg)==1){ 
-  fc:	ff0007b7          	lui	a5,0xff000
- 100:	4394                	lw	a3,0(a5)
- 102:	4705                	li	a4,1
- 104:	0ce69d63          	bne	a3,a4,1de <.L54>
+ 106:	ff0007b7          	lui	a5,0xff000
+ 10a:	4394                	lw	a3,0(a5)
+ 10c:	4705                	li	a4,1
+ 10e:	0ce69d63          	bne	a3,a4,1e8 <.L54>
 
-00000108 <.LBB4>:
+00000112 <.LBB4>:
         if((*i)<50000){
- 108:	6931                	lui	s2,0xc
+ 112:	6931                	lui	s2,0xc
         }else if((*i)<100000){
- 10a:	64e1                	lui	s1,0x18
+ 114:	64e1                	lui	s1,0x18
 
-0000010c <.LBE4>:
- 10c:	49a9                	li	s3,10
+00000116 <.LBE4>:
+ 116:	49a9                	li	s3,10
 
-0000010e <.LBB5>:
+00000118 <.LBB5>:
         if((*i)<50000){
- 10e:	6421                	lui	s0,0x8
- 110:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+ 118:	6421                	lui	s0,0x8
+ 11a:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
         }else if((*i)<100000){
- 114:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+ 11e:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
 
-00000118 <.L28>:
+00000122 <.L28>:
         if((*i)<50000){
- 118:	403c                	lw	a5,64(s0)
+ 122:	403c                	lw	a5,64(s0)
             gpio_write(GPIO_LED0, true);        
- 11a:	4585                	li	a1,1
+ 124:	4585                	li	a1,1
         if((*i)<50000){
- 11c:	00f97663          	bgeu	s2,a5,128 <.L60>
+ 126:	00f97663          	bgeu	s2,a5,132 <.L60>
         }else if((*i)<100000){
- 120:	403c                	lw	a5,64(s0)
- 122:	0af4e163          	bltu	s1,a5,1c4 <.L26>
+ 12a:	403c                	lw	a5,64(s0)
+ 12c:	0af4e163          	bltu	s1,a5,1ce <.L26>
             gpio_write(GPIO_LED0, false);
- 126:	4581                	li	a1,0
+ 130:	4581                	li	a1,0
 
-00000128 <.L60>:
- 128:	4519                	li	a0,6
- 12a:	00000097          	auipc	ra,0x0
- 12e:	000080e7          	jalr	ra # 12a <.L60+0x2>
+00000132 <.L60>:
+ 132:	4519                	li	a0,6
+ 134:	00000097          	auipc	ra,0x0
+ 138:	000080e7          	jalr	ra # 134 <.L60+0x2>
 
-00000132 <.LVL21>:
+0000013c <.LVL21>:
         (*i)++;
- 132:	403c                	lw	a5,64(s0)
- 134:	0785                	addi	a5,a5,1
- 136:	c03c                	sw	a5,64(s0)
+ 13c:	403c                	lw	a5,64(s0)
+ 13e:	0785                	addi	a5,a5,1
+ 140:	c03c                	sw	a5,64(s0)
         if((*i)<50000){
- 138:	b7c5                	j	118 <.L28>
+ 142:	b7c5                	j	122 <.L28>
 
-0000013a <.L52>:
+00000144 <.L52>:
      }else if((*Priv_Reg)==2){
- 13a:	4394                	lw	a3,0(a5)
- 13c:	4709                	li	a4,2
- 13e:	04e69163          	bne	a3,a4,180 <.L53>
+ 144:	4394                	lw	a3,0(a5)
+ 146:	4709                	li	a4,2
+ 148:	04e69163          	bne	a3,a4,18a <.L53>
 
-00000142 <.LBB6>:
+0000014c <.LBB6>:
         if((*i)<50000){
- 142:	6931                	lui	s2,0xc
+ 14c:	6931                	lui	s2,0xc
         }else if((*i)<100000){
- 144:	64e1                	lui	s1,0x18
+ 14e:	64e1                	lui	s1,0x18
 
-00000146 <.LBE6>:
- 146:	49a9                	li	s3,10
+00000150 <.LBE6>:
+ 150:	49a9                	li	s3,10
 
-00000148 <.LBB7>:
+00000152 <.LBB7>:
         if((*i)<50000){
- 148:	6421                	lui	s0,0x8
- 14a:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+ 152:	6421                	lui	s0,0x8
+ 154:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
         }else if((*i)<100000){
- 14e:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+ 158:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
 
-00000152 <.LVL22>:
- 152:	a031                	j	15e <.L16>
+0000015c <.LVL22>:
+ 15c:	a031                	j	168 <.L16>
 
-00000154 <.L15>:
+0000015e <.L15>:
         (*i)=0;
- 154:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+ 15e:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
 
-00000158 <.LVL24>:
+00000162 <.LVL24>:
     for(int j=0;j<10;j++){
- 158:	19fd                	addi	s3,s3,-1
+ 162:	19fd                	addi	s3,s3,-1
 
-0000015a <.LVL25>:
- 15a:	f80989e3          	beqz	s3,ec <.L9>
+00000164 <.LVL25>:
+ 164:	f80984e3          	beqz	s3,ec <.L9>
 
-0000015e <.L16>:
+00000168 <.L16>:
         if((*i)<50000){
- 15e:	403c                	lw	a5,64(s0)
+ 168:	403c                	lw	a5,64(s0)
             gpio_write(GPIO_LED1, true);        
- 160:	4585                	li	a1,1
+ 16a:	4585                	li	a1,1
         if((*i)<50000){
- 162:	00f97663          	bgeu	s2,a5,16e <.L58>
+ 16c:	00f97663          	bgeu	s2,a5,178 <.L58>
         }else if((*i)<100000){
- 166:	403c                	lw	a5,64(s0)
- 168:	fef4e6e3          	bltu	s1,a5,154 <.L15>
+ 170:	403c                	lw	a5,64(s0)
+ 172:	fef4e6e3          	bltu	s1,a5,15e <.L15>
             gpio_write(GPIO_LED1, false);
- 16c:	4581                	li	a1,0
+ 176:	4581                	li	a1,0
 
-0000016e <.L58>:
- 16e:	4515                	li	a0,5
- 170:	00000097          	auipc	ra,0x0
- 174:	000080e7          	jalr	ra # 170 <.L58+0x2>
+00000178 <.L58>:
+ 178:	4515                	li	a0,5
+ 17a:	00000097          	auipc	ra,0x0
+ 17e:	000080e7          	jalr	ra # 17a <.L58+0x2>
 
-00000178 <.LVL27>:
+00000182 <.LVL27>:
         (*i)++;
- 178:	403c                	lw	a5,64(s0)
- 17a:	0785                	addi	a5,a5,1
- 17c:	c03c                	sw	a5,64(s0)
+ 182:	403c                	lw	a5,64(s0)
+ 184:	0785                	addi	a5,a5,1
+ 186:	c03c                	sw	a5,64(s0)
         if((*i)<50000){
- 17e:	b7c5                	j	15e <.L16>
+ 188:	b7c5                	j	168 <.L16>
 
-00000180 <.L53>:
+0000018a <.L53>:
      }else if((*Priv_Reg)==4){
- 180:	439c                	lw	a5,0(a5)
- 182:	f69795e3          	bne	a5,s1,ec <.L9>
+ 18a:	439c                	lw	a5,0(a5)
+ 18c:	f69790e3          	bne	a5,s1,ec <.L9>
 
-00000186 <.LBB8>:
+00000190 <.LBB8>:
         if((*i)<50000){
- 186:	6931                	lui	s2,0xc
+ 190:	6931                	lui	s2,0xc
         }else if((*i)<100000){
- 188:	64e1                	lui	s1,0x18
+ 192:	64e1                	lui	s1,0x18
 
-0000018a <.LBE8>:
- 18a:	49a9                	li	s3,10
+00000194 <.LBE8>:
+ 194:	49a9                	li	s3,10
 
-0000018c <.LBB9>:
+00000196 <.LBB9>:
         if((*i)<50000){
- 18c:	6421                	lui	s0,0x8
- 18e:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+ 196:	6421                	lui	s0,0x8
+ 198:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
         }else if((*i)<100000){
- 192:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+ 19c:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
 
-00000196 <.LVL28>:
- 196:	a031                	j	1a2 <.L21>
+000001a0 <.LVL28>:
+ 1a0:	a031                	j	1ac <.L21>
 
-00000198 <.L20>:
+000001a2 <.L20>:
         (*i)=0;
- 198:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+ 1a2:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
 
-0000019c <.LVL30>:
+000001a6 <.LVL30>:
     for(int j=0;j<10;j++){
- 19c:	19fd                	addi	s3,s3,-1
+ 1a6:	19fd                	addi	s3,s3,-1
 
-0000019e <.LVL31>:
- 19e:	f40987e3          	beqz	s3,ec <.L9>
+000001a8 <.LVL31>:
+ 1a8:	f40982e3          	beqz	s3,ec <.L9>
 
-000001a2 <.L21>:
+000001ac <.L21>:
         if((*i)<50000){
- 1a2:	403c                	lw	a5,64(s0)
+ 1ac:	403c                	lw	a5,64(s0)
             gpio_write(GPIO_LED2, true);        
- 1a4:	4585                	li	a1,1
+ 1ae:	4585                	li	a1,1
         if((*i)<50000){
- 1a6:	00f97663          	bgeu	s2,a5,1b2 <.L59>
+ 1b0:	00f97663          	bgeu	s2,a5,1bc <.L59>
         }else if((*i)<100000){
- 1aa:	403c                	lw	a5,64(s0)
- 1ac:	fef4e6e3          	bltu	s1,a5,198 <.L20>
+ 1b4:	403c                	lw	a5,64(s0)
+ 1b6:	fef4e6e3          	bltu	s1,a5,1a2 <.L20>
             gpio_write(GPIO_LED2, false);
- 1b0:	4581                	li	a1,0
+ 1ba:	4581                	li	a1,0
 
-000001b2 <.L59>:
- 1b2:	4511                	li	a0,4
- 1b4:	00000097          	auipc	ra,0x0
- 1b8:	000080e7          	jalr	ra # 1b4 <.L59+0x2>
+000001bc <.L59>:
+ 1bc:	4511                	li	a0,4
+ 1be:	00000097          	auipc	ra,0x0
+ 1c2:	000080e7          	jalr	ra # 1be <.L59+0x2>
 
-000001bc <.LVL33>:
+000001c6 <.LVL33>:
         (*i)++;
- 1bc:	403c                	lw	a5,64(s0)
- 1be:	0785                	addi	a5,a5,1
- 1c0:	c03c                	sw	a5,64(s0)
+ 1c6:	403c                	lw	a5,64(s0)
+ 1c8:	0785                	addi	a5,a5,1
+ 1ca:	c03c                	sw	a5,64(s0)
         if((*i)<50000){
- 1c2:	b7c5                	j	1a2 <.L21>
+ 1cc:	b7c5                	j	1ac <.L21>
 
-000001c4 <.L26>:
+000001ce <.L26>:
         (*i)=0;
- 1c4:	04042023          	sw	zero,64(s0)
+ 1ce:	04042023          	sw	zero,64(s0)
 
-000001c8 <.LVL34>:
+000001d2 <.LVL34>:
     for(int j=0;j<10;j++){
- 1c8:	19fd                	addi	s3,s3,-1
+ 1d2:	19fd                	addi	s3,s3,-1
 
-000001ca <.LVL35>:
- 1ca:	f40997e3          	bnez	s3,118 <.L28>
+000001d4 <.LVL35>:
+ 1d4:	f40997e3          	bnez	s3,122 <.L28>
 
-000001ce <.L27>:
+000001d8 <.L27>:
 }
- 1ce:	50b6                	lw	ra,108(sp)
- 1d0:	5426                	lw	s0,104(sp)
- 1d2:	5496                	lw	s1,100(sp)
- 1d4:	5906                	lw	s2,96(sp)
- 1d6:	49f6                	lw	s3,92(sp)
- 1d8:	4501                	li	a0,0
- 1da:	6165                	addi	sp,sp,112
- 1dc:	8082                	ret
+ 1d8:	50b6                	lw	ra,108(sp)
+ 1da:	5426                	lw	s0,104(sp)
+ 1dc:	5496                	lw	s1,100(sp)
+ 1de:	5906                	lw	s2,96(sp)
+ 1e0:	49f6                	lw	s3,92(sp)
+ 1e2:	4501                	li	a0,0
+ 1e4:	6165                	addi	sp,sp,112
+ 1e6:	8082                	ret
 
-000001de <.L54>:
+000001e8 <.L54>:
      }else if((*Priv_Reg)==2){
- 1de:	4394                	lw	a3,0(a5)
- 1e0:	4709                	li	a4,2
- 1e2:	04e69163          	bne	a3,a4,224 <.L55>
+ 1e8:	4394                	lw	a3,0(a5)
+ 1ea:	4709                	li	a4,2
+ 1ec:	04e69163          	bne	a3,a4,22e <.L55>
 
-000001e6 <.LBB11>:
+000001f0 <.LBB11>:
         if((*i)<50000){
- 1e6:	6931                	lui	s2,0xc
+ 1f0:	6931                	lui	s2,0xc
         }else if((*i)<100000){
- 1e8:	64e1                	lui	s1,0x18
+ 1f2:	64e1                	lui	s1,0x18
 
-000001ea <.LBE11>:
- 1ea:	49a9                	li	s3,10
+000001f4 <.LBE11>:
+ 1f4:	49a9                	li	s3,10
 
-000001ec <.LBB12>:
+000001f6 <.LBB12>:
         if((*i)<50000){
- 1ec:	6421                	lui	s0,0x8
- 1ee:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+ 1f6:	6421                	lui	s0,0x8
+ 1f8:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
         }else if((*i)<100000){
- 1f2:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+ 1fc:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
 
-000001f6 <.LVL37>:
- 1f6:	a031                	j	202 <.L34>
+00000200 <.LVL37>:
+ 200:	a031                	j	20c <.L34>
 
-000001f8 <.L33>:
+00000202 <.L33>:
         (*i)=0;
- 1f8:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+ 202:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
 
-000001fc <.LVL39>:
+00000206 <.LVL39>:
     for(int j=0;j<10;j++){
- 1fc:	19fd                	addi	s3,s3,-1
+ 206:	19fd                	addi	s3,s3,-1
 
-000001fe <.LVL40>:
- 1fe:	fc0988e3          	beqz	s3,1ce <.L27>
+00000208 <.LVL40>:
+ 208:	fc0988e3          	beqz	s3,1d8 <.L27>
 
-00000202 <.L34>:
+0000020c <.L34>:
         if((*i)<50000){
- 202:	403c                	lw	a5,64(s0)
+ 20c:	403c                	lw	a5,64(s0)
             gpio_write(GPIO_LED1, true);        
- 204:	4585                	li	a1,1
+ 20e:	4585                	li	a1,1
         if((*i)<50000){
- 206:	00f97663          	bgeu	s2,a5,212 <.L61>
+ 210:	00f97663          	bgeu	s2,a5,21c <.L61>
         }else if((*i)<100000){
- 20a:	403c                	lw	a5,64(s0)
- 20c:	fef4e6e3          	bltu	s1,a5,1f8 <.L33>
+ 214:	403c                	lw	a5,64(s0)
+ 216:	fef4e6e3          	bltu	s1,a5,202 <.L33>
             gpio_write(GPIO_LED1, false);
- 210:	4581                	li	a1,0
+ 21a:	4581                	li	a1,0
 
-00000212 <.L61>:
- 212:	4515                	li	a0,5
- 214:	00000097          	auipc	ra,0x0
- 218:	000080e7          	jalr	ra # 214 <.L61+0x2>
+0000021c <.L61>:
+ 21c:	4515                	li	a0,5
+ 21e:	00000097          	auipc	ra,0x0
+ 222:	000080e7          	jalr	ra # 21e <.L61+0x2>
 
-0000021c <.LVL42>:
+00000226 <.LVL42>:
         (*i)++;
- 21c:	403c                	lw	a5,64(s0)
- 21e:	0785                	addi	a5,a5,1
- 220:	c03c                	sw	a5,64(s0)
+ 226:	403c                	lw	a5,64(s0)
+ 228:	0785                	addi	a5,a5,1
+ 22a:	c03c                	sw	a5,64(s0)
         if((*i)<50000){
- 222:	b7c5                	j	202 <.L34>
+ 22c:	b7c5                	j	20c <.L34>
 
-00000224 <.L55>:
+0000022e <.L55>:
      }else if((*Priv_Reg)==4){
- 224:	4398                	lw	a4,0(a5)
- 226:	4791                	li	a5,4
- 228:	faf713e3          	bne	a4,a5,1ce <.L27>
+ 22e:	4398                	lw	a4,0(a5)
+ 230:	4791                	li	a5,4
+ 232:	faf713e3          	bne	a4,a5,1d8 <.L27>
 
-0000022c <.LBB13>:
+00000236 <.LBB13>:
         if((*i)<50000){
- 22c:	6931                	lui	s2,0xc
+ 236:	6931                	lui	s2,0xc
         }else if((*i)<100000){
- 22e:	64e1                	lui	s1,0x18
+ 238:	64e1                	lui	s1,0x18
 
-00000230 <.LBE13>:
- 230:	49a9                	li	s3,10
+0000023a <.LBE13>:
+ 23a:	49a9                	li	s3,10
 
-00000232 <.LBB14>:
+0000023c <.LBB14>:
         if((*i)<50000){
- 232:	6421                	lui	s0,0x8
- 234:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
+ 23c:	6421                	lui	s0,0x8
+ 23e:	34f90913          	addi	s2,s2,847 # c34f <.LASF28+0xbf43>
         }else if((*i)<100000){
- 238:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
+ 242:	69f48493          	addi	s1,s1,1695 # 1869f <.LASF28+0x18293>
 
-0000023c <.LVL43>:
- 23c:	a031                	j	248 <.L39>
+00000246 <.LVL43>:
+ 246:	a031                	j	252 <.L39>
 
-0000023e <.L38>:
+00000248 <.L38>:
         (*i)=0;
- 23e:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
+ 248:	04042023          	sw	zero,64(s0) # 8040 <.LASF28+0x7c34>
 
-00000242 <.LVL45>:
+0000024c <.LVL45>:
     for(int j=0;j<10;j++){
- 242:	19fd                	addi	s3,s3,-1
+ 24c:	19fd                	addi	s3,s3,-1
 
-00000244 <.LVL46>:
- 244:	f80985e3          	beqz	s3,1ce <.L27>
+0000024e <.LVL46>:
+ 24e:	f80985e3          	beqz	s3,1d8 <.L27>
 
-00000248 <.L39>:
+00000252 <.L39>:
         if((*i)<50000){
- 248:	403c                	lw	a5,64(s0)
+ 252:	403c                	lw	a5,64(s0)
             gpio_write(GPIO_LED2, true);        
- 24a:	4585                	li	a1,1
+ 254:	4585                	li	a1,1
         if((*i)<50000){
- 24c:	00f97663          	bgeu	s2,a5,258 <.L62>
+ 256:	00f97663          	bgeu	s2,a5,262 <.L62>
         }else if((*i)<100000){
- 250:	403c                	lw	a5,64(s0)
- 252:	fef4e6e3          	bltu	s1,a5,23e <.L38>
+ 25a:	403c                	lw	a5,64(s0)
+ 25c:	fef4e6e3          	bltu	s1,a5,248 <.L38>
             gpio_write(GPIO_LED2, false);
- 256:	4581                	li	a1,0
+ 260:	4581                	li	a1,0
 
-00000258 <.L62>:
- 258:	4511                	li	a0,4
- 25a:	00000097          	auipc	ra,0x0
- 25e:	000080e7          	jalr	ra # 25a <.L62+0x2>
+00000262 <.L62>:
+ 262:	4511                	li	a0,4
+ 264:	00000097          	auipc	ra,0x0
+ 268:	000080e7          	jalr	ra # 264 <.L62+0x2>
 
-00000262 <.LVL48>:
+0000026c <.LVL48>:
         (*i)++;
- 262:	403c                	lw	a5,64(s0)
- 264:	0785                	addi	a5,a5,1
- 266:	c03c                	sw	a5,64(s0)
+ 26c:	403c                	lw	a5,64(s0)
+ 26e:	0785                	addi	a5,a5,1
+ 270:	c03c                	sw	a5,64(s0)
         if((*i)<50000){
- 268:	b7c5                	j	248 <.L39>
+ 272:	b7c5                	j	252 <.L39>
 
 Disassembly of section .text.handler_tmr_recoverysync:
 

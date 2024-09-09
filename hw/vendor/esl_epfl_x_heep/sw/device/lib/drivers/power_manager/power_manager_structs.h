@@ -5,7 +5,7 @@
 **                                                                         **
 ** project  : x-heep                                                       **
 ** filename : power_manager_structs.h                                 **
-** date     : 29/05/2024                                                      **
+** date     : 09/09/2024                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -16,7 +16,7 @@
 
 /**
 * @file   power_manager_structs.h
-* @date   29/05/2024
+* @date   09/09/2024
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.
@@ -119,6 +119,54 @@ typedef struct {
 
   uint32_t RAM_1_RETENTIVE;                       /*!< Set on retentive mode for the RAM_1 domain*/
 
+  uint32_t RAM_2_CLK_GATE;                        /*!< Clock-gates the RAM_2 domain*/
+
+  uint32_t POWER_GATE_RAM_BLOCK_2_ACK;            /*!< Used by the ram 2 switch to ack the power manager*/
+
+  uint32_t RAM_2_SWITCH;                          /*!< Switch off the RAM_2 domain*/
+
+  uint32_t RAM_2_WAIT_ACK_SWITCH_ON;              /*!< Wait for the RAM_2 domain switch ack*/
+
+  uint32_t RAM_2_ISO;                             /*!< Set on the isolation of the RAM_2 domain*/
+
+  uint32_t RAM_2_RETENTIVE;                       /*!< Set on retentive mode for the RAM_2 domain*/
+
+  uint32_t RAM_3_CLK_GATE;                        /*!< Clock-gates the RAM_3 domain*/
+
+  uint32_t POWER_GATE_RAM_BLOCK_3_ACK;            /*!< Used by the ram 3 switch to ack the power manager*/
+
+  uint32_t RAM_3_SWITCH;                          /*!< Switch off the RAM_3 domain*/
+
+  uint32_t RAM_3_WAIT_ACK_SWITCH_ON;              /*!< Wait for the RAM_3 domain switch ack*/
+
+  uint32_t RAM_3_ISO;                             /*!< Set on the isolation of the RAM_3 domain*/
+
+  uint32_t RAM_3_RETENTIVE;                       /*!< Set on retentive mode for the RAM_3 domain*/
+
+  uint32_t RAM_4_CLK_GATE;                        /*!< Clock-gates the RAM_4 domain*/
+
+  uint32_t POWER_GATE_RAM_BLOCK_4_ACK;            /*!< Used by the ram 4 switch to ack the power manager*/
+
+  uint32_t RAM_4_SWITCH;                          /*!< Switch off the RAM_4 domain*/
+
+  uint32_t RAM_4_WAIT_ACK_SWITCH_ON;              /*!< Wait for the RAM_4 domain switch ack*/
+
+  uint32_t RAM_4_ISO;                             /*!< Set on the isolation of the RAM_4 domain*/
+
+  uint32_t RAM_4_RETENTIVE;                       /*!< Set on retentive mode for the RAM_4 domain*/
+
+  uint32_t RAM_5_CLK_GATE;                        /*!< Clock-gates the RAM_5 domain*/
+
+  uint32_t POWER_GATE_RAM_BLOCK_5_ACK;            /*!< Used by the ram 5 switch to ack the power manager*/
+
+  uint32_t RAM_5_SWITCH;                          /*!< Switch off the RAM_5 domain*/
+
+  uint32_t RAM_5_WAIT_ACK_SWITCH_ON;              /*!< Wait for the RAM_5 domain switch ack*/
+
+  uint32_t RAM_5_ISO;                             /*!< Set on the isolation of the RAM_5 domain*/
+
+  uint32_t RAM_5_RETENTIVE;                       /*!< Set on retentive mode for the RAM_5 domain*/
+
   uint32_t MONITOR_POWER_GATE_CORE;               /*!< Used to monitor the signals to power gate core*/
 
   uint32_t MONITOR_POWER_GATE_PERIPH;             /*!< Used to monitor the signals to power gate periph*/
@@ -126,6 +174,14 @@ typedef struct {
   uint32_t MONITOR_POWER_GATE_RAM_BLOCK_0;        /*!< Used to monitor the signals to power gate ram block 0*/
 
   uint32_t MONITOR_POWER_GATE_RAM_BLOCK_1;        /*!< Used to monitor the signals to power gate ram block 1*/
+
+  uint32_t MONITOR_POWER_GATE_RAM_BLOCK_2;        /*!< Used to monitor the signals to power gate ram block 2*/
+
+  uint32_t MONITOR_POWER_GATE_RAM_BLOCK_3;        /*!< Used to monitor the signals to power gate ram block 3*/
+
+  uint32_t MONITOR_POWER_GATE_RAM_BLOCK_4;        /*!< Used to monitor the signals to power gate ram block 4*/
+
+  uint32_t MONITOR_POWER_GATE_RAM_BLOCK_5;        /*!< Used to monitor the signals to power gate ram block 5*/
 
   uint32_t MASTER_CPU_FORCE_SWITCH_OFF;           /*!< Used to force core switch off*/
 

@@ -7,7 +7,7 @@
 package power_manager_reg_pkg;
 
   // Address widths within the block
-  parameter int BlockAw = 8;
+  parameter int BlockAw = 9;
 
   ////////////////////////////
   // Typedefs for registers //
@@ -84,6 +84,54 @@ package power_manager_reg_pkg;
 
   typedef struct packed {logic q;} power_manager_reg2hw_ram_1_retentive_reg_t;
 
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_2_clk_gate_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_power_gate_ram_block_2_ack_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_2_switch_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_2_wait_ack_switch_on_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_2_iso_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_2_retentive_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_3_clk_gate_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_power_gate_ram_block_3_ack_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_3_switch_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_3_wait_ack_switch_on_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_3_iso_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_3_retentive_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_4_clk_gate_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_power_gate_ram_block_4_ack_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_4_switch_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_4_wait_ack_switch_on_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_4_iso_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_4_retentive_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_5_clk_gate_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_power_gate_ram_block_5_ack_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_5_switch_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_5_wait_ack_switch_on_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_5_iso_reg_t;
+
+  typedef struct packed {logic q;} power_manager_reg2hw_ram_5_retentive_reg_t;
+
   typedef struct packed {logic q;} power_manager_reg2hw_master_cpu_force_switch_off_reg_t;
 
   typedef struct packed {logic q;} power_manager_reg2hw_master_cpu_force_switch_on_reg_t;
@@ -152,6 +200,26 @@ package power_manager_reg_pkg;
   } power_manager_hw2reg_power_gate_ram_block_1_ack_reg_t;
 
   typedef struct packed {
+    logic d;
+    logic de;
+  } power_manager_hw2reg_power_gate_ram_block_2_ack_reg_t;
+
+  typedef struct packed {
+    logic d;
+    logic de;
+  } power_manager_hw2reg_power_gate_ram_block_3_ack_reg_t;
+
+  typedef struct packed {
+    logic d;
+    logic de;
+  } power_manager_hw2reg_power_gate_ram_block_4_ack_reg_t;
+
+  typedef struct packed {
+    logic d;
+    logic de;
+  } power_manager_hw2reg_power_gate_ram_block_5_ack_reg_t;
+
+  typedef struct packed {
     logic [2:0] d;
     logic       de;
   } power_manager_hw2reg_monitor_power_gate_core_reg_t;
@@ -171,40 +239,84 @@ package power_manager_reg_pkg;
     logic       de;
   } power_manager_hw2reg_monitor_power_gate_ram_block_1_reg_t;
 
+  typedef struct packed {
+    logic [1:0] d;
+    logic       de;
+  } power_manager_hw2reg_monitor_power_gate_ram_block_2_reg_t;
+
+  typedef struct packed {
+    logic [1:0] d;
+    logic       de;
+  } power_manager_hw2reg_monitor_power_gate_ram_block_3_reg_t;
+
+  typedef struct packed {
+    logic [1:0] d;
+    logic       de;
+  } power_manager_hw2reg_monitor_power_gate_ram_block_4_reg_t;
+
+  typedef struct packed {
+    logic [1:0] d;
+    logic       de;
+  } power_manager_hw2reg_monitor_power_gate_ram_block_5_reg_t;
+
   // Register -> HW type
   typedef struct packed {
-    power_manager_reg2hw_wakeup_state_reg_t wakeup_state;  // [321:321]
-    power_manager_reg2hw_restore_address_reg_t restore_address;  // [320:289]
-    power_manager_reg2hw_en_wait_for_intr_reg_t en_wait_for_intr;  // [288:257]
-    power_manager_reg2hw_intr_state_reg_t intr_state;  // [256:225]
-    power_manager_reg2hw_power_gate_core_reg_t power_gate_core;  // [224:224]
-    power_manager_reg2hw_power_gate_core_ack_reg_t power_gate_core_ack;  // [223:223]
-    power_manager_reg2hw_cpu_reset_assert_counter_reg_t cpu_reset_assert_counter;  // [222:191]
-    power_manager_reg2hw_cpu_reset_deassert_counter_reg_t cpu_reset_deassert_counter;  // [190:159]
-    power_manager_reg2hw_cpu_switch_off_counter_reg_t cpu_switch_off_counter;  // [158:127]
-    power_manager_reg2hw_cpu_switch_on_counter_reg_t cpu_switch_on_counter;  // [126:95]
-    power_manager_reg2hw_cpu_wait_ack_switch_on_counter_reg_t cpu_wait_ack_switch_on_counter; // [94:94]
-    power_manager_reg2hw_cpu_iso_off_counter_reg_t cpu_iso_off_counter;  // [93:62]
-    power_manager_reg2hw_cpu_iso_on_counter_reg_t cpu_iso_on_counter;  // [61:30]
-    power_manager_reg2hw_cpu_counters_stop_reg_t cpu_counters_stop;  // [29:24]
-    power_manager_reg2hw_power_gate_periph_ack_reg_t power_gate_periph_ack;  // [23:23]
-    power_manager_reg2hw_periph_reset_reg_t periph_reset;  // [22:22]
-    power_manager_reg2hw_periph_switch_reg_t periph_switch;  // [21:21]
-    power_manager_reg2hw_periph_wait_ack_switch_on_reg_t periph_wait_ack_switch_on;  // [20:20]
-    power_manager_reg2hw_periph_iso_reg_t periph_iso;  // [19:19]
-    power_manager_reg2hw_periph_clk_gate_reg_t periph_clk_gate;  // [18:18]
-    power_manager_reg2hw_ram_0_clk_gate_reg_t ram_0_clk_gate;  // [17:17]
-    power_manager_reg2hw_power_gate_ram_block_0_ack_reg_t power_gate_ram_block_0_ack;  // [16:16]
-    power_manager_reg2hw_ram_0_switch_reg_t ram_0_switch;  // [15:15]
-    power_manager_reg2hw_ram_0_wait_ack_switch_on_reg_t ram_0_wait_ack_switch_on;  // [14:14]
-    power_manager_reg2hw_ram_0_iso_reg_t ram_0_iso;  // [13:13]
-    power_manager_reg2hw_ram_0_retentive_reg_t ram_0_retentive;  // [12:12]
-    power_manager_reg2hw_ram_1_clk_gate_reg_t ram_1_clk_gate;  // [11:11]
-    power_manager_reg2hw_power_gate_ram_block_1_ack_reg_t power_gate_ram_block_1_ack;  // [10:10]
-    power_manager_reg2hw_ram_1_switch_reg_t ram_1_switch;  // [9:9]
-    power_manager_reg2hw_ram_1_wait_ack_switch_on_reg_t ram_1_wait_ack_switch_on;  // [8:8]
-    power_manager_reg2hw_ram_1_iso_reg_t ram_1_iso;  // [7:7]
-    power_manager_reg2hw_ram_1_retentive_reg_t ram_1_retentive;  // [6:6]
+    power_manager_reg2hw_wakeup_state_reg_t wakeup_state;  // [345:345]
+    power_manager_reg2hw_restore_address_reg_t restore_address;  // [344:313]
+    power_manager_reg2hw_en_wait_for_intr_reg_t en_wait_for_intr;  // [312:281]
+    power_manager_reg2hw_intr_state_reg_t intr_state;  // [280:249]
+    power_manager_reg2hw_power_gate_core_reg_t power_gate_core;  // [248:248]
+    power_manager_reg2hw_power_gate_core_ack_reg_t power_gate_core_ack;  // [247:247]
+    power_manager_reg2hw_cpu_reset_assert_counter_reg_t cpu_reset_assert_counter;  // [246:215]
+    power_manager_reg2hw_cpu_reset_deassert_counter_reg_t cpu_reset_deassert_counter;  // [214:183]
+    power_manager_reg2hw_cpu_switch_off_counter_reg_t cpu_switch_off_counter;  // [182:151]
+    power_manager_reg2hw_cpu_switch_on_counter_reg_t cpu_switch_on_counter;  // [150:119]
+    power_manager_reg2hw_cpu_wait_ack_switch_on_counter_reg_t cpu_wait_ack_switch_on_counter; // [118:118]
+    power_manager_reg2hw_cpu_iso_off_counter_reg_t cpu_iso_off_counter;  // [117:86]
+    power_manager_reg2hw_cpu_iso_on_counter_reg_t cpu_iso_on_counter;  // [85:54]
+    power_manager_reg2hw_cpu_counters_stop_reg_t cpu_counters_stop;  // [53:48]
+    power_manager_reg2hw_power_gate_periph_ack_reg_t power_gate_periph_ack;  // [47:47]
+    power_manager_reg2hw_periph_reset_reg_t periph_reset;  // [46:46]
+    power_manager_reg2hw_periph_switch_reg_t periph_switch;  // [45:45]
+    power_manager_reg2hw_periph_wait_ack_switch_on_reg_t periph_wait_ack_switch_on;  // [44:44]
+    power_manager_reg2hw_periph_iso_reg_t periph_iso;  // [43:43]
+    power_manager_reg2hw_periph_clk_gate_reg_t periph_clk_gate;  // [42:42]
+    power_manager_reg2hw_ram_0_clk_gate_reg_t ram_0_clk_gate;  // [41:41]
+    power_manager_reg2hw_power_gate_ram_block_0_ack_reg_t power_gate_ram_block_0_ack;  // [40:40]
+    power_manager_reg2hw_ram_0_switch_reg_t ram_0_switch;  // [39:39]
+    power_manager_reg2hw_ram_0_wait_ack_switch_on_reg_t ram_0_wait_ack_switch_on;  // [38:38]
+    power_manager_reg2hw_ram_0_iso_reg_t ram_0_iso;  // [37:37]
+    power_manager_reg2hw_ram_0_retentive_reg_t ram_0_retentive;  // [36:36]
+    power_manager_reg2hw_ram_1_clk_gate_reg_t ram_1_clk_gate;  // [35:35]
+    power_manager_reg2hw_power_gate_ram_block_1_ack_reg_t power_gate_ram_block_1_ack;  // [34:34]
+    power_manager_reg2hw_ram_1_switch_reg_t ram_1_switch;  // [33:33]
+    power_manager_reg2hw_ram_1_wait_ack_switch_on_reg_t ram_1_wait_ack_switch_on;  // [32:32]
+    power_manager_reg2hw_ram_1_iso_reg_t ram_1_iso;  // [31:31]
+    power_manager_reg2hw_ram_1_retentive_reg_t ram_1_retentive;  // [30:30]
+    power_manager_reg2hw_ram_2_clk_gate_reg_t ram_2_clk_gate;  // [29:29]
+    power_manager_reg2hw_power_gate_ram_block_2_ack_reg_t power_gate_ram_block_2_ack;  // [28:28]
+    power_manager_reg2hw_ram_2_switch_reg_t ram_2_switch;  // [27:27]
+    power_manager_reg2hw_ram_2_wait_ack_switch_on_reg_t ram_2_wait_ack_switch_on;  // [26:26]
+    power_manager_reg2hw_ram_2_iso_reg_t ram_2_iso;  // [25:25]
+    power_manager_reg2hw_ram_2_retentive_reg_t ram_2_retentive;  // [24:24]
+    power_manager_reg2hw_ram_3_clk_gate_reg_t ram_3_clk_gate;  // [23:23]
+    power_manager_reg2hw_power_gate_ram_block_3_ack_reg_t power_gate_ram_block_3_ack;  // [22:22]
+    power_manager_reg2hw_ram_3_switch_reg_t ram_3_switch;  // [21:21]
+    power_manager_reg2hw_ram_3_wait_ack_switch_on_reg_t ram_3_wait_ack_switch_on;  // [20:20]
+    power_manager_reg2hw_ram_3_iso_reg_t ram_3_iso;  // [19:19]
+    power_manager_reg2hw_ram_3_retentive_reg_t ram_3_retentive;  // [18:18]
+    power_manager_reg2hw_ram_4_clk_gate_reg_t ram_4_clk_gate;  // [17:17]
+    power_manager_reg2hw_power_gate_ram_block_4_ack_reg_t power_gate_ram_block_4_ack;  // [16:16]
+    power_manager_reg2hw_ram_4_switch_reg_t ram_4_switch;  // [15:15]
+    power_manager_reg2hw_ram_4_wait_ack_switch_on_reg_t ram_4_wait_ack_switch_on;  // [14:14]
+    power_manager_reg2hw_ram_4_iso_reg_t ram_4_iso;  // [13:13]
+    power_manager_reg2hw_ram_4_retentive_reg_t ram_4_retentive;  // [12:12]
+    power_manager_reg2hw_ram_5_clk_gate_reg_t ram_5_clk_gate;  // [11:11]
+    power_manager_reg2hw_power_gate_ram_block_5_ack_reg_t power_gate_ram_block_5_ack;  // [10:10]
+    power_manager_reg2hw_ram_5_switch_reg_t ram_5_switch;  // [9:9]
+    power_manager_reg2hw_ram_5_wait_ack_switch_on_reg_t ram_5_wait_ack_switch_on;  // [8:8]
+    power_manager_reg2hw_ram_5_iso_reg_t ram_5_iso;  // [7:7]
+    power_manager_reg2hw_ram_5_retentive_reg_t ram_5_retentive;  // [6:6]
     power_manager_reg2hw_master_cpu_force_switch_off_reg_t master_cpu_force_switch_off;  // [5:5]
     power_manager_reg2hw_master_cpu_force_switch_on_reg_t master_cpu_force_switch_on;  // [4:4]
     power_manager_reg2hw_master_cpu_force_reset_assert_reg_t master_cpu_force_reset_assert; // [3:3]
@@ -215,66 +327,102 @@ package power_manager_reg_pkg;
 
   // HW -> register type
   typedef struct packed {
-    power_manager_hw2reg_intr_state_reg_t intr_state;  // [252:220]
-    power_manager_hw2reg_power_gate_core_ack_reg_t power_gate_core_ack;  // [219:218]
-    power_manager_hw2reg_cpu_reset_assert_counter_reg_t cpu_reset_assert_counter;  // [217:185]
-    power_manager_hw2reg_cpu_reset_deassert_counter_reg_t cpu_reset_deassert_counter;  // [184:152]
-    power_manager_hw2reg_cpu_switch_off_counter_reg_t cpu_switch_off_counter;  // [151:119]
-    power_manager_hw2reg_cpu_switch_on_counter_reg_t cpu_switch_on_counter;  // [118:86]
-    power_manager_hw2reg_cpu_iso_off_counter_reg_t cpu_iso_off_counter;  // [85:53]
-    power_manager_hw2reg_cpu_iso_on_counter_reg_t cpu_iso_on_counter;  // [52:20]
-    power_manager_hw2reg_power_gate_periph_ack_reg_t power_gate_periph_ack;  // [19:18]
-    power_manager_hw2reg_power_gate_ram_block_0_ack_reg_t power_gate_ram_block_0_ack;  // [17:16]
-    power_manager_hw2reg_power_gate_ram_block_1_ack_reg_t power_gate_ram_block_1_ack;  // [15:14]
-    power_manager_hw2reg_monitor_power_gate_core_reg_t monitor_power_gate_core;  // [13:10]
-    power_manager_hw2reg_monitor_power_gate_periph_reg_t monitor_power_gate_periph;  // [9:6]
-    power_manager_hw2reg_monitor_power_gate_ram_block_0_reg_t monitor_power_gate_ram_block_0; // [5:3]
-    power_manager_hw2reg_monitor_power_gate_ram_block_1_reg_t monitor_power_gate_ram_block_1; // [2:0]
+    power_manager_hw2reg_intr_state_reg_t intr_state;  // [272:240]
+    power_manager_hw2reg_power_gate_core_ack_reg_t power_gate_core_ack;  // [239:238]
+    power_manager_hw2reg_cpu_reset_assert_counter_reg_t cpu_reset_assert_counter;  // [237:205]
+    power_manager_hw2reg_cpu_reset_deassert_counter_reg_t cpu_reset_deassert_counter;  // [204:172]
+    power_manager_hw2reg_cpu_switch_off_counter_reg_t cpu_switch_off_counter;  // [171:139]
+    power_manager_hw2reg_cpu_switch_on_counter_reg_t cpu_switch_on_counter;  // [138:106]
+    power_manager_hw2reg_cpu_iso_off_counter_reg_t cpu_iso_off_counter;  // [105:73]
+    power_manager_hw2reg_cpu_iso_on_counter_reg_t cpu_iso_on_counter;  // [72:40]
+    power_manager_hw2reg_power_gate_periph_ack_reg_t power_gate_periph_ack;  // [39:38]
+    power_manager_hw2reg_power_gate_ram_block_0_ack_reg_t power_gate_ram_block_0_ack;  // [37:36]
+    power_manager_hw2reg_power_gate_ram_block_1_ack_reg_t power_gate_ram_block_1_ack;  // [35:34]
+    power_manager_hw2reg_power_gate_ram_block_2_ack_reg_t power_gate_ram_block_2_ack;  // [33:32]
+    power_manager_hw2reg_power_gate_ram_block_3_ack_reg_t power_gate_ram_block_3_ack;  // [31:30]
+    power_manager_hw2reg_power_gate_ram_block_4_ack_reg_t power_gate_ram_block_4_ack;  // [29:28]
+    power_manager_hw2reg_power_gate_ram_block_5_ack_reg_t power_gate_ram_block_5_ack;  // [27:26]
+    power_manager_hw2reg_monitor_power_gate_core_reg_t monitor_power_gate_core;  // [25:22]
+    power_manager_hw2reg_monitor_power_gate_periph_reg_t monitor_power_gate_periph;  // [21:18]
+    power_manager_hw2reg_monitor_power_gate_ram_block_0_reg_t monitor_power_gate_ram_block_0; // [17:15]
+    power_manager_hw2reg_monitor_power_gate_ram_block_1_reg_t monitor_power_gate_ram_block_1; // [14:12]
+    power_manager_hw2reg_monitor_power_gate_ram_block_2_reg_t monitor_power_gate_ram_block_2; // [11:9]
+    power_manager_hw2reg_monitor_power_gate_ram_block_3_reg_t monitor_power_gate_ram_block_3; // [8:6]
+    power_manager_hw2reg_monitor_power_gate_ram_block_4_reg_t monitor_power_gate_ram_block_4; // [5:3]
+    power_manager_hw2reg_monitor_power_gate_ram_block_5_reg_t monitor_power_gate_ram_block_5; // [2:0]
   } power_manager_hw2reg_t;
 
   // Register offsets
-  parameter logic [BlockAw-1:0] POWER_MANAGER_WAKEUP_STATE_OFFSET = 8'h0;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RESTORE_ADDRESS_OFFSET = 8'h4;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_EN_WAIT_FOR_INTR_OFFSET = 8'h8;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_INTR_STATE_OFFSET = 8'hc;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_CORE_OFFSET = 8'h10;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_CORE_ACK_OFFSET = 8'h14;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_RESET_ASSERT_COUNTER_OFFSET = 8'h18;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_RESET_DEASSERT_COUNTER_OFFSET = 8'h1c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_SWITCH_OFF_COUNTER_OFFSET = 8'h20;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_SWITCH_ON_COUNTER_OFFSET = 8'h24;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_WAIT_ACK_SWITCH_ON_COUNTER_OFFSET = 8'h28;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_ISO_OFF_COUNTER_OFFSET = 8'h2c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_ISO_ON_COUNTER_OFFSET = 8'h30;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_COUNTERS_STOP_OFFSET = 8'h34;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_PERIPH_ACK_OFFSET = 8'h38;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_RESET_OFFSET = 8'h3c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_SWITCH_OFFSET = 8'h40;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_WAIT_ACK_SWITCH_ON_OFFSET = 8'h44;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_ISO_OFFSET = 8'h48;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_CLK_GATE_OFFSET = 8'h4c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_CLK_GATE_OFFSET = 8'h50;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_0_ACK_OFFSET = 8'h54;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_SWITCH_OFFSET = 8'h58;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_WAIT_ACK_SWITCH_ON_OFFSET = 8'h5c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_ISO_OFFSET = 8'h60;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_RETENTIVE_OFFSET = 8'h64;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_CLK_GATE_OFFSET = 8'h68;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_1_ACK_OFFSET = 8'h6c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_SWITCH_OFFSET = 8'h70;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_WAIT_ACK_SWITCH_ON_OFFSET = 8'h74;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_ISO_OFFSET = 8'h78;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_RETENTIVE_OFFSET = 8'h7c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_CORE_OFFSET = 8'h80;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_PERIPH_OFFSET = 8'h84;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0_OFFSET = 8'h88;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1_OFFSET = 8'h8c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF_OFFSET = 8'h90;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON_OFFSET = 8'h94;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT_OFFSET = 8'h98;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT_OFFSET = 8'h9c;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF_OFFSET = 8'ha0;
-  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON_OFFSET = 8'ha4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_WAKEUP_STATE_OFFSET = 9'h0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RESTORE_ADDRESS_OFFSET = 9'h4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_EN_WAIT_FOR_INTR_OFFSET = 9'h8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_INTR_STATE_OFFSET = 9'hc;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_CORE_OFFSET = 9'h10;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_CORE_ACK_OFFSET = 9'h14;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_RESET_ASSERT_COUNTER_OFFSET = 9'h18;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_RESET_DEASSERT_COUNTER_OFFSET = 9'h1c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_SWITCH_OFF_COUNTER_OFFSET = 9'h20;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_SWITCH_ON_COUNTER_OFFSET = 9'h24;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_WAIT_ACK_SWITCH_ON_COUNTER_OFFSET = 9'h28;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_ISO_OFF_COUNTER_OFFSET = 9'h2c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_ISO_ON_COUNTER_OFFSET = 9'h30;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_CPU_COUNTERS_STOP_OFFSET = 9'h34;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_PERIPH_ACK_OFFSET = 9'h38;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_RESET_OFFSET = 9'h3c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_SWITCH_OFFSET = 9'h40;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_WAIT_ACK_SWITCH_ON_OFFSET = 9'h44;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_ISO_OFFSET = 9'h48;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_PERIPH_CLK_GATE_OFFSET = 9'h4c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_CLK_GATE_OFFSET = 9'h50;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_0_ACK_OFFSET = 9'h54;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_SWITCH_OFFSET = 9'h58;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_WAIT_ACK_SWITCH_ON_OFFSET = 9'h5c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_ISO_OFFSET = 9'h60;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_0_RETENTIVE_OFFSET = 9'h64;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_CLK_GATE_OFFSET = 9'h68;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_1_ACK_OFFSET = 9'h6c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_SWITCH_OFFSET = 9'h70;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_WAIT_ACK_SWITCH_ON_OFFSET = 9'h74;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_ISO_OFFSET = 9'h78;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_1_RETENTIVE_OFFSET = 9'h7c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_2_CLK_GATE_OFFSET = 9'h80;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_2_ACK_OFFSET = 9'h84;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_2_SWITCH_OFFSET = 9'h88;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_2_WAIT_ACK_SWITCH_ON_OFFSET = 9'h8c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_2_ISO_OFFSET = 9'h90;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_2_RETENTIVE_OFFSET = 9'h94;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_3_CLK_GATE_OFFSET = 9'h98;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_3_ACK_OFFSET = 9'h9c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_3_SWITCH_OFFSET = 9'ha0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_3_WAIT_ACK_SWITCH_ON_OFFSET = 9'ha4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_3_ISO_OFFSET = 9'ha8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_3_RETENTIVE_OFFSET = 9'hac;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_4_CLK_GATE_OFFSET = 9'hb0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_4_ACK_OFFSET = 9'hb4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_4_SWITCH_OFFSET = 9'hb8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_4_WAIT_ACK_SWITCH_ON_OFFSET = 9'hbc;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_4_ISO_OFFSET = 9'hc0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_4_RETENTIVE_OFFSET = 9'hc4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_5_CLK_GATE_OFFSET = 9'hc8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_POWER_GATE_RAM_BLOCK_5_ACK_OFFSET = 9'hcc;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_5_SWITCH_OFFSET = 9'hd0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_5_WAIT_ACK_SWITCH_ON_OFFSET = 9'hd4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_5_ISO_OFFSET = 9'hd8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_RAM_5_RETENTIVE_OFFSET = 9'hdc;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_CORE_OFFSET = 9'he0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_PERIPH_OFFSET = 9'he4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0_OFFSET = 9'he8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1_OFFSET = 9'hec;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_2_OFFSET = 9'hf0;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_3_OFFSET = 9'hf4;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_4_OFFSET = 9'hf8;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_5_OFFSET = 9'hfc;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF_OFFSET = 9'h100;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON_OFFSET = 9'h104;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT_OFFSET = 9'h108;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT_OFFSET = 9'h10c;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF_OFFSET = 9'h110;
+  parameter logic [BlockAw-1:0] POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON_OFFSET = 9'h114;
 
   // Register index
   typedef enum int {
@@ -310,10 +458,38 @@ package power_manager_reg_pkg;
     POWER_MANAGER_RAM_1_WAIT_ACK_SWITCH_ON,
     POWER_MANAGER_RAM_1_ISO,
     POWER_MANAGER_RAM_1_RETENTIVE,
+    POWER_MANAGER_RAM_2_CLK_GATE,
+    POWER_MANAGER_POWER_GATE_RAM_BLOCK_2_ACK,
+    POWER_MANAGER_RAM_2_SWITCH,
+    POWER_MANAGER_RAM_2_WAIT_ACK_SWITCH_ON,
+    POWER_MANAGER_RAM_2_ISO,
+    POWER_MANAGER_RAM_2_RETENTIVE,
+    POWER_MANAGER_RAM_3_CLK_GATE,
+    POWER_MANAGER_POWER_GATE_RAM_BLOCK_3_ACK,
+    POWER_MANAGER_RAM_3_SWITCH,
+    POWER_MANAGER_RAM_3_WAIT_ACK_SWITCH_ON,
+    POWER_MANAGER_RAM_3_ISO,
+    POWER_MANAGER_RAM_3_RETENTIVE,
+    POWER_MANAGER_RAM_4_CLK_GATE,
+    POWER_MANAGER_POWER_GATE_RAM_BLOCK_4_ACK,
+    POWER_MANAGER_RAM_4_SWITCH,
+    POWER_MANAGER_RAM_4_WAIT_ACK_SWITCH_ON,
+    POWER_MANAGER_RAM_4_ISO,
+    POWER_MANAGER_RAM_4_RETENTIVE,
+    POWER_MANAGER_RAM_5_CLK_GATE,
+    POWER_MANAGER_POWER_GATE_RAM_BLOCK_5_ACK,
+    POWER_MANAGER_RAM_5_SWITCH,
+    POWER_MANAGER_RAM_5_WAIT_ACK_SWITCH_ON,
+    POWER_MANAGER_RAM_5_ISO,
+    POWER_MANAGER_RAM_5_RETENTIVE,
     POWER_MANAGER_MONITOR_POWER_GATE_CORE,
     POWER_MANAGER_MONITOR_POWER_GATE_PERIPH,
     POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0,
     POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1,
+    POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_2,
+    POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_3,
+    POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_4,
+    POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_5,
     POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF,
     POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON,
     POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT,
@@ -323,7 +499,7 @@ package power_manager_reg_pkg;
   } power_manager_id_e;
 
   // Register width information to check illegal writes
-  parameter logic [3:0] POWER_MANAGER_PERMIT[42] = '{
+  parameter logic [3:0] POWER_MANAGER_PERMIT[70] = '{
       4'b0001,  // index[ 0] POWER_MANAGER_WAKEUP_STATE
       4'b1111,  // index[ 1] POWER_MANAGER_RESTORE_ADDRESS
       4'b1111,  // index[ 2] POWER_MANAGER_EN_WAIT_FOR_INTR
@@ -356,16 +532,44 @@ package power_manager_reg_pkg;
       4'b0001,  // index[29] POWER_MANAGER_RAM_1_WAIT_ACK_SWITCH_ON
       4'b0001,  // index[30] POWER_MANAGER_RAM_1_ISO
       4'b0001,  // index[31] POWER_MANAGER_RAM_1_RETENTIVE
-      4'b0001,  // index[32] POWER_MANAGER_MONITOR_POWER_GATE_CORE
-      4'b0001,  // index[33] POWER_MANAGER_MONITOR_POWER_GATE_PERIPH
-      4'b0001,  // index[34] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0
-      4'b0001,  // index[35] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1
-      4'b0001,  // index[36] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF
-      4'b0001,  // index[37] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON
-      4'b0001,  // index[38] POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT
-      4'b0001,  // index[39] POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT
-      4'b0001,  // index[40] POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF
-      4'b0001  // index[41] POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON
+      4'b0001,  // index[32] POWER_MANAGER_RAM_2_CLK_GATE
+      4'b0001,  // index[33] POWER_MANAGER_POWER_GATE_RAM_BLOCK_2_ACK
+      4'b0001,  // index[34] POWER_MANAGER_RAM_2_SWITCH
+      4'b0001,  // index[35] POWER_MANAGER_RAM_2_WAIT_ACK_SWITCH_ON
+      4'b0001,  // index[36] POWER_MANAGER_RAM_2_ISO
+      4'b0001,  // index[37] POWER_MANAGER_RAM_2_RETENTIVE
+      4'b0001,  // index[38] POWER_MANAGER_RAM_3_CLK_GATE
+      4'b0001,  // index[39] POWER_MANAGER_POWER_GATE_RAM_BLOCK_3_ACK
+      4'b0001,  // index[40] POWER_MANAGER_RAM_3_SWITCH
+      4'b0001,  // index[41] POWER_MANAGER_RAM_3_WAIT_ACK_SWITCH_ON
+      4'b0001,  // index[42] POWER_MANAGER_RAM_3_ISO
+      4'b0001,  // index[43] POWER_MANAGER_RAM_3_RETENTIVE
+      4'b0001,  // index[44] POWER_MANAGER_RAM_4_CLK_GATE
+      4'b0001,  // index[45] POWER_MANAGER_POWER_GATE_RAM_BLOCK_4_ACK
+      4'b0001,  // index[46] POWER_MANAGER_RAM_4_SWITCH
+      4'b0001,  // index[47] POWER_MANAGER_RAM_4_WAIT_ACK_SWITCH_ON
+      4'b0001,  // index[48] POWER_MANAGER_RAM_4_ISO
+      4'b0001,  // index[49] POWER_MANAGER_RAM_4_RETENTIVE
+      4'b0001,  // index[50] POWER_MANAGER_RAM_5_CLK_GATE
+      4'b0001,  // index[51] POWER_MANAGER_POWER_GATE_RAM_BLOCK_5_ACK
+      4'b0001,  // index[52] POWER_MANAGER_RAM_5_SWITCH
+      4'b0001,  // index[53] POWER_MANAGER_RAM_5_WAIT_ACK_SWITCH_ON
+      4'b0001,  // index[54] POWER_MANAGER_RAM_5_ISO
+      4'b0001,  // index[55] POWER_MANAGER_RAM_5_RETENTIVE
+      4'b0001,  // index[56] POWER_MANAGER_MONITOR_POWER_GATE_CORE
+      4'b0001,  // index[57] POWER_MANAGER_MONITOR_POWER_GATE_PERIPH
+      4'b0001,  // index[58] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0
+      4'b0001,  // index[59] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1
+      4'b0001,  // index[60] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_2
+      4'b0001,  // index[61] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_3
+      4'b0001,  // index[62] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_4
+      4'b0001,  // index[63] POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_5
+      4'b0001,  // index[64] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF
+      4'b0001,  // index[65] POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON
+      4'b0001,  // index[66] POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT
+      4'b0001,  // index[67] POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT
+      4'b0001,  // index[68] POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF
+      4'b0001  // index[69] POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON
   };
 
 endpackage

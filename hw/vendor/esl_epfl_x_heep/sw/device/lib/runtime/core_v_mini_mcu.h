@@ -9,7 +9,7 @@
 extern "C" {
 #endif  // __cplusplus
 
-#define MEMORY_BANKS 2
+#define MEMORY_BANKS 6
 
 #define EXTERNAL_DOMAINS 0
 

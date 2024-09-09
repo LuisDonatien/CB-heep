@@ -5,7 +5,7 @@
 **                                                                         **
 ** project  : x-heep                                                       **
 ** filename : pdm2pcm_structs.h                                 **
-** date     : 29/05/2024                                                      **
+** date     : 09/09/2024                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -16,7 +16,7 @@
 
 /**
 * @file   pdm2pcm_structs.h
-* @date   29/05/2024
+* @date   09/09/2024
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.

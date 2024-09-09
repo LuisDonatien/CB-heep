@@ -8,6 +8,10 @@ export "DPI-C" task tb_readHEX;
 export "DPI-C" task tb_loadHEX;
 export "DPI-C" task tb_writetoSram0;
 export "DPI-C" task tb_writetoSram1;
+export "DPI-C" task tb_writetoSram2;
+export "DPI-C" task tb_writetoSram3;
+export "DPI-C" task tb_writetoSram4;
+export "DPI-C" task tb_writetoSram5;
 export "DPI-C" task tb_getMemSize;
 export "DPI-C" task tb_set_exit_loop;
 
@@ -82,6 +86,26 @@ task tb_loadHEX;
                    stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
     stimuli_counter = stimuli_counter + 4;
   end
+  for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
+    tb_writetoSram2(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
+                   stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
+    stimuli_counter = stimuli_counter + 4;
+  end
+  for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
+    tb_writetoSram3(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
+                   stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
+    stimuli_counter = stimuli_counter + 4;
+  end
+  for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
+    tb_writetoSram4(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
+                   stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
+    stimuli_counter = stimuli_counter + 4;
+  end
+  for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
+    tb_writetoSram5(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
+                   stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
+    stimuli_counter = stimuli_counter + 4;
+  end
 
 `endif
 
@@ -123,6 +147,78 @@ task tb_writetoSram1;
 `endif
 endtask
 
+task tb_writetoSram2;
+  input int addr;
+  input [7:0] val3;
+  input [7:0] val2;
+  input [7:0] val1;
+  input [7:0] val0;
+`ifdef VCS
+  force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[2].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+  release CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[2].ram_i.tc_ram_i.sram[addr];
+`else
+  CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[2].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+`endif
+endtask
+
+task tb_writetoSram3;
+  input int addr;
+  input [7:0] val3;
+  input [7:0] val2;
+  input [7:0] val1;
+  input [7:0] val0;
+`ifdef VCS
+  force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[3].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+  release CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[3].ram_i.tc_ram_i.sram[addr];
+`else
+  CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[3].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+`endif
+endtask
+
+task tb_writetoSram4;
+  input int addr;
+  input [7:0] val3;
+  input [7:0] val2;
+  input [7:0] val1;
+  input [7:0] val0;
+`ifdef VCS
+  force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[4].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+  release CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[4].ram_i.tc_ram_i.sram[addr];
+`else
+  CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[4].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+`endif
+endtask
+
+task tb_writetoSram5;
+  input int addr;
+  input [7:0] val3;
+  input [7:0] val2;
+  input [7:0] val1;
+  input [7:0] val0;
+`ifdef VCS
+  force CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[5].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+  release CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[5].ram_i.tc_ram_i.sram[addr];
+`else
+  CB_heep_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_i.gen_sram[5].ram_i.tc_ram_i.sram[addr] = {
+    val3, val2, val1, val0
+  };
+`endif
+endtask
+
 
 task tb_set_exit_loop;
 `ifdef VCS
@@ -133,3 +229,4 @@ task tb_set_exit_loop;
 `endif
 endtask
 `endif
+

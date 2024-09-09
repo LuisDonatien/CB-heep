@@ -116,7 +116,7 @@ volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;
         asm volatile("sw t3, 0(a6)");
         asm volatile("sw t3, 0(a6)");
         asm volatile("sw t3, 0(a6)"); 
-
+        
         *(Safe_config_reg+3) = 0x1; //Critical Section
         asm volatile("fence");
         asm volatile("csrr t3, mhartid");      
@@ -137,6 +137,8 @@ int h=*P;
         asm volatile("fence");
         //End Safe mode TMR
 */
+        CSR_READ(CSR_REG_MHARTID,P);
+        
         TMR_Safe_Stop();
  
     if((*Priv_Reg)==1){ 

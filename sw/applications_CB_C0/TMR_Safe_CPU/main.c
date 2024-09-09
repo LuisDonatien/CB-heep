@@ -61,6 +61,7 @@ int h=*P;
         asm volatile("fence");
         //End Safe mode TMR
 */
+        CSR_READ(CSR_REG_MHARTID,P);
         TMR_Safe_Stop();
  
 

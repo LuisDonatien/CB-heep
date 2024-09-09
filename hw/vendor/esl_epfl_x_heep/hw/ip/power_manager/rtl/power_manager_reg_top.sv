@@ -10,7 +10,7 @@
 module power_manager_reg_top #(
     parameter type reg_req_t = logic,
     parameter type reg_rsp_t = logic,
-    parameter int AW = 8
+    parameter int AW = 9
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -171,10 +171,78 @@ module power_manager_reg_top #(
   logic ram_1_retentive_qs;
   logic ram_1_retentive_wd;
   logic ram_1_retentive_we;
+  logic ram_2_clk_gate_qs;
+  logic ram_2_clk_gate_wd;
+  logic ram_2_clk_gate_we;
+  logic power_gate_ram_block_2_ack_qs;
+  logic ram_2_switch_qs;
+  logic ram_2_switch_wd;
+  logic ram_2_switch_we;
+  logic ram_2_wait_ack_switch_on_qs;
+  logic ram_2_wait_ack_switch_on_wd;
+  logic ram_2_wait_ack_switch_on_we;
+  logic ram_2_iso_qs;
+  logic ram_2_iso_wd;
+  logic ram_2_iso_we;
+  logic ram_2_retentive_qs;
+  logic ram_2_retentive_wd;
+  logic ram_2_retentive_we;
+  logic ram_3_clk_gate_qs;
+  logic ram_3_clk_gate_wd;
+  logic ram_3_clk_gate_we;
+  logic power_gate_ram_block_3_ack_qs;
+  logic ram_3_switch_qs;
+  logic ram_3_switch_wd;
+  logic ram_3_switch_we;
+  logic ram_3_wait_ack_switch_on_qs;
+  logic ram_3_wait_ack_switch_on_wd;
+  logic ram_3_wait_ack_switch_on_we;
+  logic ram_3_iso_qs;
+  logic ram_3_iso_wd;
+  logic ram_3_iso_we;
+  logic ram_3_retentive_qs;
+  logic ram_3_retentive_wd;
+  logic ram_3_retentive_we;
+  logic ram_4_clk_gate_qs;
+  logic ram_4_clk_gate_wd;
+  logic ram_4_clk_gate_we;
+  logic power_gate_ram_block_4_ack_qs;
+  logic ram_4_switch_qs;
+  logic ram_4_switch_wd;
+  logic ram_4_switch_we;
+  logic ram_4_wait_ack_switch_on_qs;
+  logic ram_4_wait_ack_switch_on_wd;
+  logic ram_4_wait_ack_switch_on_we;
+  logic ram_4_iso_qs;
+  logic ram_4_iso_wd;
+  logic ram_4_iso_we;
+  logic ram_4_retentive_qs;
+  logic ram_4_retentive_wd;
+  logic ram_4_retentive_we;
+  logic ram_5_clk_gate_qs;
+  logic ram_5_clk_gate_wd;
+  logic ram_5_clk_gate_we;
+  logic power_gate_ram_block_5_ack_qs;
+  logic ram_5_switch_qs;
+  logic ram_5_switch_wd;
+  logic ram_5_switch_we;
+  logic ram_5_wait_ack_switch_on_qs;
+  logic ram_5_wait_ack_switch_on_wd;
+  logic ram_5_wait_ack_switch_on_we;
+  logic ram_5_iso_qs;
+  logic ram_5_iso_wd;
+  logic ram_5_iso_we;
+  logic ram_5_retentive_qs;
+  logic ram_5_retentive_wd;
+  logic ram_5_retentive_we;
   logic [2:0] monitor_power_gate_core_qs;
   logic [2:0] monitor_power_gate_periph_qs;
   logic [1:0] monitor_power_gate_ram_block_0_qs;
   logic [1:0] monitor_power_gate_ram_block_1_qs;
+  logic [1:0] monitor_power_gate_ram_block_2_qs;
+  logic [1:0] monitor_power_gate_ram_block_3_qs;
+  logic [1:0] monitor_power_gate_ram_block_4_qs;
+  logic [1:0] monitor_power_gate_ram_block_5_qs;
   logic master_cpu_force_switch_off_qs;
   logic master_cpu_force_switch_off_wd;
   logic master_cpu_force_switch_off_we;
@@ -1186,6 +1254,650 @@ module power_manager_reg_top #(
   );
 
 
+  // R[ram_2_clk_gate]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_2_clk_gate (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_2_clk_gate_we),
+      .wd(ram_2_clk_gate_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_2_clk_gate.q),
+
+      // to register interface (read)
+      .qs(ram_2_clk_gate_qs)
+  );
+
+
+  // R[power_gate_ram_block_2_ack]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RO"),
+      .RESVAL  (1'h0)
+  ) u_power_gate_ram_block_2_ack (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.power_gate_ram_block_2_ack.de),
+      .d (hw2reg.power_gate_ram_block_2_ack.d),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.power_gate_ram_block_2_ack.q),
+
+      // to register interface (read)
+      .qs(power_gate_ram_block_2_ack_qs)
+  );
+
+
+  // R[ram_2_switch]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_2_switch (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_2_switch_we),
+      .wd(ram_2_switch_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_2_switch.q),
+
+      // to register interface (read)
+      .qs(ram_2_switch_qs)
+  );
+
+
+  // R[ram_2_wait_ack_switch_on]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_2_wait_ack_switch_on (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_2_wait_ack_switch_on_we),
+      .wd(ram_2_wait_ack_switch_on_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_2_wait_ack_switch_on.q),
+
+      // to register interface (read)
+      .qs(ram_2_wait_ack_switch_on_qs)
+  );
+
+
+  // R[ram_2_iso]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_2_iso (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_2_iso_we),
+      .wd(ram_2_iso_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_2_iso.q),
+
+      // to register interface (read)
+      .qs(ram_2_iso_qs)
+  );
+
+
+  // R[ram_2_retentive]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_2_retentive (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_2_retentive_we),
+      .wd(ram_2_retentive_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_2_retentive.q),
+
+      // to register interface (read)
+      .qs(ram_2_retentive_qs)
+  );
+
+
+  // R[ram_3_clk_gate]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_3_clk_gate (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_3_clk_gate_we),
+      .wd(ram_3_clk_gate_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_3_clk_gate.q),
+
+      // to register interface (read)
+      .qs(ram_3_clk_gate_qs)
+  );
+
+
+  // R[power_gate_ram_block_3_ack]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RO"),
+      .RESVAL  (1'h0)
+  ) u_power_gate_ram_block_3_ack (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.power_gate_ram_block_3_ack.de),
+      .d (hw2reg.power_gate_ram_block_3_ack.d),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.power_gate_ram_block_3_ack.q),
+
+      // to register interface (read)
+      .qs(power_gate_ram_block_3_ack_qs)
+  );
+
+
+  // R[ram_3_switch]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_3_switch (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_3_switch_we),
+      .wd(ram_3_switch_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_3_switch.q),
+
+      // to register interface (read)
+      .qs(ram_3_switch_qs)
+  );
+
+
+  // R[ram_3_wait_ack_switch_on]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_3_wait_ack_switch_on (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_3_wait_ack_switch_on_we),
+      .wd(ram_3_wait_ack_switch_on_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_3_wait_ack_switch_on.q),
+
+      // to register interface (read)
+      .qs(ram_3_wait_ack_switch_on_qs)
+  );
+
+
+  // R[ram_3_iso]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_3_iso (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_3_iso_we),
+      .wd(ram_3_iso_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_3_iso.q),
+
+      // to register interface (read)
+      .qs(ram_3_iso_qs)
+  );
+
+
+  // R[ram_3_retentive]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_3_retentive (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_3_retentive_we),
+      .wd(ram_3_retentive_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_3_retentive.q),
+
+      // to register interface (read)
+      .qs(ram_3_retentive_qs)
+  );
+
+
+  // R[ram_4_clk_gate]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_4_clk_gate (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_4_clk_gate_we),
+      .wd(ram_4_clk_gate_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_4_clk_gate.q),
+
+      // to register interface (read)
+      .qs(ram_4_clk_gate_qs)
+  );
+
+
+  // R[power_gate_ram_block_4_ack]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RO"),
+      .RESVAL  (1'h0)
+  ) u_power_gate_ram_block_4_ack (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.power_gate_ram_block_4_ack.de),
+      .d (hw2reg.power_gate_ram_block_4_ack.d),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.power_gate_ram_block_4_ack.q),
+
+      // to register interface (read)
+      .qs(power_gate_ram_block_4_ack_qs)
+  );
+
+
+  // R[ram_4_switch]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_4_switch (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_4_switch_we),
+      .wd(ram_4_switch_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_4_switch.q),
+
+      // to register interface (read)
+      .qs(ram_4_switch_qs)
+  );
+
+
+  // R[ram_4_wait_ack_switch_on]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_4_wait_ack_switch_on (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_4_wait_ack_switch_on_we),
+      .wd(ram_4_wait_ack_switch_on_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_4_wait_ack_switch_on.q),
+
+      // to register interface (read)
+      .qs(ram_4_wait_ack_switch_on_qs)
+  );
+
+
+  // R[ram_4_iso]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_4_iso (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_4_iso_we),
+      .wd(ram_4_iso_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_4_iso.q),
+
+      // to register interface (read)
+      .qs(ram_4_iso_qs)
+  );
+
+
+  // R[ram_4_retentive]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_4_retentive (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_4_retentive_we),
+      .wd(ram_4_retentive_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_4_retentive.q),
+
+      // to register interface (read)
+      .qs(ram_4_retentive_qs)
+  );
+
+
+  // R[ram_5_clk_gate]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_5_clk_gate (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_5_clk_gate_we),
+      .wd(ram_5_clk_gate_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_5_clk_gate.q),
+
+      // to register interface (read)
+      .qs(ram_5_clk_gate_qs)
+  );
+
+
+  // R[power_gate_ram_block_5_ack]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RO"),
+      .RESVAL  (1'h0)
+  ) u_power_gate_ram_block_5_ack (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.power_gate_ram_block_5_ack.de),
+      .d (hw2reg.power_gate_ram_block_5_ack.d),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.power_gate_ram_block_5_ack.q),
+
+      // to register interface (read)
+      .qs(power_gate_ram_block_5_ack_qs)
+  );
+
+
+  // R[ram_5_switch]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_5_switch (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_5_switch_we),
+      .wd(ram_5_switch_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_5_switch.q),
+
+      // to register interface (read)
+      .qs(ram_5_switch_qs)
+  );
+
+
+  // R[ram_5_wait_ack_switch_on]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_5_wait_ack_switch_on (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_5_wait_ack_switch_on_we),
+      .wd(ram_5_wait_ack_switch_on_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_5_wait_ack_switch_on.q),
+
+      // to register interface (read)
+      .qs(ram_5_wait_ack_switch_on_qs)
+  );
+
+
+  // R[ram_5_iso]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_5_iso (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_5_iso_we),
+      .wd(ram_5_iso_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_5_iso.q),
+
+      // to register interface (read)
+      .qs(ram_5_iso_qs)
+  );
+
+
+  // R[ram_5_retentive]: V(False)
+
+  prim_subreg #(
+      .DW      (1),
+      .SWACCESS("RW"),
+      .RESVAL  (1'h0)
+  ) u_ram_5_retentive (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // from register interface
+      .we(ram_5_retentive_we),
+      .wd(ram_5_retentive_wd),
+
+      // from internal hardware
+      .de(1'b0),
+      .d ('0),
+
+      // to internal hardware
+      .qe(),
+      .q (reg2hw.ram_5_retentive.q),
+
+      // to register interface (read)
+      .qs(ram_5_retentive_qs)
+  );
+
+
   // R[monitor_power_gate_core]: V(False)
 
   prim_subreg #(
@@ -1287,6 +1999,110 @@ module power_manager_reg_top #(
 
       // to register interface (read)
       .qs(monitor_power_gate_ram_block_1_qs)
+  );
+
+
+  // R[monitor_power_gate_ram_block_2]: V(False)
+
+  prim_subreg #(
+      .DW      (2),
+      .SWACCESS("RO"),
+      .RESVAL  (2'h0)
+  ) u_monitor_power_gate_ram_block_2 (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.monitor_power_gate_ram_block_2.de),
+      .d (hw2reg.monitor_power_gate_ram_block_2.d),
+
+      // to internal hardware
+      .qe(),
+      .q (),
+
+      // to register interface (read)
+      .qs(monitor_power_gate_ram_block_2_qs)
+  );
+
+
+  // R[monitor_power_gate_ram_block_3]: V(False)
+
+  prim_subreg #(
+      .DW      (2),
+      .SWACCESS("RO"),
+      .RESVAL  (2'h0)
+  ) u_monitor_power_gate_ram_block_3 (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.monitor_power_gate_ram_block_3.de),
+      .d (hw2reg.monitor_power_gate_ram_block_3.d),
+
+      // to internal hardware
+      .qe(),
+      .q (),
+
+      // to register interface (read)
+      .qs(monitor_power_gate_ram_block_3_qs)
+  );
+
+
+  // R[monitor_power_gate_ram_block_4]: V(False)
+
+  prim_subreg #(
+      .DW      (2),
+      .SWACCESS("RO"),
+      .RESVAL  (2'h0)
+  ) u_monitor_power_gate_ram_block_4 (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.monitor_power_gate_ram_block_4.de),
+      .d (hw2reg.monitor_power_gate_ram_block_4.d),
+
+      // to internal hardware
+      .qe(),
+      .q (),
+
+      // to register interface (read)
+      .qs(monitor_power_gate_ram_block_4_qs)
+  );
+
+
+  // R[monitor_power_gate_ram_block_5]: V(False)
+
+  prim_subreg #(
+      .DW      (2),
+      .SWACCESS("RO"),
+      .RESVAL  (2'h0)
+  ) u_monitor_power_gate_ram_block_5 (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      .we(1'b0),
+      .wd('0),
+
+      // from internal hardware
+      .de(hw2reg.monitor_power_gate_ram_block_5.de),
+      .d (hw2reg.monitor_power_gate_ram_block_5.d),
+
+      // to internal hardware
+      .qe(),
+      .q (),
+
+      // to register interface (read)
+      .qs(monitor_power_gate_ram_block_5_qs)
   );
 
 
@@ -1454,7 +2270,7 @@ module power_manager_reg_top #(
 
 
 
-  logic [41:0] addr_hit;
+  logic [69:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == POWER_MANAGER_WAKEUP_STATE_OFFSET);
@@ -1489,16 +2305,44 @@ module power_manager_reg_top #(
     addr_hit[29] = (reg_addr == POWER_MANAGER_RAM_1_WAIT_ACK_SWITCH_ON_OFFSET);
     addr_hit[30] = (reg_addr == POWER_MANAGER_RAM_1_ISO_OFFSET);
     addr_hit[31] = (reg_addr == POWER_MANAGER_RAM_1_RETENTIVE_OFFSET);
-    addr_hit[32] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_CORE_OFFSET);
-    addr_hit[33] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_PERIPH_OFFSET);
-    addr_hit[34] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0_OFFSET);
-    addr_hit[35] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1_OFFSET);
-    addr_hit[36] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF_OFFSET);
-    addr_hit[37] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON_OFFSET);
-    addr_hit[38] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT_OFFSET);
-    addr_hit[39] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT_OFFSET);
-    addr_hit[40] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF_OFFSET);
-    addr_hit[41] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON_OFFSET);
+    addr_hit[32] = (reg_addr == POWER_MANAGER_RAM_2_CLK_GATE_OFFSET);
+    addr_hit[33] = (reg_addr == POWER_MANAGER_POWER_GATE_RAM_BLOCK_2_ACK_OFFSET);
+    addr_hit[34] = (reg_addr == POWER_MANAGER_RAM_2_SWITCH_OFFSET);
+    addr_hit[35] = (reg_addr == POWER_MANAGER_RAM_2_WAIT_ACK_SWITCH_ON_OFFSET);
+    addr_hit[36] = (reg_addr == POWER_MANAGER_RAM_2_ISO_OFFSET);
+    addr_hit[37] = (reg_addr == POWER_MANAGER_RAM_2_RETENTIVE_OFFSET);
+    addr_hit[38] = (reg_addr == POWER_MANAGER_RAM_3_CLK_GATE_OFFSET);
+    addr_hit[39] = (reg_addr == POWER_MANAGER_POWER_GATE_RAM_BLOCK_3_ACK_OFFSET);
+    addr_hit[40] = (reg_addr == POWER_MANAGER_RAM_3_SWITCH_OFFSET);
+    addr_hit[41] = (reg_addr == POWER_MANAGER_RAM_3_WAIT_ACK_SWITCH_ON_OFFSET);
+    addr_hit[42] = (reg_addr == POWER_MANAGER_RAM_3_ISO_OFFSET);
+    addr_hit[43] = (reg_addr == POWER_MANAGER_RAM_3_RETENTIVE_OFFSET);
+    addr_hit[44] = (reg_addr == POWER_MANAGER_RAM_4_CLK_GATE_OFFSET);
+    addr_hit[45] = (reg_addr == POWER_MANAGER_POWER_GATE_RAM_BLOCK_4_ACK_OFFSET);
+    addr_hit[46] = (reg_addr == POWER_MANAGER_RAM_4_SWITCH_OFFSET);
+    addr_hit[47] = (reg_addr == POWER_MANAGER_RAM_4_WAIT_ACK_SWITCH_ON_OFFSET);
+    addr_hit[48] = (reg_addr == POWER_MANAGER_RAM_4_ISO_OFFSET);
+    addr_hit[49] = (reg_addr == POWER_MANAGER_RAM_4_RETENTIVE_OFFSET);
+    addr_hit[50] = (reg_addr == POWER_MANAGER_RAM_5_CLK_GATE_OFFSET);
+    addr_hit[51] = (reg_addr == POWER_MANAGER_POWER_GATE_RAM_BLOCK_5_ACK_OFFSET);
+    addr_hit[52] = (reg_addr == POWER_MANAGER_RAM_5_SWITCH_OFFSET);
+    addr_hit[53] = (reg_addr == POWER_MANAGER_RAM_5_WAIT_ACK_SWITCH_ON_OFFSET);
+    addr_hit[54] = (reg_addr == POWER_MANAGER_RAM_5_ISO_OFFSET);
+    addr_hit[55] = (reg_addr == POWER_MANAGER_RAM_5_RETENTIVE_OFFSET);
+    addr_hit[56] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_CORE_OFFSET);
+    addr_hit[57] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_PERIPH_OFFSET);
+    addr_hit[58] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_0_OFFSET);
+    addr_hit[59] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_1_OFFSET);
+    addr_hit[60] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_2_OFFSET);
+    addr_hit[61] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_3_OFFSET);
+    addr_hit[62] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_4_OFFSET);
+    addr_hit[63] = (reg_addr == POWER_MANAGER_MONITOR_POWER_GATE_RAM_BLOCK_5_OFFSET);
+    addr_hit[64] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_OFF_OFFSET);
+    addr_hit[65] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_SWITCH_ON_OFFSET);
+    addr_hit[66] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_RESET_ASSERT_OFFSET);
+    addr_hit[67] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_RESET_DEASSERT_OFFSET);
+    addr_hit[68] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_ISO_OFF_OFFSET);
+    addr_hit[69] = (reg_addr == POWER_MANAGER_MASTER_CPU_FORCE_ISO_ON_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0;
@@ -1547,7 +2391,35 @@ module power_manager_reg_top #(
                (addr_hit[38] & (|(POWER_MANAGER_PERMIT[38] & ~reg_be))) |
                (addr_hit[39] & (|(POWER_MANAGER_PERMIT[39] & ~reg_be))) |
                (addr_hit[40] & (|(POWER_MANAGER_PERMIT[40] & ~reg_be))) |
-               (addr_hit[41] & (|(POWER_MANAGER_PERMIT[41] & ~reg_be)))));
+               (addr_hit[41] & (|(POWER_MANAGER_PERMIT[41] & ~reg_be))) |
+               (addr_hit[42] & (|(POWER_MANAGER_PERMIT[42] & ~reg_be))) |
+               (addr_hit[43] & (|(POWER_MANAGER_PERMIT[43] & ~reg_be))) |
+               (addr_hit[44] & (|(POWER_MANAGER_PERMIT[44] & ~reg_be))) |
+               (addr_hit[45] & (|(POWER_MANAGER_PERMIT[45] & ~reg_be))) |
+               (addr_hit[46] & (|(POWER_MANAGER_PERMIT[46] & ~reg_be))) |
+               (addr_hit[47] & (|(POWER_MANAGER_PERMIT[47] & ~reg_be))) |
+               (addr_hit[48] & (|(POWER_MANAGER_PERMIT[48] & ~reg_be))) |
+               (addr_hit[49] & (|(POWER_MANAGER_PERMIT[49] & ~reg_be))) |
+               (addr_hit[50] & (|(POWER_MANAGER_PERMIT[50] & ~reg_be))) |
+               (addr_hit[51] & (|(POWER_MANAGER_PERMIT[51] & ~reg_be))) |
+               (addr_hit[52] & (|(POWER_MANAGER_PERMIT[52] & ~reg_be))) |
+               (addr_hit[53] & (|(POWER_MANAGER_PERMIT[53] & ~reg_be))) |
+               (addr_hit[54] & (|(POWER_MANAGER_PERMIT[54] & ~reg_be))) |
+               (addr_hit[55] & (|(POWER_MANAGER_PERMIT[55] & ~reg_be))) |
+               (addr_hit[56] & (|(POWER_MANAGER_PERMIT[56] & ~reg_be))) |
+               (addr_hit[57] & (|(POWER_MANAGER_PERMIT[57] & ~reg_be))) |
+               (addr_hit[58] & (|(POWER_MANAGER_PERMIT[58] & ~reg_be))) |
+               (addr_hit[59] & (|(POWER_MANAGER_PERMIT[59] & ~reg_be))) |
+               (addr_hit[60] & (|(POWER_MANAGER_PERMIT[60] & ~reg_be))) |
+               (addr_hit[61] & (|(POWER_MANAGER_PERMIT[61] & ~reg_be))) |
+               (addr_hit[62] & (|(POWER_MANAGER_PERMIT[62] & ~reg_be))) |
+               (addr_hit[63] & (|(POWER_MANAGER_PERMIT[63] & ~reg_be))) |
+               (addr_hit[64] & (|(POWER_MANAGER_PERMIT[64] & ~reg_be))) |
+               (addr_hit[65] & (|(POWER_MANAGER_PERMIT[65] & ~reg_be))) |
+               (addr_hit[66] & (|(POWER_MANAGER_PERMIT[66] & ~reg_be))) |
+               (addr_hit[67] & (|(POWER_MANAGER_PERMIT[67] & ~reg_be))) |
+               (addr_hit[68] & (|(POWER_MANAGER_PERMIT[68] & ~reg_be))) |
+               (addr_hit[69] & (|(POWER_MANAGER_PERMIT[69] & ~reg_be)))));
   end
 
   assign wakeup_state_we = addr_hit[0] & reg_we & !reg_error;
@@ -1649,22 +2521,82 @@ module power_manager_reg_top #(
   assign ram_1_retentive_we = addr_hit[31] & reg_we & !reg_error;
   assign ram_1_retentive_wd = reg_wdata[0];
 
-  assign master_cpu_force_switch_off_we = addr_hit[36] & reg_we & !reg_error;
+  assign ram_2_clk_gate_we = addr_hit[32] & reg_we & !reg_error;
+  assign ram_2_clk_gate_wd = reg_wdata[0];
+
+  assign ram_2_switch_we = addr_hit[34] & reg_we & !reg_error;
+  assign ram_2_switch_wd = reg_wdata[0];
+
+  assign ram_2_wait_ack_switch_on_we = addr_hit[35] & reg_we & !reg_error;
+  assign ram_2_wait_ack_switch_on_wd = reg_wdata[0];
+
+  assign ram_2_iso_we = addr_hit[36] & reg_we & !reg_error;
+  assign ram_2_iso_wd = reg_wdata[0];
+
+  assign ram_2_retentive_we = addr_hit[37] & reg_we & !reg_error;
+  assign ram_2_retentive_wd = reg_wdata[0];
+
+  assign ram_3_clk_gate_we = addr_hit[38] & reg_we & !reg_error;
+  assign ram_3_clk_gate_wd = reg_wdata[0];
+
+  assign ram_3_switch_we = addr_hit[40] & reg_we & !reg_error;
+  assign ram_3_switch_wd = reg_wdata[0];
+
+  assign ram_3_wait_ack_switch_on_we = addr_hit[41] & reg_we & !reg_error;
+  assign ram_3_wait_ack_switch_on_wd = reg_wdata[0];
+
+  assign ram_3_iso_we = addr_hit[42] & reg_we & !reg_error;
+  assign ram_3_iso_wd = reg_wdata[0];
+
+  assign ram_3_retentive_we = addr_hit[43] & reg_we & !reg_error;
+  assign ram_3_retentive_wd = reg_wdata[0];
+
+  assign ram_4_clk_gate_we = addr_hit[44] & reg_we & !reg_error;
+  assign ram_4_clk_gate_wd = reg_wdata[0];
+
+  assign ram_4_switch_we = addr_hit[46] & reg_we & !reg_error;
+  assign ram_4_switch_wd = reg_wdata[0];
+
+  assign ram_4_wait_ack_switch_on_we = addr_hit[47] & reg_we & !reg_error;
+  assign ram_4_wait_ack_switch_on_wd = reg_wdata[0];
+
+  assign ram_4_iso_we = addr_hit[48] & reg_we & !reg_error;
+  assign ram_4_iso_wd = reg_wdata[0];
+
+  assign ram_4_retentive_we = addr_hit[49] & reg_we & !reg_error;
+  assign ram_4_retentive_wd = reg_wdata[0];
+
+  assign ram_5_clk_gate_we = addr_hit[50] & reg_we & !reg_error;
+  assign ram_5_clk_gate_wd = reg_wdata[0];
+
+  assign ram_5_switch_we = addr_hit[52] & reg_we & !reg_error;
+  assign ram_5_switch_wd = reg_wdata[0];
+
+  assign ram_5_wait_ack_switch_on_we = addr_hit[53] & reg_we & !reg_error;
+  assign ram_5_wait_ack_switch_on_wd = reg_wdata[0];
+
+  assign ram_5_iso_we = addr_hit[54] & reg_we & !reg_error;
+  assign ram_5_iso_wd = reg_wdata[0];
+
+  assign ram_5_retentive_we = addr_hit[55] & reg_we & !reg_error;
+  assign ram_5_retentive_wd = reg_wdata[0];
+
+  assign master_cpu_force_switch_off_we = addr_hit[64] & reg_we & !reg_error;
   assign master_cpu_force_switch_off_wd = reg_wdata[0];
 
-  assign master_cpu_force_switch_on_we = addr_hit[37] & reg_we & !reg_error;
+  assign master_cpu_force_switch_on_we = addr_hit[65] & reg_we & !reg_error;
   assign master_cpu_force_switch_on_wd = reg_wdata[0];
 
-  assign master_cpu_force_reset_assert_we = addr_hit[38] & reg_we & !reg_error;
+  assign master_cpu_force_reset_assert_we = addr_hit[66] & reg_we & !reg_error;
   assign master_cpu_force_reset_assert_wd = reg_wdata[0];
 
-  assign master_cpu_force_reset_deassert_we = addr_hit[39] & reg_we & !reg_error;
+  assign master_cpu_force_reset_deassert_we = addr_hit[67] & reg_we & !reg_error;
   assign master_cpu_force_reset_deassert_wd = reg_wdata[0];
 
-  assign master_cpu_force_iso_off_we = addr_hit[40] & reg_we & !reg_error;
+  assign master_cpu_force_iso_off_we = addr_hit[68] & reg_we & !reg_error;
   assign master_cpu_force_iso_off_wd = reg_wdata[0];
 
-  assign master_cpu_force_iso_on_we = addr_hit[41] & reg_we & !reg_error;
+  assign master_cpu_force_iso_on_we = addr_hit[69] & reg_we & !reg_error;
   assign master_cpu_force_iso_on_wd = reg_wdata[0];
 
   // Read data return
@@ -1805,42 +2737,154 @@ module power_manager_reg_top #(
       end
 
       addr_hit[32]: begin
-        reg_rdata_next[2:0] = monitor_power_gate_core_qs;
+        reg_rdata_next[0] = ram_2_clk_gate_qs;
       end
 
       addr_hit[33]: begin
-        reg_rdata_next[2:0] = monitor_power_gate_periph_qs;
+        reg_rdata_next[0] = power_gate_ram_block_2_ack_qs;
       end
 
       addr_hit[34]: begin
-        reg_rdata_next[1:0] = monitor_power_gate_ram_block_0_qs;
+        reg_rdata_next[0] = ram_2_switch_qs;
       end
 
       addr_hit[35]: begin
-        reg_rdata_next[1:0] = monitor_power_gate_ram_block_1_qs;
+        reg_rdata_next[0] = ram_2_wait_ack_switch_on_qs;
       end
 
       addr_hit[36]: begin
-        reg_rdata_next[0] = master_cpu_force_switch_off_qs;
+        reg_rdata_next[0] = ram_2_iso_qs;
       end
 
       addr_hit[37]: begin
-        reg_rdata_next[0] = master_cpu_force_switch_on_qs;
+        reg_rdata_next[0] = ram_2_retentive_qs;
       end
 
       addr_hit[38]: begin
-        reg_rdata_next[0] = master_cpu_force_reset_assert_qs;
+        reg_rdata_next[0] = ram_3_clk_gate_qs;
       end
 
       addr_hit[39]: begin
-        reg_rdata_next[0] = master_cpu_force_reset_deassert_qs;
+        reg_rdata_next[0] = power_gate_ram_block_3_ack_qs;
       end
 
       addr_hit[40]: begin
-        reg_rdata_next[0] = master_cpu_force_iso_off_qs;
+        reg_rdata_next[0] = ram_3_switch_qs;
       end
 
       addr_hit[41]: begin
+        reg_rdata_next[0] = ram_3_wait_ack_switch_on_qs;
+      end
+
+      addr_hit[42]: begin
+        reg_rdata_next[0] = ram_3_iso_qs;
+      end
+
+      addr_hit[43]: begin
+        reg_rdata_next[0] = ram_3_retentive_qs;
+      end
+
+      addr_hit[44]: begin
+        reg_rdata_next[0] = ram_4_clk_gate_qs;
+      end
+
+      addr_hit[45]: begin
+        reg_rdata_next[0] = power_gate_ram_block_4_ack_qs;
+      end
+
+      addr_hit[46]: begin
+        reg_rdata_next[0] = ram_4_switch_qs;
+      end
+
+      addr_hit[47]: begin
+        reg_rdata_next[0] = ram_4_wait_ack_switch_on_qs;
+      end
+
+      addr_hit[48]: begin
+        reg_rdata_next[0] = ram_4_iso_qs;
+      end
+
+      addr_hit[49]: begin
+        reg_rdata_next[0] = ram_4_retentive_qs;
+      end
+
+      addr_hit[50]: begin
+        reg_rdata_next[0] = ram_5_clk_gate_qs;
+      end
+
+      addr_hit[51]: begin
+        reg_rdata_next[0] = power_gate_ram_block_5_ack_qs;
+      end
+
+      addr_hit[52]: begin
+        reg_rdata_next[0] = ram_5_switch_qs;
+      end
+
+      addr_hit[53]: begin
+        reg_rdata_next[0] = ram_5_wait_ack_switch_on_qs;
+      end
+
+      addr_hit[54]: begin
+        reg_rdata_next[0] = ram_5_iso_qs;
+      end
+
+      addr_hit[55]: begin
+        reg_rdata_next[0] = ram_5_retentive_qs;
+      end
+
+      addr_hit[56]: begin
+        reg_rdata_next[2:0] = monitor_power_gate_core_qs;
+      end
+
+      addr_hit[57]: begin
+        reg_rdata_next[2:0] = monitor_power_gate_periph_qs;
+      end
+
+      addr_hit[58]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_0_qs;
+      end
+
+      addr_hit[59]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_1_qs;
+      end
+
+      addr_hit[60]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_2_qs;
+      end
+
+      addr_hit[61]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_3_qs;
+      end
+
+      addr_hit[62]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_4_qs;
+      end
+
+      addr_hit[63]: begin
+        reg_rdata_next[1:0] = monitor_power_gate_ram_block_5_qs;
+      end
+
+      addr_hit[64]: begin
+        reg_rdata_next[0] = master_cpu_force_switch_off_qs;
+      end
+
+      addr_hit[65]: begin
+        reg_rdata_next[0] = master_cpu_force_switch_on_qs;
+      end
+
+      addr_hit[66]: begin
+        reg_rdata_next[0] = master_cpu_force_reset_assert_qs;
+      end
+
+      addr_hit[67]: begin
+        reg_rdata_next[0] = master_cpu_force_reset_deassert_qs;
+      end
+
+      addr_hit[68]: begin
+        reg_rdata_next[0] = master_cpu_force_iso_off_qs;
+      end
+
+      addr_hit[69]: begin
         reg_rdata_next[0] = master_cpu_force_iso_on_qs;
       end
 
@@ -1865,7 +2909,7 @@ module power_manager_reg_top #(
 endmodule
 
 module power_manager_reg_top_intf #(
-    parameter  int AW = 8,
+    parameter  int AW = 9,
     localparam int DW = 32
 ) (
     input logic clk_i,
