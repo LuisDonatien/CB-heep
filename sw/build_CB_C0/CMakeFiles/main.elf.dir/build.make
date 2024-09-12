@@ -72,34 +72,34 @@ include CMakeFiles/main.elf.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/main.elf.dir/flags.make
 
-CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj: CMakeFiles/main.elf.dir/flags.make
-CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj: /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Single_GPIO/main.c
-CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj: CMakeFiles/main.elf.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj"
-	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj -MF CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj.d -o CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj -c /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Single_GPIO/main.c
+CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj: CMakeFiles/main.elf.dir/flags.make
+CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj: /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/hello_world/main.c
+CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj: CMakeFiles/main.elf.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj"
+	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj -MF CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj.d -o CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj -c /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/hello_world/main.c
 
-CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.i"
-	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Single_GPIO/main.c > CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.i
+CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.i"
+	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/hello_world/main.c > CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.i
 
-CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.s"
-	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Single_GPIO/main.c -o CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.s
+CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.s"
+	/home/luis/tools/riscv/bin/riscv32-unknown-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/hello_world/main.c -o CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.s
 
 # Object files for target main.elf
 main_elf_OBJECTS = \
-"CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj"
+"CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj"
 
 # External object files for target main.elf
 main_elf_EXTERNAL_OBJECTS =
 
-main.elf: CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj
+main.elf: CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj
 main.elf: CMakeFiles/main.elf.dir/build.make
 main.elf: /home/luis/Documents/PhD/CB-heep/sw/linker_CB_C0/link.ld
 main.elf: CMakeFiles/main.elf.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable main.elf"
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Invoking: Disassemble ( CMakeFiles/main.dir/main.c.obj)"
-	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objdump -S /home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj > main.s
+	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objdump -S /home/luis/Documents/PhD/CB-heep/sw/build_CB_C0/CMakeFiles/main.elf.dir/applications_CB_C0/hello_world/main.c.obj > main.s
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.elf.dir/link.txt --verbose=$(VERBOSE)
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Invoking: Disassemble"
 	/home/luis/tools/riscv/bin/riscv32-unknown-elf-objdump -S main.elf > main.S

@@ -23,7 +23,7 @@ module safe_wrapper_ctrl #(
     output logic Start_o,
     output logic End_sw_routine_o,
     //input logic Debug_ext_req_i,
-    input logic Single_Boot_i,
+    input logic Start_Boot_i,
     input logic en_ext_debug_i
 );
 
@@ -76,7 +76,7 @@ module safe_wrapper_ctrl #(
   end
   
 */
-  assign hw2reg.external_debug_req.d =  {Single_Boot_i, en_ext_debug_i};   
+  assign hw2reg.external_debug_req.d =  {Start_Boot_i, en_ext_debug_i};   
   assign hw2reg.external_debug_req.de = 1'b1;
   assign hw2reg.end_sw_routine.d = 1'b0;
   assign hw2reg.end_sw_routine.de = Start_Flag;
