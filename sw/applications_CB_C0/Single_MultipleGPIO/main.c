@@ -18,6 +18,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "gpio.h"
+
+#define GPIO_LED0 6
+#define GPIO_LED1 5
+#define GPIO_LED2 4
+#define GPIO_LED3 3
+
 #define INTERRUPT_HANDLER_ABI __attribute__((aligned(4), interrupt))
 
 
@@ -33,18 +40,87 @@ INTERRUPT_HANDLER_ABI void handler_safe_fsm(void);
 
 int main(int argc, char *argv[])
 {
-    /* write something to stdout */
+    /* INIT */
     volatile unsigned int *P = 0xF0108000;
     volatile unsigned int *START_P = 0xF0020018;
     volatile unsigned int *ENTRY_PROG = 0xF0020020;
     volatile unsigned int *END_SW = 0xF002001C;
     volatile unsigned int *CONFIG = 0xF0020000;
+    volatile unsigned int *Priv_Reg = PRIVATE_REG_BASEADDRESS;    
     *END_SW= 0x0;
-    for(int i=0; i<10000; i<i++)
-        *P=i;
+    /* ----------------- */
+    gpio_result_t gpio_Led0;
+    gpio_result_t gpio_Led1;
+    gpio_result_t gpio_Led2;
+    gpio_result_t gpio_Led3;
+    gpio_cfg_t pin_cfg_Led0 = {
+        .pin = GPIO_LED0,
+        .mode = GpioModeOutPushPull
+    };    
+    gpio_cfg_t pin_cfg_Led1 = {
+        .pin = GPIO_LED1,
+        .mode = GpioModeOutPushPull
+    }; 
+    gpio_cfg_t pin_cfg_Led2 = {
+        .pin = GPIO_LED2,
+        .mode = GpioModeOutPushPull
+    }; 
+    gpio_cfg_t pin_cfg_Led3 = {
+        .pin = GPIO_LED3,
+        .mode = GpioModeOutPushPull
+    };     
+    gpio_Led0 = gpio_config (pin_cfg_Led0);
+    gpio_Led1 = gpio_config (pin_cfg_Led1);
+    gpio_Led2 = gpio_config (pin_cfg_Led2);
+    gpio_Led3 = gpio_config (pin_cfg_Led3);    
+    volatile unsigned int *i = 0xF0108040;
+
+    for(int j=0;j<10;j++){
+        while(1){
+        if((*i)<50000){
+            gpio_write(GPIO_LED0, true);        
+        }else if((*i)<100000){
+            gpio_write(GPIO_LED0, false);
+        }else{
+        (*i)=0;
+        break;
+        }
+        (*i)++;
+        }
+     }
+    for(int j=0;j<10;j++){
+        while(1){
+        if((*i)<50000){
+            gpio_write(GPIO_LED1, true);        
+        }else if((*i)<100000){
+            gpio_write(GPIO_LED1, false);
+        }else{
+        (*i)=0;
+        break;
+        }
+        (*i)++;
+        }
+     }
+    for(int j=0;j<10;j++){
+        while(1){
+        if((*i)<50000){
+            gpio_write(GPIO_LED2, true);        
+        }else if((*i)<100000){
+            gpio_write(GPIO_LED2, false);
+        }else{
+        (*i)=0;
+        break;
+        }
+        (*i)++;
+        }
+     }        
+     
 
 
-    printf("[IP_CB0] hello world...!\n");
+
+
+
+//END PROGRAM
     *END_SW= 0x1;
     while(1){asm volatile("wfi");}
     return 0;

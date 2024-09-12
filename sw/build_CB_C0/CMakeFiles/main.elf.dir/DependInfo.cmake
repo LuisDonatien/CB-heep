@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/TMR_Safe_CPU_GPIO/main.c" "CMakeFiles/main.elf.dir/applications_CB_C0/TMR_Safe_CPU_GPIO/main.c.obj" "gcc" "CMakeFiles/main.elf.dir/applications_CB_C0/TMR_Safe_CPU_GPIO/main.c.obj.d"
+  "/home/luis/Documents/PhD/CB-heep/sw/applications_CB_C0/Single_GPIO/main.c" "CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj" "gcc" "CMakeFiles/main.elf.dir/applications_CB_C0/Single_GPIO/main.c.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

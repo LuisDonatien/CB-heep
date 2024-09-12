@@ -52,13 +52,16 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
     logic [NHARTS-1:0][0:0] Select_wfi_core_s;
     logic [NHARTS-1:0] master_core_s;
     logic safe_mode_s;
-    logic safe_configuration_s;
+    logic [1:0] safe_configuration_s;
     logic critical_section_s;
     logic [NHARTS-1:0] intc_sync_s;
     logic [NHARTS-1:0] intc_halt_s;
     logic [NHARTS-1:0] sleep_s;
     logic [NHARTS-1:0] debug_mode_s;
     logic [NHARTS-1:0] new_irq_s;
+    logic End_sw_routine_s;
+    logic Start_s;
+    logic Single_Boot_s;
 
     // CPU ports
     obi_req_t  [NHARTS-1 : 0] core_instr_req;
@@ -153,6 +156,9 @@ safe_wrapper_ctrl #(
     .safe_configuration_o(safe_configuration_s),
     .critical_section_o(critical_section_s),
     .Initial_Sync_Master_o(Initial_Sync_Master_s),
+    .Start_o              (Start_s),
+    .End_sw_routine_o       (End_sw_routine_s),
+    .Single_Boot_i        (Single_Boot_s),
     //.Debug_ext_req_i(debug_req_i), //Check if debug_req comes from FSM or external debug Todo: change to 1 the extenal req
     .en_ext_debug_i(en_ext_debug_s) //Todo: other more elegant solution for debugging
     );
@@ -207,6 +213,9 @@ safe_FSM safe_FSM_i (
     .Dmr_comparator_enable_o(),
     .Tmr_dmr_config_o(tmr_dmr_config_s),
     .Dual_mode_tmr_o(dual_mode_tmr_s),
+    .Single_Boot_o(Single_Boot_s),
+    .Start_i(Start_s),
+    .End_sw_routine_i(End_sw_routine_s),
     .en_ext_debug_req_o(en_ext_debug_s)
 );
       assign intr[0] = {

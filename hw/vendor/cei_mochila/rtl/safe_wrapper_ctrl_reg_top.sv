@@ -10,7 +10,7 @@
 module safe_wrapper_ctrl_reg_top #(
   parameter type reg_req_t = logic,
   parameter type reg_rsp_t = logic,
-  parameter int AW = 5
+  parameter int AW = 6
 ) (
   input logic clk_i,
   input logic rst_ni,
@@ -68,8 +68,8 @@ module safe_wrapper_ctrl_reg_top #(
   // Define SW related signals
   // Format: <reg>_<field>_{wd|we|qs}
   //        or <reg>_{wd|we|qs} if field == 1 or 0
-  logic safe_configuration_qs;
-  logic safe_configuration_wd;
+  logic [1:0] safe_configuration_qs;
+  logic [1:0] safe_configuration_wd;
   logic safe_configuration_we;
   logic safe_mode_qs;
   logic safe_mode_wd;
@@ -80,18 +80,27 @@ module safe_wrapper_ctrl_reg_top #(
   logic critical_section_qs;
   logic critical_section_wd;
   logic critical_section_we;
-  logic external_debug_req_qs;
+  logic [1:0] external_debug_req_qs;
   logic initial_sync_master_qs;
   logic initial_sync_master_wd;
   logic initial_sync_master_we;
+  logic start_qs;
+  logic start_wd;
+  logic start_we;
+  logic end_sw_routine_qs;
+  logic end_sw_routine_wd;
+  logic end_sw_routine_we;
+  logic [31:0] entry_address_qs;
+  logic [31:0] entry_address_wd;
+  logic entry_address_we;
 
   // Register instances
   // R[safe_configuration]: V(False)
 
   prim_subreg #(
-    .DW      (1),
+    .DW      (2),
     .SWACCESS("RW"),
-    .RESVAL  (1'h0)
+    .RESVAL  (2'h0)
   ) u_safe_configuration (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
@@ -197,9 +206,9 @@ module safe_wrapper_ctrl_reg_top #(
   // R[external_debug_req]: V(False)
 
   prim_subreg #(
-    .DW      (1),
+    .DW      (2),
     .SWACCESS("RO"),
-    .RESVAL  (1'h0)
+    .RESVAL  (2'h0)
   ) u_external_debug_req (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
@@ -247,9 +256,90 @@ module safe_wrapper_ctrl_reg_top #(
   );
 
 
+  // R[start]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_start (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (start_we),
+    .wd     (start_wd),
+
+    // from internal hardware
+    .de     (hw2reg.start.de),
+    .d      (hw2reg.start.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.start.q ),
+
+    // to register interface (read)
+    .qs     (start_qs)
+  );
 
 
-  logic [5:0] addr_hit;
+  // R[end_sw_routine]: V(False)
+
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_end_sw_routine (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (end_sw_routine_we),
+    .wd     (end_sw_routine_wd),
+
+    // from internal hardware
+    .de     (hw2reg.end_sw_routine.de),
+    .d      (hw2reg.end_sw_routine.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.end_sw_routine.q ),
+
+    // to register interface (read)
+    .qs     (end_sw_routine_qs)
+  );
+
+
+  // R[entry_address]: V(False)
+
+  prim_subreg #(
+    .DW      (32),
+    .SWACCESS("RW"),
+    .RESVAL  (32'h0)
+  ) u_entry_address (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (entry_address_we),
+    .wd     (entry_address_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (entry_address_qs)
+  );
+
+
+
+
+  logic [8:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_OFFSET);
@@ -258,6 +348,9 @@ module safe_wrapper_ctrl_reg_top #(
     addr_hit[3] = (reg_addr == SAFE_WRAPPER_CTRL_CRITICAL_SECTION_OFFSET);
     addr_hit[4] = (reg_addr == SAFE_WRAPPER_CTRL_EXTERNAL_DEBUG_REQ_OFFSET);
     addr_hit[5] = (reg_addr == SAFE_WRAPPER_CTRL_INITIAL_SYNC_MASTER_OFFSET);
+    addr_hit[6] = (reg_addr == SAFE_WRAPPER_CTRL_START_OFFSET);
+    addr_hit[7] = (reg_addr == SAFE_WRAPPER_CTRL_END_SW_ROUTINE_OFFSET);
+    addr_hit[8] = (reg_addr == SAFE_WRAPPER_CTRL_ENTRY_ADDRESS_OFFSET);
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
@@ -270,11 +363,14 @@ module safe_wrapper_ctrl_reg_top #(
                (addr_hit[2] & (|(SAFE_WRAPPER_CTRL_PERMIT[2] & ~reg_be))) |
                (addr_hit[3] & (|(SAFE_WRAPPER_CTRL_PERMIT[3] & ~reg_be))) |
                (addr_hit[4] & (|(SAFE_WRAPPER_CTRL_PERMIT[4] & ~reg_be))) |
-               (addr_hit[5] & (|(SAFE_WRAPPER_CTRL_PERMIT[5] & ~reg_be)))));
+               (addr_hit[5] & (|(SAFE_WRAPPER_CTRL_PERMIT[5] & ~reg_be))) |
+               (addr_hit[6] & (|(SAFE_WRAPPER_CTRL_PERMIT[6] & ~reg_be))) |
+               (addr_hit[7] & (|(SAFE_WRAPPER_CTRL_PERMIT[7] & ~reg_be))) |
+               (addr_hit[8] & (|(SAFE_WRAPPER_CTRL_PERMIT[8] & ~reg_be)))));
   end
 
   assign safe_configuration_we = addr_hit[0] & reg_we & !reg_error;
-  assign safe_configuration_wd = reg_wdata[0];
+  assign safe_configuration_wd = reg_wdata[1:0];
 
   assign safe_mode_we = addr_hit[1] & reg_we & !reg_error;
   assign safe_mode_wd = reg_wdata[0];
@@ -288,12 +384,21 @@ module safe_wrapper_ctrl_reg_top #(
   assign initial_sync_master_we = addr_hit[5] & reg_we & !reg_error;
   assign initial_sync_master_wd = reg_wdata[0];
 
+  assign start_we = addr_hit[6] & reg_we & !reg_error;
+  assign start_wd = reg_wdata[0];
+
+  assign end_sw_routine_we = addr_hit[7] & reg_we & !reg_error;
+  assign end_sw_routine_wd = reg_wdata[0];
+
+  assign entry_address_we = addr_hit[8] & reg_we & !reg_error;
+  assign entry_address_wd = reg_wdata[31:0];
+
   // Read data return
   always_comb begin
     reg_rdata_next = '0;
     unique case (1'b1)
       addr_hit[0]: begin
-        reg_rdata_next[0] = safe_configuration_qs;
+        reg_rdata_next[1:0] = safe_configuration_qs;
       end
 
       addr_hit[1]: begin
@@ -309,11 +414,23 @@ module safe_wrapper_ctrl_reg_top #(
       end
 
       addr_hit[4]: begin
-        reg_rdata_next[0] = external_debug_req_qs;
+        reg_rdata_next[1:0] = external_debug_req_qs;
       end
 
       addr_hit[5]: begin
         reg_rdata_next[0] = initial_sync_master_qs;
+      end
+
+      addr_hit[6]: begin
+        reg_rdata_next[0] = start_qs;
+      end
+
+      addr_hit[7]: begin
+        reg_rdata_next[0] = end_sw_routine_qs;
+      end
+
+      addr_hit[8]: begin
+        reg_rdata_next[31:0] = entry_address_qs;
       end
 
       default: begin
@@ -338,7 +455,7 @@ endmodule
 
 module safe_wrapper_ctrl_reg_top_intf
 #(
-  parameter int AW = 5,
+  parameter int AW = 6,
   localparam int DW = 32
 ) (
   input logic clk_i,

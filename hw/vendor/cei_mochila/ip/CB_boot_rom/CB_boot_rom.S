@@ -27,23 +27,36 @@
        .option norvc
        .global entry 
 entry:
-       lui   a0, 0xFF000
-       lw    a0, 0(a0)
-       lui   a1, 0xF0020  
-       lw    a1, 8(a1)
-       bne    a0, a1, shadow_wfi
-       lui     a1, 0xF0011 
-       lbu     a0, 0(a1)
-       // Check whether exit_loop flag is 1, otherwise jump back to entry 
-       beqz   a0, entry
-       lw     a0, 4(a1) 
-       jalr   a0
+//       lui   a0, 0xFF000
+//       lw    a0, 0(a0)
+//       lui   a1, 0xF0020  
+//       lw    a1, 8(a1)
+//       bne    a0, a1, shadow_wfi
+//       lui     a1, 0xF0011 
+//       lbu     a0, 0(a1)
+//       // Check whether exit_loop flag is 1, otherwise jump back to entry 
+//       beqz   a0, entry
+//       lw     a0, 4(a1) 
+//       jalr   a0
        nop
-       nop  
+       nop
+wfi_entry:  
        nop
        nop 
+       wfi
        nop
+       nop
+       j wfi_entry
+       nop
+       nop
+single_boot:
+       //Program Counter -> dpc Control & Status Register  
+       lui   a0, 0xF0020  
+       lw    a0, 32(a0)          //Base Address CPU Private Registers          
+       csrw dpc, a0
 
+       //Resume//
+       dret
 
 
 //----------------DEBUG ROM PART----------------//
@@ -76,17 +89,22 @@ entry:
 
 debug_entry: 
        csrw CSR_DSCRATCH1, a0       // Save a0 to allow loading arbitrary DM base
+       csrw CSR_DSCRATCH0, s0       // Save s0 to allow signaling MHARTID
        lui   a0, 0xF0020  
        lw    a0, 16(a0)          //Base Address CPU Private Registers
 
-       // Check whether debug_ext_req flag is 1, otherwise jump back to halt_switch routine 
-       beqz    a0, halt_boot
+       // Check whether debug_ext_req flag is 1, otherwise jump back to halt_switch routine Todo: Choose better way to reduce 
+       //cycles
+       beqz    a0, halt_boot      
+       xori     a0 ,a0, 0x2 //Mask applied to see if its Single Debug boot
+       beqz     a0, single_boot
+
+//        j single_boot
         // This fence is required because the execution may have written something
         // into the Abstract Data or Program Buffer registers.
 //       lui   a0, 0xF0020
 //       sw  zero,16(a0)
        fence
-        csrw CSR_DSCRATCH0, s0       // Save s0 to allow signaling MHARTID
 #ifdef SND_SCRATCH
 //        csrw CSR_DSCRATCH1, a0       // Save a0 to allow loading arbitrary DM base
        lui a0, 0x10000             // Load Upper Immediate Base Address of the Debug Module.
@@ -316,14 +334,14 @@ halt_boot:
        nop
        jal zero, halt_boot
 
-//Loop until HALT
-.section .shadow_wfi
-shadow_wfi:
-       nop
-       nop
-       nop 
-       wfi
-       nop
-       nop
-       nop
-       j shadow_wfi
+//Loop until HALT/*
+//.section .shadow_wfi
+//shadow_wfi:
+//       nop
+//       nop
+//       nop 
+//       wfi
+//       nop
+//       nop
+//       nop
+//       j shadow_wfi

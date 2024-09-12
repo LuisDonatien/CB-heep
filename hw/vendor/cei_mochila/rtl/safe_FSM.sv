@@ -14,7 +14,7 @@ module safe_FSM
 
     input logic Safe_mode_i,
     input logic tmr_critical_section_i,
-    input logic Safe_configuration_i,
+    input logic [1:0] Safe_configuration_i,
     input logic Initial_Sync_Master_i,
     input logic [NHARTS-1:0] Halt_ack_i,
     input logic [NHARTS-1:0] Hart_wfi_i,
@@ -33,12 +33,19 @@ module safe_FSM
     output logic Dmr_comparator_enable_o,
     input logic [NHARTS-1:0] voter_id_error,
     input logic tmr_error,
+    input logic Start_i,
+    output logic Single_Boot_o,
+    input logic End_sw_routine_i,
     output logic en_ext_debug_req_o
 );
   // FSM state encoding
   typedef enum logic [3:0] {
-    RESET, IDLE, TMR_MODE, DMR_MODE 
+    RESET, IDLE, SINGLE_MODE, TMR_MODE, DMR_MODE 
   } ctrl_safe_fsm_e;
+
+    typedef enum logic [3:0] {
+    SINGLE_RESET, SINGLE_IDLE, SINGLE_START, SINGLE_RUN, SINGLE_SYNC_OFF
+  } ctrl_single_fsm_e;
 
   typedef enum logic [3:0] {
     TMR_RESET, TMR_IDLE, TMR_SH_HALT, 
@@ -47,10 +54,12 @@ module safe_FSM
 
   typedef enum logic [3:0] {
     TMR_REC_RESET, TMR_REC_IDLE, TMR_REC_DMODE,TMR_REC_SHSTP, TMR_REC_SYNCINTC,
-    TMR_REC_SHWFI, TMR_REC_SWSYNC, TMR_REC_DMCPY, TMR_REC_DMWAITSH, TMR_REC_SH_HALT, TMR_REC_DMSH_SYNCINTC, TMR_REC_DMWFI, TMR_REC_DM_HALT_SH, TMR_REC_SH_HALTWFI
+    TMR_REC_SHWFI, TMR_REC_SWSYNC, TMR_REC_DMCPY, TMR_REC_DMWAITSH, 
+    TMR_REC_SH_HALT, TMR_REC_DMSH_SYNCINTC, TMR_REC_DMWFI, TMR_REC_DM_HALT_SH, TMR_REC_SH_HALTWFI
   } ctrl_tmr_recovery_fsm_e;
 
   ctrl_safe_fsm_e ctrl_safe_fsm_cs, ctrl_safe_fsm_ns;
+  ctrl_single_fsm_e ctrl_single_fsm_cs, ctrl_single_fsm_ns;
   ctrl_tmr_fsm_e [NHARTS-1:0] ctrl_tmr_fsm_cs;
   ctrl_tmr_fsm_e [NHARTS-1:0]ctrl_tmr_fsm_ns;
 
@@ -62,18 +71,15 @@ module safe_FSM
   logic [NHARTS-1:0] enable_interrupt_tmr_halt_s;
   logic [NHARTS-1:0] enable_interrupt_tmr_SHhalt_s;
 
-  logic DMR_Mode_s, TMR_Mode_s;
-
-
 
   //################################MOMENTANEO
-  assign TMR_Mode_s = Safe_configuration_i;
-  assign DMR_Mode_s = ~Safe_configuration_i; 
 
   logic  halt_req_s;
+  logic en_safe_ext_debug_req_s, en_single_ext_debug_req_s;
   logic [NHARTS-1:0] dbg_halt_req_s;
   logic [NHARTS-1:0] dbg_halt_req_tmr_s;
   logic [NHARTS-1:0] dbg_halt_req_general_s;
+  logic [NHARTS-1:0] Single_Halt_request_s;
   logic [NHARTS-1:0] single_bus_s;
   logic [NHARTS-1:0] tmr_voter_enable_s;
   logic [NHARTS-1:0] dmr_comparator_enable_s;
@@ -98,28 +104,38 @@ module safe_FSM
 
           RESET:
           begin
-            ctrl_safe_fsm_ns = IDLE;           
+            ctrl_safe_fsm_ns = IDLE;
           end
-
           IDLE:
           begin
-            if(Safe_mode_i==1'b1 && TMR_Mode_s==1'b1)
+            if(Safe_mode_i==1'b1 && Safe_configuration_i==2'b01 && Start_i == 1'b1)
               ctrl_safe_fsm_ns = TMR_MODE;  
-            else if(Safe_mode_i==1'b1 && DMR_Mode_s==1'b1)
+            else if(Safe_mode_i==1'b1 && Safe_configuration_i==2'b10 && Start_i == 1'b1)
               ctrl_safe_fsm_ns = DMR_MODE;
+            else if(Safe_mode_i==1'b0 && Safe_configuration_i==2'b00 && Start_i == 1'b1)
+              ctrl_safe_fsm_ns = SINGLE_MODE;
             else
               ctrl_safe_fsm_ns = IDLE;
           end
-
+          SINGLE_MODE:
+          begin
+            if(Start_i == 1'b0 && ctrl_single_fsm_cs == SINGLE_IDLE)
+              ctrl_safe_fsm_ns = IDLE;
+            else if(Safe_mode_i==1'b1 && Safe_configuration_i==2'b01)
+              ctrl_safe_fsm_ns = TMR_MODE;             
+            else if(Safe_mode_i==1'b1 && Safe_configuration_i==2'b10)
+              ctrl_safe_fsm_ns = DMR_MODE;
+            else
+              ctrl_safe_fsm_ns = SINGLE_MODE;
+          end
           TMR_MODE:
           begin
             if(Safe_mode_i==1'b0 && ctrl_tmr_fsm_cs[0] == TMR_IDLE
-                && ctrl_tmr_fsm_cs[1] == TMR_IDLE && ctrl_tmr_fsm_cs[2] == TMR_IDLE)
+                && ctrl_tmr_fsm_cs[1] == TMR_IDLE && ctrl_tmr_fsm_cs[2] == TMR_IDLE && Start_i == 1'b0)
               ctrl_safe_fsm_ns = IDLE;
             else
               ctrl_safe_fsm_ns = TMR_MODE;
           end
-
           DMR_MODE:
           begin
             if(Safe_mode_i==1'b0)
@@ -135,19 +151,109 @@ module safe_FSM
       end
 
       always_comb begin
-        en_ext_debug_req_o = 1'b0;
-
+        en_safe_ext_debug_req_s = 1'b0;
+        Single_Boot_o = 1'b0;
         unique case (ctrl_safe_fsm_cs)  
           IDLE:
           begin
-            en_ext_debug_req_o = 1'b1;          
+            en_safe_ext_debug_req_s = 1'b1;          
+          end
+          SINGLE_MODE: 
+          begin
+            Single_Boot_o = 1'b1;
           end
           default: begin
-          en_ext_debug_req_o = 1'b0;     
+            en_safe_ext_debug_req_s = 1'b0;     
           end
         endcase  
       end
-// TMR Safe FSM 
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //SINGLE FSM    
+  //////////////////////////////////////////////////////////////////////////////////////////////
+
+      always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (!rst_ni) begin
+          ctrl_single_fsm_cs <= SINGLE_RESET;
+        end else begin
+          ctrl_single_fsm_cs <= ctrl_single_fsm_ns;
+        end
+      end
+
+      always_comb begin
+        
+        ctrl_single_fsm_ns = ctrl_single_fsm_cs;
+        
+        unique case (ctrl_single_fsm_cs)
+
+          SINGLE_RESET:
+          begin
+            ctrl_single_fsm_ns = SINGLE_IDLE;           
+          end
+          SINGLE_IDLE:
+          begin
+            if(ctrl_safe_fsm_cs == SINGLE_MODE && Start_i == 1'b1 && End_sw_routine_i == 1'b0)
+              ctrl_single_fsm_ns = SINGLE_START;
+            else
+              ctrl_single_fsm_ns = SINGLE_IDLE;
+          end
+          SINGLE_START:
+          begin
+            if(Halt_ack_i == Master_Core_i)
+              ctrl_single_fsm_ns = SINGLE_RUN;
+            else
+              ctrl_single_fsm_ns = SINGLE_START;
+          end
+          SINGLE_RUN:
+          begin
+            if (End_sw_routine_i == 1'b1 && Hart_wfi_i == 3'b111) //SW STOP
+              ctrl_single_fsm_ns = SINGLE_IDLE;  
+            else if (Start_i == 1'b0 && Halt_ack_i == 3'b000 && End_sw_routine_i == 1'b0) //External STOP
+              ctrl_single_fsm_ns = SINGLE_SYNC_OFF;  
+            else if(Halt_ack_i == 3'b000 && ctrl_safe_fsm_cs != SINGLE_MODE) //Switch to others mode
+              ctrl_single_fsm_ns = SINGLE_IDLE;  
+            else
+              ctrl_single_fsm_ns = SINGLE_RUN; 
+
+          end
+          SINGLE_SYNC_OFF:
+          begin
+            if (Hart_wfi_i == 3'b000)
+              ctrl_single_fsm_ns = SINGLE_IDLE;              
+            else
+              ctrl_single_fsm_ns = SINGLE_SYNC_OFF;
+          end
+          default: begin
+            ctrl_single_fsm_ns = SINGLE_IDLE;
+          end
+        endcase
+      end
+
+
+    //Outputs Todo: Outputs for outside stops operation
+    always_comb begin
+      Single_Halt_request_s = 3'b000;
+      en_single_ext_debug_req_s = 1'b0;
+      unique case (ctrl_single_fsm_cs)  
+        SINGLE_START:
+        begin
+          Single_Halt_request_s = Master_Core_i;          
+        end
+        SINGLE_RUN:
+        begin
+          en_single_ext_debug_req_s = 1'b0;
+        end
+        default: begin
+          Single_Halt_request_s = 3'b000;
+          en_single_ext_debug_req_s = 1'b0;          
+        end
+      endcase  
+    end
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //TMR FSM    
+  //////////////////////////////////////////////////////////////////////////////////////////////
 // Mealy FSM depending on Master Core for different outputs behavior
 
   for(genvar i=0; i<NHARTS;i++) begin : TMR_FSM_NormalBehaviour
@@ -545,7 +651,10 @@ always_comb begin
   end
 end
 
-assign Interrupt_Halt_o = dbg_halt_req_general_s | dbg_halt_req_tmr_s |  enable_interrupt_tmr_SHhalt_s;
+assign Interrupt_Halt_o = dbg_halt_req_general_s | dbg_halt_req_tmr_s |  enable_interrupt_tmr_SHhalt_s 
+                          | Single_Halt_request_s;
+
+assign en_ext_debug_req_o = en_safe_ext_debug_req_s | en_single_ext_debug_req_s;
 endmodule
 
 
