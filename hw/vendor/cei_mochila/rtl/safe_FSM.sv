@@ -75,7 +75,8 @@ module safe_FSM
   //################################MOMENTANEO
 
   logic  halt_req_s;
-  logic Single_Boot_s,TMR_Boot_s;
+  logic Single_Boot_s;
+  logic [NHARTS-1:0] TMR_Boot_s;
   logic en_safe_ext_debug_req_s, en_single_ext_debug_req_s;
   logic [NHARTS-1:0] dbg_halt_req_s;
   logic [NHARTS-1:0] dbg_halt_req_tmr_s;
@@ -210,11 +211,11 @@ module safe_FSM
             if (End_sw_routine_i == 1'b1 && Hart_wfi_i == 3'b111) //SW STOP
               ctrl_single_fsm_ns = SINGLE_IDLE;  
             else if (Start_i == 1'b0 && Halt_ack_i == 3'b000 && End_sw_routine_i == 1'b0) //External STOP
-              ctrl_single_fsm_ns = SINGLE_SYNC_OFF;  
+              ctrl_single_fsm_ns = SINGLE_SYNC_OFF;
             else if(Halt_ack_i == 3'b000 && ctrl_safe_fsm_cs != SINGLE_MODE) //Switch to others mode
-              ctrl_single_fsm_ns = SINGLE_IDLE;  
+              ctrl_single_fsm_ns = SINGLE_IDLE;
             else
-              ctrl_single_fsm_ns = SINGLE_RUN; 
+              ctrl_single_fsm_ns = SINGLE_RUN;
 
           end
           SINGLE_SYNC_OFF:
@@ -314,9 +315,9 @@ module safe_FSM
           TMR_SH_HALT:
           begin
             if (Master_Core_i[i] == 1'b1 && ((Halt_ack_i[0] && Halt_ack_i[1]) || (Halt_ack_i[1] && Halt_ack_i[2]) 
-                || (Halt_ack_i[0] && Halt_ack_i[2])) == 1'b1) 
+                || (Halt_ack_i[0] && Halt_ack_i[2])) == 1'b1)
             ctrl_tmr_fsm_ns[i] = TMR_WAIT_SH;
-            else if (Master_Core_i[i] == 1'b0 && Halt_ack_i[i] == 1'b1)            
+            else if (Master_Core_i[i] == 1'b0 && Halt_ack_i[i] == 1'b1)
             ctrl_tmr_fsm_ns[i] = TMR_WAIT_SH;
             else
             ctrl_tmr_fsm_ns[i] = TMR_SH_HALT;
@@ -372,7 +373,7 @@ module safe_FSM
         single_bus_s[i]     = 1'b0;
         dbg_halt_req_s[i]   = 1'b0;
         tmr_voter_enable_s[i] = 1'b0;
-        TMR_Boot_s = 1'b0;
+        TMR_Boot_s[i] = 1'b0;
         unique case (ctrl_tmr_fsm_cs[i])
   
           TMR_START:
@@ -380,14 +381,14 @@ module safe_FSM
             dbg_halt_req_general_s[i] = 1'b1;
             single_bus_s[i]  = 1'b1;
             tmr_voter_enable_s[i] = 1'b1;
-            TMR_Boot_s = 1'b1;
+            TMR_Boot_s[i] = 1'b1;
           end
 
           TMR_BOOT:
           begin
             single_bus_s[i]  = 1'b1;
             tmr_voter_enable_s[i] = 1'b1;
-            TMR_Boot_s = 1'b1;
+            TMR_Boot_s[i] = 1'b1;
           end
 
           TMR_SH_HALT:
@@ -698,7 +699,7 @@ assign Interrupt_Halt_o = dbg_halt_req_general_s | dbg_halt_req_tmr_s |  enable_
 
 assign en_ext_debug_req_o = en_safe_ext_debug_req_s | en_single_ext_debug_req_s;
 
-assign Start_Boot_o = Single_Boot_s | TMR_Boot_s;
+assign Start_Boot_o = Single_Boot_s | TMR_Boot_s[0] | TMR_Boot_s[1] | TMR_Boot_s[2];
 endmodule
 
 

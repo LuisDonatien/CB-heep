@@ -136,7 +136,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=hello_world
+CMAKE_PROJECT_NAME:STATIC=Single_MultipleGPIO
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/home/luis/tools/riscv/bin/riscv32-unknown-elf-ranlib
@@ -265,8 +265,17 @@ LINKER:STRING=on_chip
 //No help, variable specified on the command line.
 LINK_FOLDER:STRING=/home/luis/Documents/PhD/CB-heep/sw/linker_CB_C0
 
+//Value Computed by CMake
+Multiple_GPIO_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+Multiple_GPIO_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Multiple_GPIO_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
+
 //No help, variable specified on the command line.
-PROJECT:STRING=hello_world
+PROJECT:STRING=Single_MultipleGPIO
 
 //No help, variable specified on the command line.
 RISCV:STRING=/home/luis/tools/riscv
@@ -303,6 +312,15 @@ Single_MultipleGPIO_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 Single_MultipleGPIO_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
+
+//Value Computed by CMake
+Single_Multiple_GPIO_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0
+
+//Value Computed by CMake
+Single_Multiple_GPIO_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Single_Multiple_GPIO_SOURCE_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw
 
 //Value Computed by CMake
 Switch_Context_Routine_BINARY_DIR:STATIC=/home/luis/Documents/PhD/CB-heep/sw/build_CB_C0

@@ -35,8 +35,6 @@ int main(int argc, char *argv[])
     *ENTRY_PROG = 0xF0100180;
     *MASTER = 0x1;
     *START_P = 0x1;
-//    while(j<1000){j++;}
-//    return EXIT_SUCCESS;
     while((*END_SW)==0){};
     printf("[X-HEEP]: INIT_Program...2 \n");
     *SAFE_P = 0x0;
@@ -55,7 +53,22 @@ int main(int argc, char *argv[])
     *ENTRY_PROG = 0xF0100180;
     *START_P = 0x1;
     while((*END_SW)==0){};
-
+    printf("[X-HEEP]: INIT_Program...4 \n");
+    *SAFE_P = 0x0;
+    *CONFIG = 0x00;
+    *END_SW = 0x0;
+    *MASTER = 0x2;
+    *ENTRY_PROG = 0xF0100180;
+    *START_P = 0x1;
+    while((*END_SW)==0){};
+    printf("[X-HEEP]: INIT_Program...5\n");
+    *SAFE_P = 0x1;
+    *CONFIG = 0x01;
+    *END_SW = 0x0;
+    *ENTRY_PROG = 0xF0100180;
+    *MASTER = 0x1;
+    *START_P = 0x1;
+    while((*END_SW)==0){};    
     return EXIT_SUCCESS;
 }
 

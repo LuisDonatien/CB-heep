@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     *END_SW= 0x0;
     for(int i=0; i<10000; i<i++)
         *P=i;
-    printf("[IP_CB0] hello world...!\n");
+    printf("[IP_CB0]: hello world...!\n");
     *END_SW= 0x1;
     while(1){asm volatile("wfi");}
     return 0;
