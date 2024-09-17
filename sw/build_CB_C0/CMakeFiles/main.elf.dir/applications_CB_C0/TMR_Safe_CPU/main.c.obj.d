@@ -37,4 +37,5 @@ CMakeFiles/main.elf.dir/applications_CB_C0/TMR_Safe_CPU/main.c.obj: \
  /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/freestanding/stdint.h \
  /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h \
  /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/stdasm.h \
- /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h
+ /home/luis/Documents/PhD/CB-heep/sw/device/lib/base/csr_registers.h \
+ /home/luis/Documents/PhD/CB-heep/sw/CB_device/lib/safety/CB_Safety.h

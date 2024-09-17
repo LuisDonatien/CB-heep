@@ -44,12 +44,12 @@ module safe_FSM
   } ctrl_safe_fsm_e;
 
     typedef enum logic [3:0] {
-    SINGLE_RESET, SINGLE_IDLE, SINGLE_START, SINGLE_RUN, SINGLE_SYNC_OFF
+    SINGLE_RESET, SINGLE_IDLE, SINGLE_START, SINGLE_RUN, SINGLE_TO_TMR, SINGLE_SYNC_OFF
   } ctrl_single_fsm_e;
 
   typedef enum logic [3:0] {
     TMR_RESET, TMR_IDLE, TMR_START, TMR_BOOT, TMR_SH_HALT, 
-    TMR_WAIT_SH, TMR_MS_INTRSYNC, TMR_SYNC, TMR_END_SYNC
+    TMR_WAIT_SH, TMR_MS_INTRSYNC, TMR_SYNC, TMR_END_SYNC, TMR_TO_SINGLE
   } ctrl_tmr_fsm_e;
 
   typedef enum logic [3:0] {
@@ -70,6 +70,10 @@ module safe_FSM
 //  logic [NHARTS-1:0] enable_interrupt_halt_s;
   logic [NHARTS-1:0] enable_interrupt_tmr_halt_s;
   logic [NHARTS-1:0] enable_interrupt_tmr_SHhalt_s;
+
+  logic [NHARTS-1:0] Switch_SingletoTMR_s; 
+  logic [NHARTS-1:0] Switch_TMRtoSingle_s;
+  logic Enable_Switch_s;
 
 
   //################################MOMENTANEO
@@ -135,6 +139,8 @@ module safe_FSM
             if(ctrl_tmr_fsm_cs[0] == TMR_IDLE
                 && ctrl_tmr_fsm_cs[1] == TMR_IDLE && ctrl_tmr_fsm_cs[2] == TMR_IDLE && Start_i == 1'b0)
               ctrl_safe_fsm_ns = IDLE;
+            else if (Switch_TMRtoSingle_s[0] == 1'b1 || Switch_TMRtoSingle_s[1] == 1'b1 || Switch_TMRtoSingle_s[2] == 1'b1)
+              ctrl_safe_fsm_ns = SINGLE_MODE;                
             else
               ctrl_safe_fsm_ns = TMR_MODE;
           end
@@ -194,8 +200,12 @@ module safe_FSM
           end
           SINGLE_IDLE:
           begin
-            if(ctrl_safe_fsm_cs == SINGLE_MODE && Start_i == 1'b1 && End_sw_routine_i == 1'b0)
+            if(ctrl_safe_fsm_cs == SINGLE_MODE && Start_i == 1'b1 && End_sw_routine_i == 1'b0 && Switch_TMRtoSingle_s[0] == 1'b0 
+              && Switch_TMRtoSingle_s[1] == 1'b0 && Switch_TMRtoSingle_s[2] == 1'b0)
               ctrl_single_fsm_ns = SINGLE_START;
+            else if (ctrl_safe_fsm_cs == SINGLE_MODE && Start_i == 1'b1 && End_sw_routine_i == 1'b0 && (Switch_TMRtoSingle_s[0] == 1'b1 
+              || Switch_TMRtoSingle_s[1] == 1'b1 || Switch_TMRtoSingle_s[2] == 1'b1))
+              ctrl_single_fsm_ns = SINGLE_RUN;              
             else
               ctrl_single_fsm_ns = SINGLE_IDLE;
           end
@@ -212,11 +222,17 @@ module safe_FSM
               ctrl_single_fsm_ns = SINGLE_IDLE;  
             else if (Start_i == 1'b0 && Halt_ack_i == 3'b000 && End_sw_routine_i == 1'b0) //External STOP
               ctrl_single_fsm_ns = SINGLE_SYNC_OFF;
-            else if(Halt_ack_i == 3'b000 && ctrl_safe_fsm_cs != SINGLE_MODE) //Switch to others mode
-              ctrl_single_fsm_ns = SINGLE_IDLE;
+            else if(Halt_ack_i == 3'b000 && Safe_configuration_i == 2'b01) //Switch to others mode
+              ctrl_single_fsm_ns = SINGLE_TO_TMR;
             else
               ctrl_single_fsm_ns = SINGLE_RUN;
-
+          end
+          SINGLE_TO_TMR:
+          begin
+            if (Switch_SingletoTMR_s[0] && Switch_SingletoTMR_s[1] && Switch_SingletoTMR_s[2])
+            ctrl_single_fsm_ns = SINGLE_IDLE;
+            else
+            ctrl_single_fsm_ns = SINGLE_TO_TMR;
           end
           SINGLE_SYNC_OFF:
           begin
@@ -236,6 +252,7 @@ module safe_FSM
     always_comb begin
       Single_Halt_request_s = 3'b000;
       en_single_ext_debug_req_s = 1'b0;
+      Enable_Switch_s = 1'b0;
       unique case (ctrl_single_fsm_cs)  
         SINGLE_START:
         begin
@@ -243,11 +260,16 @@ module safe_FSM
         end
         SINGLE_RUN:
         begin
-          en_single_ext_debug_req_s = 1'b0;
+          en_single_ext_debug_req_s = 1'b0;          
+        end
+        SINGLE_TO_TMR:
+        begin
+          Enable_Switch_s = 1'b1;          
         end
         default: begin
           Single_Halt_request_s = 3'b000;
-          en_single_ext_debug_req_s = 1'b0;          
+          en_single_ext_debug_req_s = 1'b0;
+          Enable_Switch_s = 1'b0;          
         end
       endcase  
     end
@@ -281,9 +303,9 @@ module safe_FSM
   
           TMR_IDLE:
           begin
-            if (ctrl_safe_fsm_cs == TMR_MODE && Safe_mode_i == 1'b1 && Start_i == 1'b1)
+            if (ctrl_safe_fsm_cs == TMR_MODE && Safe_mode_i == 1'b1 && Start_i == 1'b1 && Enable_Switch_s == 1'b0)
                 ctrl_tmr_fsm_ns[i] = TMR_START;              
-            else if (ctrl_safe_fsm_cs == TMR_MODE && Safe_mode_i == 1'b1 && Start_i == 1'b1) begin
+            else if (ctrl_safe_fsm_cs == TMR_MODE && Safe_mode_i == 1'b1 && Start_i == 1'b1 && Enable_Switch_s == 1'b1) begin
               if (Master_Core_i[i] == 1'b1 && Initial_Sync_Master_i == 1'b1 && Start_i == 1'b1)
                 ctrl_tmr_fsm_ns[i] = TMR_SH_HALT;
               else if (Master_Core_i[i] == 1'b0 && (halt_req_s) == 1'b1 && Start_i == 1'b1)
@@ -374,6 +396,8 @@ module safe_FSM
         dbg_halt_req_s[i]   = 1'b0;
         tmr_voter_enable_s[i] = 1'b0;
         TMR_Boot_s[i] = 1'b0;
+        Switch_SingletoTMR_s[i] = 1'b0;
+        Switch_TMRtoSingle_s[i] = 1'b0;
         unique case (ctrl_tmr_fsm_cs[i])
   
           TMR_START:
@@ -393,7 +417,7 @@ module safe_FSM
 
           TMR_SH_HALT:
           begin
-
+              Switch_SingletoTMR_s[i] = 1'b1;
             if (Master_Core_i[i] == 1'b1) begin
               dbg_halt_req_s[i] = 1'b1;
               dbg_halt_req_general_s[i] = 1'b0;
@@ -418,7 +442,8 @@ module safe_FSM
           TMR_END_SYNC:
           begin
             if (Master_Core_i[i] == 1'b1) begin
-              Interrupt_Sync_o[i] = 1'b1;        
+              Interrupt_Sync_o[i] = 1'b1; 
+              Switch_TMRtoSingle_s[i] = 1'b1;       
             end
           end
           default: begin  end 
@@ -457,7 +482,7 @@ module safe_FSM
 
           TMR_REC_IDLE:
           begin
-            if( tmr_error == 1'b1 && ctrl_tmr_fsm_cs[i] == TMR_SYNC) begin
+            if( tmr_error == 1'b1 && ctrl_tmr_fsm_cs[i] == TMR_SYNC && End_sw_routine_i == 1'b0) begin
               if (tmr_critical_section_i == 1'b0)
                 ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SYNCINTC;                
               else begin
@@ -497,7 +522,9 @@ module safe_FSM
           TMR_REC_SHSTP:
           begin
             if (Hart_wfi_i[i] == 1'b0)
-              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALT;              
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SH_HALT;        
+            else if(End_sw_routine_i == 1'b1 && Hart_wfi_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;  
             else
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_SHSTP;
           end
@@ -521,6 +548,8 @@ module safe_FSM
           begin
             if (tmr_critical_section_i == 1'b0)
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMCPY;
+            else if(End_sw_routine_i == 1'b1 && Hart_wfi_i[i] == 1'b1)
+              ctrl_tmr_rec_fsm_ns[i] = TMR_REC_IDLE;
             else
               ctrl_tmr_rec_fsm_ns[i] = TMR_REC_DMODE;              
           end
@@ -656,10 +685,23 @@ module safe_FSM
 
   end
 
+//  logic Switch_SingletoTMR_ff;
+//  logic Clear_Switch_s/
+//  logic Enable_Switch_s
+/*
+  assign Clear_Switch_s = Clear_Switch_ss[0] || Clear_Switch_ss[1] || Clear_Switch_ss[2];
 
-
-
-
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+      if (!rst_ni) begin
+        Switch_SingletoTMR_ff <= 1'b0;
+      end else begin
+        if (Clear_Switch_s == 1'b1) 
+          Switch_SingletoTMR_ff <= 1'b0;
+        else if (Enable_Switch_s == 1'b1)
+          Switch_SingletoTMR_ff <= 1'b1;
+      end
+    end
+*/
 
 
 

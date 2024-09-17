@@ -42,10 +42,8 @@ entry:
        nop
 wfi_entry:  
        nop
-       nop 
+       nop
        wfi
-       nop
-       nop
        j wfi_entry
        nop
        nop
@@ -187,11 +185,6 @@ whereto:
         //                Debug Module state machine tracks what is 'desired'.
 */
 halt_boot:
-       //ACK Debug Rom
-       li   t5,0xFF000000
-       li  t6, 0x1
-       sw   t6,0(t5)
-
        //Control & Status Register//
        li   t5,0xF0108000
 

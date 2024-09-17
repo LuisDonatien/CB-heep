@@ -77,6 +77,12 @@ FOREACH(file_path ${new_list})
     SET(add 1)
   elseif( ${file_path} MATCHES "/external/" )
     SET(add 1)
+  elseif( ${file_path} MATCHES "/CB_device/" )
+    if(${file_path} MATCHES "/lib/") # Add it if its in Safety
+        if(${file_path} MATCHES "/safety/") # Add it if its in Safety
+          SET(add 1)
+        endif()
+    endif()
   endif()
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -128,6 +134,12 @@ FOREACH(file_path IN LISTS new_list)
     SET(add 1)
   elseif( ${file_path} MATCHES "/external/" )
     SET(add 1)
+  elseif( ${file_path} MATCHES "/CB_device/" )
+    if(${file_path} MATCHES "/lib/") # Add it if its in Safety
+        if(${file_path} MATCHES "/safety/") # Add it if its in Safety
+          SET(add 1)
+        endif()
+    endif()
   elseif( ( ${file_path} MATCHES "/${PROJECT}/" ) AND ( NOT ${file_path} MATCHES ${MAINFILE} ) )
     SET(add 1)
     elseif( ( ${file_path} MATCHES "/${PROJECT}/" ) AND ( ${file_path} MATCHES ${MAINFILE} ) )

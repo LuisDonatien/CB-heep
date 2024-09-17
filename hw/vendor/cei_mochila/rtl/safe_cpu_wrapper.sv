@@ -95,7 +95,7 @@ localparam NRCOMPARATORS = NHARTS == 3 ? 3 : 1 ;
 
     //Control & Status Regs 
     reg_pkg::reg_req_t  reg_req;
-    reg_pkg::reg_rsp_t  reg_rsp;
+    reg_pkg::reg_rsp_t  reg_rsp;  
 
 
     //Configuration IDs Cores
@@ -288,7 +288,7 @@ safe_FSM safe_FSM_i (
                     else begin 
                         core_instr_resp[0] = core_instr_resp_i[0];
                         core_instr_resp[1] = core_instr_resp_i[0];
-                        core_instr_resp[2] = core_instr_resp_i[0];
+                        core_instr_resp[2] = core_instr_resp_i[0];  
                     end
                     //Data
                     core_data_req_o[0] = voted_core_data_req_o;
