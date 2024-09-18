@@ -41,24 +41,6 @@ FPGA_BOARD 	?= pynq-z2
 # Default Core in CB-Accelerator.
 CORE		?= 0
 
-export CB-HEEP_DIR = hw/vendor/cei_mochila/
-CB-HEEP_MAKE = $(CB-HEEP_DIR)
-
-all: help
-
-verilator-sim:
-	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee buildsim.log
-
-sim-opt: sim
-	$(MAKE) -C build/CEI_BackPack_heep_0.0/sim-modelsim opt
-
-
-sim-helloworld:
-	cd ./build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator; \
-	./Vtestharness +CBfirmware=../../../sw/build_cb_heep/main.hex +firmware=../../../sw/build_x_heep/main.hex; \
-	cat uart0.log; \
-	cd ../../..;
-	
 
 ##SW
 
@@ -72,8 +54,8 @@ app-xheep:
 
 #Core CB-Heep 
 # CORE ?=0
-app-cbcore: ##app-clean
-	$(MAKE) -C $(CB-HEEP_MAKE) app-cbcore PROJECT=$(PROJECT) TARGET=$(TARGET) CORE=$(CORE) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH)
+app-cbcore: app-clean
+	$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) CORE=$(CORE) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH)
 
 
 ## Clean the CMake build folder
@@ -88,20 +70,8 @@ app-clean:
 app-restore:
 	rm -rf sw/build_CB_C$(CORE)
 
-
-##Vivado Synthesis & Implementation
-#FPGA Pynq-z2
-vivado-fpga:
-	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --build CEI-Backpack-heep:ip:mochila:0.0 ${FUSESOC_PARAM} 2>&1 | tee buildvivado.log
-
-
 clean:
 	rm -rf build
 
 help:
 	@echo "[WIP] See the Makefile for options"
-
-# Include X-HEEP targets
-export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
-XHEEP_MAKE = $(HEEP_DIR)/external.mk
-include $(XHEEP_MAKE)
