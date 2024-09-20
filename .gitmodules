@@ -1,0 +1,3 @@
+[submodule "hw/vendor/cei_mochila"]
+	path = hw/vendor/cei_mochila
+	url = git@github.com:LuisDonatien/accelerator_backpack.git
