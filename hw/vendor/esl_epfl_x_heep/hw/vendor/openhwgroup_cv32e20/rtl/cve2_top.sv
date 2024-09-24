@@ -56,7 +56,7 @@ module cve2_top import cve2_pkg::*; #(
   input  logic                         irq_external_i,
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
-  output logic                         new_irq_o,
+
 
   // Debug Interface
   input  logic                         debug_req_i,
@@ -195,7 +195,6 @@ module cve2_top import cve2_pkg::*; #(
     .irq_fast_i,
     .irq_nm_i,
     .irq_pending_o(irq_pending),
-    .new_irq_o,
 
     .debug_req_i,
     .crash_dump_o,

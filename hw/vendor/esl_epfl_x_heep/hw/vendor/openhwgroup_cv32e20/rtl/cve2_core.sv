@@ -61,7 +61,6 @@ module cve2_core import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
   output logic                         irq_pending_o,
-  output logic                         new_irq_o,
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
@@ -812,7 +811,6 @@ module cve2_core import cve2_pkg::*; #(
     assign pmp_req_err[PMP_I2] = 1'b0;
     assign pmp_req_err[PMP_D]  = 1'b0;
   end
-  logic            new_irq;
 `ifdef RVFI
   // When writeback stage is present RVFI information is emitted when instruction is finished in
   // third stage but some information must be captured whilst the instruction is in the second
@@ -1283,8 +1281,6 @@ module cve2_core import cve2_pkg::*; #(
   logic unused_instr_new_id, unused_instr_id_done;
   assign unused_instr_id_done = instr_id_done;
   assign unused_instr_new_id = instr_new_id;
-  assign new_irq = irq_pending_o & csr_mstatus_mie & ~nmi_mode & ~debug_mode;
-  assign new_irq_o = new_irq;
   assign debug_mode_o = debug_mode;
 `endif
 

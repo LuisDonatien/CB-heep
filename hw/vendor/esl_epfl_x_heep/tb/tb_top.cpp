@@ -162,7 +162,6 @@ int main (int argc, char * argv[])
     dut->tb_CBloadHEX(CB_firmware.c_str());
     runCycles(1, dut, m_trace);
     dut->tb_set_exit_loop();
-    dut->tb_CBset_exit_loop();
     std::cout<<"Set Exit Loop"<< std::endl;
     runCycles(1, dut, m_trace);
     std::cout<<"Memory Loaded"<< std::endl;

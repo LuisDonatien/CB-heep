@@ -1,6 +1,7 @@
 
 module CB_heep
     import obi_pkg::*;
+    import reg_pkg::*;
     import core_v_mini_mcu_pkg::*;
   #(
 
@@ -29,7 +30,6 @@ module CB_heep
     output logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_no,
 
     output logic [31:0] exit_value_o,
-    output logic force_error_o,
 
     // eXtension interface
     if_xif.cpu_compressed xif_compressed_if,
@@ -193,8 +193,8 @@ module CB_heep
       .ext_dma_write_ch0_resp_i,
       .ext_dma_addr_ch0_req_o,
       .ext_dma_addr_ch0_resp_i,
-      .ext_peripheral_slave_req_o(N_ext_master_bus_req[3]),
-      .ext_peripheral_slave_resp_i(N_ext_master_bus_resp[3]),
+      .ext_peripheral_slave_req_o(ext_peripheral_slave_req),
+      .ext_peripheral_slave_resp_i(ext_peripheral_slave_resp),
       .external_subsystem_powergate_switch_no,
       .external_subsystem_powergate_switch_ack_ni,
       .external_subsystem_powergate_iso_no,
@@ -205,7 +205,7 @@ module CB_heep
       .ext_dma_slot_rx_i,
       .external_cpu_subsystem_rst_no(external_cpu_subsystem_rst)
   );
-  localparam EXTERNALMASTERSIG = 4;
+  localparam EXTERNALMASTERSIG = 3;
   localparam EXTERNALSLAVESIG = 1;
   localparam NHARTS = 1;
   //***External_Core*****//
@@ -214,6 +214,9 @@ module CB_heep
 
   obi_req_t  [EXTERNALMASTERSIG-1:0] N_ext_master_bus_req;
   obi_resp_t [EXTERNALMASTERSIG-1:0] N_ext_master_bus_resp;
+
+  reg_req_t ext_peripheral_slave_req;
+  reg_rsp_t ext_peripheral_slave_resp;
 
   obi_req_t                          ext_master_bus_req;
   obi_resp_t                         ext_master_bus_resp;
@@ -247,8 +250,10 @@ module CB_heep
       //Bus External Slave
       .ext_slave_req_o(ext_slave_bus_req),
       .ext_slave_resp_i(ext_slave_bus_resp),
-      .debug_req_i(debug_req),
-      .force_error_o(force_error_o)
+     
+      .csr_reg_req_i(ext_peripheral_slave_req),
+      .csr_reg_resp_o(ext_peripheral_slave_resp),
+      .debug_req_i(debug_req)
   );
 
 

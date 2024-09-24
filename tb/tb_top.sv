@@ -50,7 +50,7 @@ module tb_top #(
   wire                jtag_tms;
   wire                jtag_tdi;
   wire                jtag_tdo;
-  wire                force_error
+
 
   // allow vcd dump
   initial begin
@@ -210,8 +210,7 @@ module tb_top #(
       .jtag_trst_ni        (jtag_trst_n),
       .jtag_tms_i          (jtag_tms),
       .jtag_tdi_i          (jtag_tdi),
-      .jtag_tdo_o          (jtag_tdo),
-      .force_error_o       (force_error)
+      .jtag_tdo_o          (jtag_tdo)
   );
 
 
