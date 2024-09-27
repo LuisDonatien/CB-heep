@@ -253,7 +253,11 @@ module CB_heep
      
       .csr_reg_req_i(ext_peripheral_slave_req),
       .csr_reg_resp_o(ext_peripheral_slave_resp),
-      .debug_req_i(debug_req)
+      .debug_req_i(debug_req),
+    // power manager signals that goes to the ASIC macros
+      .pwrgate_ni('0),
+      .pwrgate_ack_no(),
+      .set_retentive_ni('0)
   );
 
 

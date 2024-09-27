@@ -13,7 +13,7 @@ filesets:
       - cei_mochila/rtl/include/cb_heep_ctrl_reg_pkg.sv 
       - cei_mochila/rtl/include/cpu_private_reg_pkg.sv     
       - cei_mochila/rtl/mochila_top.sv
-      - cei_mochila/rtl/ext_cpu_system.sv
+      - cei_mochila/rtl/cpu_system.sv
       - cei_mochila/rtl/bus_system.sv
       - cei_mochila/rtl/xbar_system.sv
       - cei_mochila/rtl/periph_system.sv
