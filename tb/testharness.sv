@@ -31,7 +31,7 @@ module testharness #(
 );
 
   `include "tb_util.svh"  
-  //`include "tb_util_CB_Heep.svh"
+  `include "tb_util_CB_Heep.svh"
   
   import obi_pkg::*;
   import reg_pkg::*;

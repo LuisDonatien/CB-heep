@@ -32,7 +32,7 @@ task tb_CBloadHEX;
   int i, stimuli_counter, bank, NumBytes, NumBanks;
   logic [31:0] addr;
   tb_CBreadHEX(file, stimuli);
-  tb_getMemSize(NumBytes, NumBanks);
+  tb_CBgetMemSize(NumBytes, NumBanks);
 
 
 

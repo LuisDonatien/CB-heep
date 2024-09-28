@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 
-#define BASE_ADDRESS 0x20080000
+#define BASE_ADDRESS 0x20070000
 #define SAFE       (BASE_ADDRESS | 0x4)
 #define START     (BASE_ADDRESS | 0x10)
 #define MASTER    (BASE_ADDRESS | 0x8)
