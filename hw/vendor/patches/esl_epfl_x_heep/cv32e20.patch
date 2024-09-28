@@ -1,0 +1,92 @@
+diff --git a/hw/vendor/openhwgroup_cv32e20/rtl/cve2_core.sv b/hw/vendor/openhwgroup_cv32e20/rtl/cve2_core.sv
+index aff3d0d..82dc163 100644
+--- a/hw/vendor/openhwgroup_cv32e20/rtl/cve2_core.sv
++++ b/hw/vendor/openhwgroup_cv32e20/rtl/cve2_core.sv
+@@ -64,6 +64,7 @@ module cve2_core import cve2_pkg::*; #(
+ 
+   // Debug Interface
+   input  logic                         debug_req_i,
++  output logic                         debug_mode_o,
+   output crash_dump_t                  crash_dump_o,
+   // SEC_CM: EXCEPTION.CTRL_FLOW.LOCAL_ESC
+   // SEC_CM: EXCEPTION.CTRL_FLOW.GLOBAL_ESC
+@@ -1283,6 +1284,7 @@ module cve2_core import cve2_pkg::*; #(
+   logic unused_instr_new_id, unused_instr_id_done;
+   assign unused_instr_id_done = instr_id_done;
+   assign unused_instr_new_id = instr_new_id;
++  assign debug_mode_o = debug_mode;
+ `endif
+ 
+ endmodule
+diff --git a/hw/vendor/openhwgroup_cv32e20/rtl/cve2_top.sv b/hw/vendor/openhwgroup_cv32e20/rtl/cve2_top.sv
+index 00c38a4..067032d 100644
+--- a/hw/vendor/openhwgroup_cv32e20/rtl/cve2_top.sv
++++ b/hw/vendor/openhwgroup_cv32e20/rtl/cve2_top.sv
+@@ -58,6 +58,7 @@ module cve2_top import cve2_pkg::*; #(
+ 
+   // Debug Interface
+   input  logic                         debug_req_i,
++  output logic                         debug_mode_o,
+   output crash_dump_t                  crash_dump_o,
+ 
+   // RISC-V Formal Interface
+@@ -195,6 +196,7 @@ module cve2_top import cve2_pkg::*; #(
+     .irq_pending_o(irq_pending),
+ 
+     .debug_req_i,
++    .debug_mode_o,
+     .crash_dump_o,
+ 
+ `ifdef RVFI
+diff --git a/hw/vendor/patches/openhwgroup_cv32e20/cve2_core.sv.patch b/hw/vendor/patches/openhwgroup_cv32e20/cve2_core.sv.patch
+new file mode 100644
+index 0000000..48cb8c9
+--- /dev/null
++++ b/hw/vendor/patches/openhwgroup_cv32e20/cve2_core.sv.patch
+@@ -0,0 +1,20 @@
++diff --git a/rtl/cve2_core.sv b/rtl/cve2_core.sv
++index aff3d0d..82dc163 100644
++--- a/rtl/cve2_core.sv
+++++ b/rtl/cve2_core.sv
++@@ -64,6 +64,7 @@ module cve2_core import cve2_pkg::*; #(
++ 
++   // Debug Interface
++   input  logic                         debug_req_i,
+++  output logic                         debug_mode_o,
++   output crash_dump_t                  crash_dump_o,
++   // SEC_CM: EXCEPTION.CTRL_FLOW.LOCAL_ESC
++   // SEC_CM: EXCEPTION.CTRL_FLOW.GLOBAL_ESC
++@@ -1283,6 +1284,7 @@ module cve2_core import cve2_pkg::*; #(
++   logic unused_instr_new_id, unused_instr_id_done;
++   assign unused_instr_id_done = instr_id_done;
++   assign unused_instr_new_id = instr_new_id;
+++  assign debug_mode_o = debug_mode;
++ `endif
++ 
++ endmodule
+diff --git a/hw/vendor/patches/openhwgroup_cv32e20/cve2_top.sv.patch b/hw/vendor/patches/openhwgroup_cv32e20/cve2_top.sv.patch
+new file mode 100644
+index 0000000..161c257
+--- /dev/null
++++ b/hw/vendor/patches/openhwgroup_cv32e20/cve2_top.sv.patch
+@@ -0,0 +1,20 @@
++diff --git a/rtl/cve2_top.sv b/rtl/cve2_top.sv
++index 00c38a4..067032d 100644
++--- a/rtl/cve2_top.sv
+++++ b/rtl/cve2_top.sv
++@@ -58,6 +58,7 @@ module cve2_top import cve2_pkg::*; #(
++ 
++   // Debug Interface
++   input  logic                         debug_req_i,
+++  output logic                         debug_mode_o,
++   output crash_dump_t                  crash_dump_o,
++ 
++   // RISC-V Formal Interface
++@@ -195,6 +196,7 @@ module cve2_top import cve2_pkg::*; #(
++     .irq_pending_o(irq_pending),
++ 
++     .debug_req_i,
+++    .debug_mode_o,
++     .crash_dump_o,
++ 
++ `ifdef RVFI

@@ -96,6 +96,7 @@ module cpu_subsystem
         .irq_nm_i      (1'b0),
 
         .debug_req_i (debug_req_i),
+        .debug_mode_o(),
         .crash_dump_o(),
 
         .fetch_enable_i(fetch_enable),

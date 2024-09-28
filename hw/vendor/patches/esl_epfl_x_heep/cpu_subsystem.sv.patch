@@ -1,0 +1,12 @@
+diff --git a/hw/core-v-mini-mcu/cpu_subsystem.sv b/hw/core-v-mini-mcu/cpu_subsystem.sv
+index 256723f..a4fe34f 100644
+--- a/hw/core-v-mini-mcu/cpu_subsystem.sv
++++ b/hw/core-v-mini-mcu/cpu_subsystem.sv
+@@ -96,6 +96,7 @@ module cpu_subsystem
+         .irq_nm_i      (1'b0),
+ 
+         .debug_req_i (debug_req_i),
++        .debug_mode_o(),
+         .crash_dump_o(),
+ 
+         .fetch_enable_i(fetch_enable),

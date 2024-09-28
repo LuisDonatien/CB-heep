@@ -58,6 +58,7 @@ module cve2_top import cve2_pkg::*; #(
 
   // Debug Interface
   input  logic                         debug_req_i,
+  output logic                         debug_mode_o,
   output crash_dump_t                  crash_dump_o,
 
   // RISC-V Formal Interface
@@ -195,6 +196,7 @@ module cve2_top import cve2_pkg::*; #(
     .irq_pending_o(irq_pending),
 
     .debug_req_i,
+    .debug_mode_o,
     .crash_dump_o,
 
 `ifdef RVFI

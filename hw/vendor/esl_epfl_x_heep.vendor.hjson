@@ -11,7 +11,7 @@
     rev: "541617ebd73b463833990dbd72814310d67b6260",
   },
 
-//  patch_dir: "patches/esl_epfl_x_heep",
+  patch_dir: "patches/esl_epfl_x_heep",
 
   exclude_from_upstream: [
     ".github",
