@@ -8,7 +8,7 @@
 #include "gpio.h"
 #include "x-heep.h"
 
-#define GPIO_TOGGLE 6
+#define GPIO_TOGGLE 2
 
 /* By default, printfs are activated for FPGA and disabled for simulation. */
 #define PRINTF_IN_FPGA  1
@@ -16,7 +16,7 @@
 
 #if TARGET_SIM && PRINTF_IN_SIM
         #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
-#elif TARGET_PYNQ_Z2 && PRINTF_IN_FPGA
+#elif PRINTF_IN_FPGA && !TARGET_SIM
     #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
     #define PRINTF(...)
@@ -33,17 +33,14 @@ int main(int argc, char *argv[])
     gpio_res = gpio_config (pin_cfg);
     if (gpio_res != GpioOk)
         PRINTF("Gpio initialization failed!\n");
-    volatile unsigned int *i = 0x08040;
-while(1){
-    if((*i)<50000){
-        gpio_write(GPIO_TOGGLE, true);        
-    }else if((*i)<100000){
+
+
+    for(int i=0;i<100;i++) {
+        gpio_write(GPIO_TOGGLE, true);
+        for(int i=0;i<10;i++) asm volatile("nop");
         gpio_write(GPIO_TOGGLE, false);
-    }else{
-    (*i)=0;
+        for(int i=0;i<10;i++) asm volatile("nop");
     }
-    (*i)++;
-}
 
     PRINTF("Success.\n");
     return EXIT_SUCCESS;

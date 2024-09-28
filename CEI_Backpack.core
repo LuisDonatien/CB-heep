@@ -25,8 +25,10 @@ filesets:
     - hw/vendor/esl_epfl_x_heep/hw/system/x_heep_system.sv
     - hw/vendor/esl_epfl_x_heep/hw/system/pad_ring.sv
     file_type: systemVerilogSource
-    
+      
   tb-harness:
+    depend:
+    - pulp-platform.org:ip:fpu_ss
     files:
     - tb/tb_util_CB_Heep.svh: {is_include_file: true}
     - tb/tb_util.svh: {is_include_file: true}
@@ -79,6 +81,8 @@ filesets:
 
   tb-verilator:
     files:
+    - tb/XHEEP_CmdLineOptions.hh: { is_include_file: true }
+    - tb/XHEEP_CmdLineOptions.cpp
     - tb/tb_top.cpp
     file_type: cppSource
 

@@ -53,19 +53,14 @@ $(info $$You are executing from: $(mkfile_path))
 
 # Get the absolute path of where to fetch sources
 source_path := $(realpath $(mkfile_path)/$(SOURCE))
-
 $(info $$You are fetching sources from $(source_path) )
 
 
 SOURCE_PATH   		       = $(source_path)/
 ROOT_PROJECT               = $(mkfile_path)/
 INC_FOLDERS                = $(mkfile_path)/device/target/$(TARGET)/
-LINK_FOLDER                = $(mkfile_path)/linker
+LINK_FOLDER                ?= $(mkfile_path)/linker
 
-$(info $$SOURCE_PATH $(SOURCE_PATH))
-$(info $$ROOT_PROJECT $(ROOT_PROJECT))
-$(info $$INC_FOLDERS $(INC_FOLDERS))
-$(info $$LINK_FOLDER $(LINK_FOLDER))
 # CMake keyword
 CMAKE_DIR=cmake
 

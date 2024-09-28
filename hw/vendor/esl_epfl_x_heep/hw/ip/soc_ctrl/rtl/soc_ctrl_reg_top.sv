@@ -10,7 +10,7 @@
 module soc_ctrl_reg_top #(
     parameter type reg_req_t = logic,
     parameter type reg_rsp_t = logic,
-    parameter int AW = 6
+    parameter int AW = 5
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -81,9 +81,6 @@ module soc_ctrl_reg_top #(
   logic [31:0] boot_address_qs;
   logic [31:0] boot_address_wd;
   logic boot_address_we;
-  logic [31:0] boot_address1_qs;
-  logic [31:0] boot_address1_wd;
-  logic boot_address1_we;
   logic use_spimemio_qs;
   logic use_spimemio_wd;
   logic use_spimemio_we;
@@ -202,12 +199,12 @@ module soc_ctrl_reg_top #(
   );
 
 
-  // R[boot_address]: V(False) For Core0
+  // R[boot_address]: V(False)
 
   prim_subreg #(
       .DW      (32),
       .SWACCESS("RW"),
-      .RESVAL  (32'h180)  //Boot address
+      .RESVAL  (32'h180)
   ) u_boot_address (
       .clk_i (clk_i),
       .rst_ni(rst_ni),
@@ -229,31 +226,6 @@ module soc_ctrl_reg_top #(
   );
 
 
-  // R[boot_address]: V(False) For Core1
-
-  prim_subreg #(
-      .DW      (32),
-      .SWACCESS("RW"),
-      .RESVAL  (32'hF180)  //Boot address
-  ) u_boot_address1 (
-      .clk_i (clk_i),
-      .rst_ni(rst_ni),
-
-      // from register interface
-      .we(boot_address1_we),
-      .wd(boot_address1_wd),
-
-      // from internal hardware
-      .de(1'b0),
-      .d ('0),
-
-      // to internal hardware
-      .qe(),
-      .q (reg2hw.boot_address1.q),
-
-      // to register interface (read)
-      .qs(boot_address1_qs)
-  );
   // R[use_spimemio]: V(False)
 
   prim_subreg #(
@@ -337,9 +309,7 @@ module soc_ctrl_reg_top #(
 
 
 
-  //logic [7:0] addr_hit;
-
-  logic [8:0] addr_hit;  //Modificacion añadido registro
+  logic [7:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == SOC_CTRL_EXIT_VALID_OFFSET);
@@ -350,7 +320,6 @@ module soc_ctrl_reg_top #(
     addr_hit[5] = (reg_addr == SOC_CTRL_USE_SPIMEMIO_OFFSET);
     addr_hit[6] = (reg_addr == SOC_CTRL_ENABLE_SPI_SEL_OFFSET);
     addr_hit[7] = (reg_addr == SOC_CTRL_SYSTEM_FREQUENCY_HZ_OFFSET);
-    addr_hit[8] = (reg_addr == SOC_CTRL_BOOT_ADDRESS1_OFFSET);  //Añadido
   end
 
   assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0;
@@ -365,8 +334,7 @@ module soc_ctrl_reg_top #(
                (addr_hit[4] & (|(SOC_CTRL_PERMIT[4] & ~reg_be))) |
                (addr_hit[5] & (|(SOC_CTRL_PERMIT[5] & ~reg_be))) |
                (addr_hit[6] & (|(SOC_CTRL_PERMIT[6] & ~reg_be))) |
-               (addr_hit[7] & (|(SOC_CTRL_PERMIT[7] & ~reg_be))) |
-               (addr_hit[8] & (|(SOC_CTRL_PERMIT[4] & ~reg_be)))));
+               (addr_hit[7] & (|(SOC_CTRL_PERMIT[7] & ~reg_be)))));
   end
 
   assign exit_valid_we = addr_hit[0] & reg_we & !reg_error;
@@ -380,9 +348,6 @@ module soc_ctrl_reg_top #(
 
   assign boot_address_we = addr_hit[4] & reg_we & !reg_error;
   assign boot_address_wd = reg_wdata[31:0];
-
-  assign boot_address1_we = addr_hit[8] & reg_we & !reg_error;
-  assign boot_address1_wd = reg_wdata[31:0];
 
   assign use_spimemio_we = addr_hit[5] & reg_we & !reg_error;
   assign use_spimemio_wd = reg_wdata[0];
@@ -415,10 +380,6 @@ module soc_ctrl_reg_top #(
 
       addr_hit[4]: begin
         reg_rdata_next[31:0] = boot_address_qs;
-      end
-
-      addr_hit[8]: begin  //Añadido registro 
-        reg_rdata_next[31:0] = boot_address1_qs;
       end
 
       addr_hit[5]: begin

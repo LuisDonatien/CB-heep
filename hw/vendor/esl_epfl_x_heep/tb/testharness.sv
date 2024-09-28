@@ -21,6 +21,17 @@ module testharness #(
     inout wire boot_select_i,
     inout wire execute_from_flash_i,
 
+`ifdef SIM_SYSTEMC
+    output logic        ext_systemc_req_req_o,
+    output logic        ext_systemc_req_we_o,
+    output logic [ 3:0] ext_systemc_req_be_o,
+    output logic [31:0] ext_systemc_req_addr_o,
+    output logic [31:0] ext_systemc_req_wdata_o,
+
+    input  logic        ext_systemc_resp_gnt_i,
+    input  logic        ext_systemc_resp_rvalid_i,
+    input  logic [31:0] ext_systemc_resp_rdata_i,
+`endif
     input  wire         jtag_tck_i,
     input  wire         jtag_tms_i,
     input  wire         jtag_trst_ni,
@@ -37,7 +48,7 @@ module testharness #(
   import reg_pkg::*;
   import testharness_pkg::*;
   import addr_map_rule_pkg::*;
-  import core_v_mini_mcu_pkg::*;
+
   localparam SWITCH_ACK_LATENCY = 15;
   localparam EXT_XBAR_NMASTER_RND = USE_EXTERNAL_DEVICE_EXAMPLE ? testharness_pkg::EXT_XBAR_NMASTER : 1;
   localparam HEEP_EXT_XBAR_NMASTER = USE_EXTERNAL_DEVICE_EXAMPLE ? testharness_pkg::EXT_XBAR_NMASTER : 0;
@@ -77,6 +88,17 @@ module testharness #(
   logic iffifo_in_ready, iffifo_out_valid;
   logic iffifo_int_o;
 
+  // External DMA slots
+  logic [core_v_mini_mcu_pkg::DMA_CH_NUM-1:0] ext_dma_slot_tx;
+  logic [core_v_mini_mcu_pkg::DMA_CH_NUM-1:0] ext_dma_slot_rx;
+
+  assign ext_dma_slot_tx[0] = iffifo_in_ready;
+  assign ext_dma_slot_rx[0] = iffifo_out_valid;
+  if (core_v_mini_mcu_pkg::DMA_CH_NUM > 1) begin
+    assign ext_dma_slot_tx[core_v_mini_mcu_pkg::DMA_CH_NUM-1:1] = '0;
+    assign ext_dma_slot_rx[core_v_mini_mcu_pkg::DMA_CH_NUM-1:1] = '0;
+  end
+
   // External xbar master/slave and peripheral ports
   obi_req_t [EXT_XBAR_NMASTER_RND-1:0] ext_master_req;
   obi_req_t [EXT_XBAR_NMASTER_RND-1:0] heep_slave_req;
@@ -101,10 +123,6 @@ module testharness #(
 
   reg_pkg::reg_req_t [testharness_pkg::EXT_NPERIPHERALS-1:0] ext_periph_slv_req;
   reg_pkg::reg_rsp_t [testharness_pkg::EXT_NPERIPHERALS-1:0] ext_periph_slv_rsp;
-
-  // External xbar slave example port
-  obi_req_t slow_ram_slave_req;
-  obi_resp_t slow_ram_slave_resp;
 
   // External interrupts
   logic [NEXT_INT_RND-1:0] intr_vector_ext;
@@ -146,6 +164,7 @@ module testharness #(
     $display("%t: the parameter X_EXT is %x", $time, X_EXT);
     $display("%t: the parameter ZFINX is %x", $time, ZFINX);
     $display("%t: the parameter JTAG_DPI is %x", $time, JTAG_DPI);
+    $display("%t: the parameter EXT_DOMAINS is %x", $time, core_v_mini_mcu_pkg::EXTERNAL_DOMAINS);
     $display("%t: the parameter USE_EXTERNAL_DEVICE_EXAMPLE is %x", $time,
              USE_EXTERNAL_DEVICE_EXAMPLE);
     $display("%t: the parameter CLK_FREQUENCY is %d KHz", $time, CLK_FREQUENCY);
@@ -160,12 +179,11 @@ module testharness #(
 `endif
 
   x_heep_system #(
-      .COREV_PULP      (COREV_PULP),
-      .FPU             (FPU),
-      .ZFINX           (ZFINX),
-      .X_EXT           (X_EXT),
-      .EXT_XBAR_NMASTER(HEEP_EXT_XBAR_NMASTER),
-      .EXT_HARTS       (1)
+      .COREV_PULP(COREV_PULP),
+      .FPU(FPU),
+      .ZFINX(ZFINX),
+      .X_EXT(X_EXT),
+      .EXT_XBAR_NMASTER(HEEP_EXT_XBAR_NMASTER)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -235,106 +253,31 @@ module testharness #(
       .xif_result_if(ext_if),
       .ext_xbar_master_req_i(heep_slave_req),
       .ext_xbar_master_resp_o(heep_slave_resp),
-      .ext_core_instr_req_o(N_ext_master_bus_req[0]),
-      .ext_core_instr_resp_i(N_ext_master_bus_resp[0]),
-      .ext_core_data_req_o(N_ext_master_bus_req[1]),
-      .ext_core_data_resp_i(N_ext_master_bus_resp[1]),
-      .ext_debug_master_req_o(N_ext_master_bus_req[2]),
-      .ext_debug_master_resp_i(N_ext_master_bus_resp[2]),
-      .ext_debug_req(debug_req),
+      .ext_core_instr_req_o(heep_core_instr_req),
+      .ext_core_instr_resp_i(heep_core_instr_resp),
+      .ext_core_data_req_o(heep_core_data_req),
+      .ext_core_data_resp_i(heep_core_data_resp),
+      .ext_debug_master_req_o(heep_debug_master_req),
+      .ext_debug_master_resp_i(heep_debug_master_resp),
       .ext_dma_read_ch0_req_o(heep_dma_read_ch0_req),
       .ext_dma_read_ch0_resp_i(heep_dma_read_ch0_resp),
       .ext_dma_write_ch0_req_o(heep_dma_write_ch0_req),
       .ext_dma_write_ch0_resp_i(heep_dma_write_ch0_resp),
       .ext_dma_addr_ch0_req_o(heep_dma_addr_ch0_req),
       .ext_dma_addr_ch0_resp_i(heep_dma_addr_ch0_resp),
-      .ext_peripheral_slave_req_o(N_ext_master_bus_req[3]),
-      .ext_peripheral_slave_resp_i(N_ext_master_bus_resp[3]),
+      .ext_peripheral_slave_req_o(periph_slave_req),
+      .ext_peripheral_slave_resp_i(periph_slave_rsp),
       .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch_n),
       .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack_n),
       .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso_n),
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n),
       .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
-      .ext_dma_slot_tx_i(iffifo_in_ready),
-      .ext_dma_slot_rx_i(iffifo_out_valid),
-      .external_cpu_subsystem_rst_no(external_cpu_subsystem_rst)
-  );
-  localparam EXTERNALMASTERSIG = 4;
-  localparam EXTERNALSLAVESIG = 1;
-  //***External_Core*****//
-  // Reset Signal
-  logic                              external_cpu_subsystem_rst;
-
-  obi_req_t  [EXTERNALMASTERSIG-1:0] N_ext_master_bus_req;
-  obi_resp_t [EXTERNALMASTERSIG-1:0] N_ext_master_bus_resp;
-
-  obi_req_t                          ext_master_bus_req;
-  obi_resp_t                         ext_master_bus_resp;
-
-  obi_req_t                          ext_slave_bus_req;
-  obi_resp_t                         ext_slave_bus_resp;
-
-  // Debug Signal
-  logic                              debug_req;
-
-
-  // N-to-1 crossbar Data
-  xbar_varlat_n_to_one #(
-      .XBAR_NMASTER(EXTERNALMASTERSIG)
-  ) xbar_varlat_n_to_one_data_i (
-      .clk_i        (clk_i),
-      .rst_ni       (rst_ni),
-      .master_req_i (N_ext_master_bus_req),
-      .master_resp_o(N_ext_master_bus_resp),
-      .slave_req_o  (ext_master_bus_req),
-      .slave_resp_i (ext_master_bus_resp)
+      .ext_dma_slot_tx_i(ext_dma_slot_tx),
+      .ext_dma_slot_rx_i(ext_dma_slot_rx),
+      .ext_dma_stop_i('0)
   );
 
-  mochila_top mochila_top_i (
-      .clk_i,
-      .rst_ni(external_cpu_subsystem_rst),
-      //Bus External Master
-      .ext_master_req_i(ext_master_bus_req),
-      .ext_master_resp_o(ext_master_bus_resp),
-
-      //Bus External Slave
-      .ext_slave_req_o(ext_master_req[0]),
-      .ext_slave_resp_i(ext_master_resp[0]),
-      .debug_req_i(debug_req)
-  );
-  /*
-  //External CPU
-  ext_cpu_system ext_cpu_system_i (
-      // Clock and Reset
-      .clk_i,
-      .rst_ni(external_cpu_subsystem_rst),
-
-      // Instruction memory interface
-      .core_instr_req_o (ext_master_req[0]),
-      .core_instr_resp_i(ext_master_resp[0]),
-
-      // Data memory interface
-      .core_data_req_o (ext_master_req[1]),
-      .core_data_resp_i(ext_master_resp[1]),
-
-      // Debug Interface
-      .debug_req_i(debug_req)
-
-      // sleep
-      //    output logic core_sleep_o
-  );
-  ////////////////////////////////////////////////////
-  
-  assign ex_core_req[0]  = ext_master_req[0];
-  assign ex_core_req[1]  = ext_master_req[1];
-  assign ex_core_resp[0] = ext_master_resp[0];
-  assign ex_core_resp[1] = ext_master_resp[1];
-  */
-  // assign ext_master_req[0]  = ext_slave_bus_req;
-  //  assign ex_core_req[1]  = ext_master_req[1];
-  // assign ext_master_resp[0] = ext_slave_bus_resp;
-  //  assign ex_core_resp[1] = ext_master_resp[1];
   // Testbench external bus
   // ----------------------
   // The external bus connects the external peripherals among them and to
@@ -369,12 +312,6 @@ module testharness #(
 
   logic pdm;
 
-  assign heep_core_instr_req = '0;
-  assign heep_core_data_req = '0;
-  assign heep_debug_master_req = '0;
-  assign periph_slave_req = '0;
-
-
   //pretending to be SWITCH CELLs that delay by SWITCH_ACK_LATENCY cycles the ACK signal
   logic
       tb_cpu_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1],
@@ -390,7 +327,7 @@ module testharness #(
   always_ff @(negedge clk_i) begin
     tb_cpu_subsystem_powergate_switch_ack_n[0] <= x_heep_system_i.cpu_subsystem_powergate_switch_n;
     tb_peripheral_subsystem_powergate_switch_ack_n[0] <= x_heep_system_i.peripheral_subsystem_powergate_switch_n;
-    tb_memory_subsystem_banks_powergate_switch_ack_n[0] <= x_heep_system_i.memory_subsystem_banks_powergate_switch_n;
+    tb_memory_subsystem_banks_powergate_switch_ack_n[0] <= x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_n;
     tb_external_subsystem_powergate_switch_ack_n[0] <= external_subsystem_powergate_switch_n;
     for (int i = 0; i < SWITCH_ACK_LATENCY; i++) begin
       tb_memory_subsystem_banks_powergate_switch_ack_n[i+1] <= tb_memory_subsystem_banks_powergate_switch_ack_n[i];
@@ -409,12 +346,12 @@ module testharness #(
 `ifndef VERILATOR
     force x_heep_system_i.core_v_mini_mcu_i.cpu_subsystem_powergate_switch_ack_ni = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
     force x_heep_system_i.core_v_mini_mcu_i.peripheral_subsystem_powergate_switch_ack_ni = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-    force x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_ni = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
+    force x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
     force external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `else
     x_heep_system_i.cpu_subsystem_powergate_switch_ack_n = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
     x_heep_system_i.peripheral_subsystem_powergate_switch_ack_n = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-    x_heep_system_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
+    x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
     external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `endif
   end
@@ -449,20 +386,45 @@ module testharness #(
       .exit()
   );
 
-  assign mux_jtag_tck                    = JTAG_DPI ? sim_jtag_tck : jtag_tck_i;
-  assign mux_jtag_tms                    = JTAG_DPI ? sim_jtag_tms : jtag_tms_i;
-  assign mux_jtag_tdi                    = JTAG_DPI ? sim_jtag_tdi : jtag_tdi_i;
-  assign mux_jtag_trstn                  = JTAG_DPI ? sim_jtag_trstn : jtag_trst_ni;
+  assign mux_jtag_tck   = JTAG_DPI ? sim_jtag_tck : jtag_tck_i;
+  assign mux_jtag_tms   = JTAG_DPI ? sim_jtag_tms : jtag_tms_i;
+  assign mux_jtag_tdi   = JTAG_DPI ? sim_jtag_tdi : jtag_tdi_i;
+  assign mux_jtag_trstn = JTAG_DPI ? sim_jtag_trstn : jtag_trst_ni;
 
-  assign sim_jtag_tdo                    = JTAG_DPI ? mux_jtag_tdo : '0;
-  assign jtag_tdo_o                      = !JTAG_DPI ? mux_jtag_tdo : '0;
+  assign sim_jtag_tdo   = JTAG_DPI ? mux_jtag_tdo : '0;
+  assign jtag_tdo_o     = !JTAG_DPI ? mux_jtag_tdo : '0;
+
+  // External xbar slave example port
+  obi_req_t  slow_ram_slave_req;
+  obi_resp_t slow_ram_slave_resp;
+
+`ifndef SIM_SYSTEMC
 
   assign slow_ram_slave_req              = ext_slave_req[SLOW_MEMORY_IDX];
   assign ext_slave_resp[SLOW_MEMORY_IDX] = slow_ram_slave_resp;
+`else
+
+  obi_req_t  ext_systemc_req;
+  obi_resp_t ext_systemc_resp;
+
+  assign ext_systemc_req_req_o           = ext_systemc_req.req;
+  assign ext_systemc_req_we_o            = ext_systemc_req.we;
+  assign ext_systemc_req_be_o            = ext_systemc_req.be;
+  assign ext_systemc_req_addr_o          = ext_systemc_req.addr;
+  assign ext_systemc_req_wdata_o         = ext_systemc_req.wdata;
+
+  assign ext_systemc_resp.gnt            = ext_systemc_resp_gnt_i;
+  assign ext_systemc_resp.rvalid         = ext_systemc_resp_rvalid_i;
+  assign ext_systemc_resp.rdata          = ext_systemc_resp_rdata_i;
+
+  assign ext_systemc_req                 = ext_slave_req[SLOW_MEMORY_IDX];
+  assign ext_slave_resp[SLOW_MEMORY_IDX] = ext_systemc_resp;
+`endif
 
   generate
     if (USE_EXTERNAL_DEVICE_EXAMPLE) begin : gen_USE_EXTERNAL_DEVICE_EXAMPLE
 
+`ifndef SIM_SYSTEMC
       obi_pkg::obi_req_t  slave_fifoout_req;
       obi_pkg::obi_resp_t slave_fifoout_resp;
 
@@ -478,14 +440,14 @@ module testharness #(
 
       // External xbar slave memory example
       slow_memory #(
-          .NumWords (128),
+          .NumWords (8192),
           .DataWidth(32'd32)
       ) slow_ram_i (
           .clk_i,
           .rst_ni,
           .req_i(slave_fifoout_req.req),
           .we_i(slave_fifoout_req.we),
-          .addr_i(slave_fifoout_req.addr[8:2]),
+          .addr_i(slave_fifoout_req.addr[15:2]),
           .wdata_i(slave_fifoout_req.wdata),
           .be_i(slave_fifoout_req.be),
           // output ports
@@ -493,6 +455,7 @@ module testharness #(
           .rdata_o(slave_fifoout_resp.rdata),
           .rvalid_o(slave_fifoout_resp.rvalid)
       );
+`endif
 
       parameter DMA_TRIGGER_SLOT_NUM = 4;
 
@@ -506,12 +469,13 @@ module testharness #(
       ) dma_i (
           .clk_i,
           .rst_ni,
+          .ext_dma_stop_i('0),
           .reg_req_i(ext_periph_slv_req[testharness_pkg::MEMCOPY_CTRL_IDX]),
           .reg_rsp_o(ext_periph_slv_rsp[testharness_pkg::MEMCOPY_CTRL_IDX]),
-          .dma_read_ch0_req_o(),
-          .dma_read_ch0_resp_i(),
-          .dma_write_ch0_req_o(),
-          .dma_write_ch0_resp_i(),
+          .dma_read_ch0_req_o(ext_master_req[testharness_pkg::EXT_MASTER0_IDX]),
+          .dma_read_ch0_resp_i(ext_master_resp[testharness_pkg::EXT_MASTER0_IDX]),
+          .dma_write_ch0_req_o(ext_master_req[testharness_pkg::EXT_MASTER1_IDX]),
+          .dma_write_ch0_resp_i(ext_master_resp[testharness_pkg::EXT_MASTER1_IDX]),
           .dma_addr_ch0_req_o(),
           .dma_addr_ch0_resp_i('0),
           .trigger_slot_i('0),

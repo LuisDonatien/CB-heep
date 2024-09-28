@@ -61,10 +61,10 @@ module cve2_core import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
   output logic                         irq_pending_o,
+
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
-  output logic                         debug_mode_o,
   // SEC_CM: EXCEPTION.CTRL_FLOW.LOCAL_ESC
   // SEC_CM: EXCEPTION.CTRL_FLOW.GLOBAL_ESC
 
@@ -605,7 +605,7 @@ module cve2_core import cve2_pkg::*; #(
   // Crash dump output //
   ///////////////////////
 
-  assign crash_dump_o.current_pc     = pc_id ;
+  assign crash_dump_o.current_pc     = pc_id;
   assign crash_dump_o.next_pc        = pc_if;
   assign crash_dump_o.last_data_addr = lsu_addr_last;
   assign crash_dump_o.exception_addr = csr_mepc;
@@ -625,14 +625,12 @@ module cve2_core import cve2_pkg::*; #(
   assign outstanding_store_id = id_stage_i.instr_executing & id_stage_i.lsu_req_dec &
                                 id_stage_i.lsu_we;
 
-  begin : gen_no_wb_stage
-    // Without writeback stage only look into whether load or store is in ID to determine if
-    // a response is expected.
-    assign outstanding_load_resp  = outstanding_load_id;
-    assign outstanding_store_resp = outstanding_store_id;
+  // Without writeback stage only look into whether load or store is in ID to determine if
+  // a response is expected.
+  assign outstanding_load_resp  = outstanding_load_id;
+  assign outstanding_store_resp = outstanding_store_id;
 
-    `ASSERT(NoMemRFWriteWithoutPendingLoad, rf_we_lsu |-> outstanding_load_id, clk_i, !rst_ni)
-  end
+  `ASSERT(NoMemRFWriteWithoutPendingLoad, rf_we_lsu |-> outstanding_load_id, clk_i, !rst_ni)
 
   `ASSERT(NoMemResponseWithoutPendingAccess,
     data_rvalid_i |-> outstanding_load_resp | outstanding_store_resp, clk_i, !rst_ni)
@@ -811,6 +809,7 @@ module cve2_core import cve2_pkg::*; #(
     assign pmp_req_err[PMP_I2] = 1'b0;
     assign pmp_req_err[PMP_D]  = 1'b0;
   end
+
 `ifdef RVFI
   // When writeback stage is present RVFI information is emitted when instruction is finished in
   // third stage but some information must be captured whilst the instruction is in the second
@@ -1093,6 +1092,9 @@ module cve2_core import cve2_pkg::*; #(
             rvfi_ext_stage_debug_req[i+1] <= rvfi_ext_stage_debug_req[i];
             rvfi_ext_stage_mcycle[i]      <= cs_registers_i.mcycle_counter_i.counter_val_o;
           end
+          else begin
+            rvfi_stage_trap[i]            <= 0;
+          end
         end else begin
             rvfi_stage_halt[i]      <= rvfi_stage_halt[i-1];
             rvfi_stage_trap[i]      <= rvfi_stage_trap[i-1];
@@ -1281,7 +1283,6 @@ module cve2_core import cve2_pkg::*; #(
   logic unused_instr_new_id, unused_instr_id_done;
   assign unused_instr_id_done = instr_id_done;
   assign unused_instr_new_id = instr_new_id;
-  assign debug_mode_o = debug_mode;
 `endif
 
 endmodule

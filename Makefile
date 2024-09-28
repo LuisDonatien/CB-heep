@@ -18,6 +18,11 @@
 MAKE = make
 .PHONY: test
 
+# FUSESOC and Python values (default)
+FUSESOC := $(shell which fusesoc)
+PYTHON  := $(shell which python)
+
+
 PROJECT  ?= hello_world
 # Linker options are 'on_chip' (default),'flash_load','flash_exec','freertos'
 LINKER   ?= on_chip
@@ -30,6 +35,9 @@ COMPILER_PREFIX ?= riscv32-unknown-
 
 # Target options are 'sim' (default) and 'pynq-z2'
 TARGET   	?= sim
+CB_HEEP_MCU_CFG_PERIPHERALS  	?= hw/vendor/esl_epfl_x_heep/mcu_cfg.hjson
+CB_HEEP_CFG  ?= hw/vendor/esl_epfl_x_heep/configs/general.hjson
+CB_HEEP_PAD_CFG  	?= hw/vendor/esl_epfl_x_heep/pad_cfg.hjson
 
 # Arch options are any RISC-V ISA string supported by the CPU. Default 'rv32imc'
 ARCH     ?= rv32imfc
@@ -44,7 +52,11 @@ CORE		?= 0
 export CB-HEEP_DIR = hw/vendor/cei_mochila/
 CB-HEEP_MAKE = $(CB-HEEP_DIR)
 
+
 all: help
+
+CB-gen:
+	$(PYTHON) util/mcu_gen.py --config $(CB_HEEP_CFG) --cfg_peripherals $(CB_HEEP_MCU_CFG_PERIPHERALS) --pads_cfg $(CB_HEEP_PAD_CFG) --outdir hw/CB-heep/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/CB-heep/CB_heep.sv.tpl
 
 verilator-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --build CEI-Backpack-heep:ip:mochila:0.0 2>&1 | tee buildsim.log

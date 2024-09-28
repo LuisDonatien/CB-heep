@@ -13,13 +13,16 @@ module xilinx_core_v_mini_mcu_wrapper
     parameter CLK_LED_COUNT_LENGTH = 27
 ) (
 
+`ifdef FPGA_ZCU104
+    inout logic clk_300mhz_n,
+    inout logic clk_300mhz_p,
+`else
     inout logic clk_i,
+`endif
     inout logic rst_i,
 
-    //visibility signals
-    output logic rst_led,
-    output logic clk_led,
-    output logic clk_out,
+    output logic rst_led_o,
+    output logic clk_led_o,
 
     inout logic boot_select_i,
     inout logic execute_from_flash_i,
@@ -75,10 +78,10 @@ module xilinx_core_v_mini_mcu_wrapper
 `endif
 
   // reset LED for debugging
-  assign rst_led = rst_n;
+  assign rst_led_o = rst_n;
 
   // counter to blink an LED
-  assign clk_led = clk_count[CLK_LED_COUNT_LENGTH-1];
+  assign clk_led_o = clk_count[CLK_LED_COUNT_LENGTH-1];
 
   always_ff @(posedge clk_gen or negedge rst_n) begin : clk_count_process
     if (!rst_n) begin
@@ -88,29 +91,32 @@ module xilinx_core_v_mini_mcu_wrapper
     end
   end
 
-
   // eXtension Interface
   if_xif #() ext_if ();
 
-  // clock output for debugging
-  assign clk_out = clk_gen;
-
+`ifdef FPGA_ZCU104
   xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
-`ifdef FPGA_NEXYS
-      .clk_100MHz(clk_i),
-`else
-      .clk_125MHz(clk_i),
-`endif
+      .CLK_IN1_D_0_clk_n(clk_300mhz_n),
+      .CLK_IN1_D_0_clk_p(clk_300mhz_p),
       .clk_out1_0(clk_gen)
   );
+`elsif FPGA_NEXYS
+  xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+      .clk_100MHz(clk_i),
+      .clk_out1_0(clk_gen)
+  );
+`else  // FPGA PYNQ-Z2
+  xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+      .clk_125MHz(clk_i),
+      .clk_out1_0(clk_gen)
+  );
+`endif
 
   x_heep_system #(
-      .X_EXT           (X_EXT),
-      .COREV_PULP      (COREV_PULP),
-      .FPU             (FPU),
-      .ZFINX           (ZFINX),
-      .EXT_XBAR_NMASTER(1),
-      .EXT_HARTS       (1)
+      .X_EXT(X_EXT),
+      .COREV_PULP(COREV_PULP),
+      .FPU(FPU),
+      .ZFINX(ZFINX)
   ) x_heep_system_i (
       .intr_vector_ext_i('0),
       .xif_compressed_if(ext_if),
@@ -119,15 +125,14 @@ module xilinx_core_v_mini_mcu_wrapper
       .xif_mem_if(ext_if),
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
-      .ext_xbar_master_req_i(ex_slave_core_req),
-      .ext_xbar_master_resp_o(ex_slave_core_resp),
+      .ext_xbar_master_req_i('0),
+      .ext_xbar_master_resp_o(),
       .ext_core_instr_req_o(),
       .ext_core_instr_resp_i('0),
-      .ext_core_data_req_o(ex_master_core_req),
-      .ext_core_data_resp_i(ex_master_core_resp),
+      .ext_core_data_req_o(),
+      .ext_core_data_resp_i('0),
       .ext_debug_master_req_o(),
       .ext_debug_master_resp_i('0),
-      .ext_debug_req(debug_req),
       .ext_dma_read_ch0_req_o(),
       .ext_dma_read_ch0_resp_i('0),
       .ext_dma_write_ch0_req_o(),
@@ -140,7 +145,6 @@ module xilinx_core_v_mini_mcu_wrapper
       .external_subsystem_powergate_switch_ack_ni(),
       .external_subsystem_powergate_iso_no(),
       .external_subsystem_rst_no(),
-      .external_cpu_subsystem_rst_no(external_cpu_subsystem_rst),
       .external_ram_banks_set_retentive_no(),
       .external_subsystem_clkgate_en_no(),
       .exit_value_o(exit_value),
@@ -207,65 +211,6 @@ module xilinx_core_v_mini_mcu_wrapper
   );
 
   assign exit_value_o = exit_value[0];
-  //***External_Core*****//
-  logic external_cpu_subsystem_rst;
-  // Debug Signal
-  logic debug_req;
 
-  // Obi_req_t Slave
-  obi_req_t ex_slave_core_req;
-
-  // Obi_resp_t Slave
-  obi_resp_t ex_slave_core_resp;
-
-
-  // Obi_req_t  Master
-  obi_req_t ex_master_core_req;
-
-  // Obi_resp_t Master
-  obi_resp_t ex_master_core_resp;
-
-  obi_req_t [1:0] ex_core_req;
-
-  obi_resp_t [1:0] ex_core_resp;
-
-  //  assign ex_slave_core_resp = '0;
-  //External CPU
-  /*  ext_cpu_system ext_cpu_system_i (
-      // Clock and Reset
-      .clk_i (clk_gen),
-      .rst_ni(external_cpu_subsystem_rst),
-
-      // Instruction memory interface
-      .core_instr_req_o (ex_core_req[0]),
-      .core_instr_resp_i(ex_core_resp[0]),
-
-      // Data memory interface
-      .core_data_req_o (ex_core_req[1]),
-      .core_data_resp_i(ex_core_resp[1]),
-
-      // Debug Interface
-      .debug_req_i(debug_req)
-
-      // sleep
-      //    output logic core_sleep_o
-  );
-*/
-  mochila_top mochila_top_i (
-      // Clock and Reset
-      .clk_i (clk_gen),
-      .rst_ni(external_cpu_subsystem_rst),
-
-      //Bus External Master
-      .ext_master_req_i (ex_master_core_req),
-      .ext_master_resp_o(ex_master_core_resp),
-
-      //Bus External Slave
-      .ext_slave_req_o (ex_slave_core_req),
-      .ext_slave_resp_i(ex_slave_core_resp),
-
-      // Debug Interface
-      .debug_req_i(debug_req)
-  );
 
 endmodule

@@ -5,6 +5,10 @@
 #ifndef OPENTITAN_SW_DEVICE_LIB_HANDLER_H_
 #define OPENTITAN_SW_DEVICE_LIB_HANDLER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
 typedef enum exc_id {
   kInstMisa = 0,
   kInstAccFault = 1,
@@ -71,7 +75,6 @@ INTERRUPT_HANDLER_ABI void handler_irq_timer(void);
  */
 INTERRUPT_HANDLER_ABI void handler_irq_external(void);
 
-//INTERRUPT_HANDLER_ABI void handler_safe_fsm(void);
 /**
  * Instruction access fault.
  *
@@ -126,5 +129,10 @@ void handler_lsu_fault(void);
  * at link-time by providing an additional non-weak definition.
  */
 void handler_ecall(void);
+
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif  // OPENTITAN_SW_DEVICE_LIB_HANDLER_H_

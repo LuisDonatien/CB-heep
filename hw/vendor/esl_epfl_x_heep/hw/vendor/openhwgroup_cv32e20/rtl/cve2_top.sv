@@ -30,7 +30,6 @@ module cve2_top import cve2_pkg::*; #(
   input  logic [31:0]                  hart_id_i,
   input  logic [31:0]                  boot_addr_i,
 
-
   // Instruction memory interface
   output logic                         instr_req_o,
   input  logic                         instr_gnt_i,
@@ -57,11 +56,9 @@ module cve2_top import cve2_pkg::*; #(
   input  logic [15:0]                  irq_fast_i,
   input  logic                         irq_nm_i,       // non-maskeable interrupt
 
-
   // Debug Interface
   input  logic                         debug_req_i,
   output crash_dump_t                  crash_dump_o,
-  output logic                         debug_mode_o,
 
   // RISC-V Formal Interface
   // Does not comply with the coding standards of _i/_o suffixes, but follows
@@ -172,6 +169,7 @@ module cve2_top import cve2_pkg::*; #(
 
     .hart_id_i,
     .boot_addr_i,
+
     .instr_req_o,
     .instr_gnt_i,
     .instr_rvalid_i,
@@ -198,7 +196,6 @@ module cve2_top import cve2_pkg::*; #(
 
     .debug_req_i,
     .crash_dump_o,
-    .debug_mode_o,
 
 `ifdef RVFI
     .rvfi_valid,

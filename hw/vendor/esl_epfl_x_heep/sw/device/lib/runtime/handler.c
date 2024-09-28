@@ -2,10 +2,14 @@
 // Licensed under the Apache License, Version 2.0, see LICENSE for details.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "handler.h"
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
 
+#include "handler.h"
 #include "csr.h"
 #include "stdasm.h"
+#include <stdio.h>'
 
 /**
  * Return value of mtval
@@ -81,10 +85,6 @@ __attribute__((weak)) void handler_irq_external(void) {
   while (1) {
   }
 }
-//__attribute__((weak)) void handler_safe_fsm(void) {
-//  volatile unsigned int *Priv_Reg = 0xFF000008;
-//  *Priv_Reg = 0x1;
-//}
 
 __attribute__((weak)) void handler_instr_acc_fault(void) {
   const char fault_msg[] =
@@ -114,3 +114,7 @@ __attribute__((weak)) void handler_ecall(void) {
   while (1) {
   }
 }
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
+

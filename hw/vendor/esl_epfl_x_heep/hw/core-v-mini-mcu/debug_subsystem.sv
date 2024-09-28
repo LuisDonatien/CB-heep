@@ -5,9 +5,8 @@
 module debug_subsystem
   import obi_pkg::*;
 #(
-    parameter JTAG_IDCODE = 32'h10001c05,
-    //Modification Dual-Core
-    parameter NrHarts     = 2
+    parameter NRHARTS = 1,
+    parameter JTAG_IDCODE = 32'h10001c05
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -19,8 +18,7 @@ module debug_subsystem
     output logic jtag_tdo_o,
 
     output logic debug_ndmreset_no,
-    //Modification Dual-Core
-    output logic [NrHarts-1:0] debug_core_req_o,
+    output logic [NRHARTS-1:0] debug_core_req_o,
 
     input  obi_req_t  debug_slave_req_i,
     output obi_resp_t debug_slave_resp_o,
@@ -31,55 +29,20 @@ module debug_subsystem
 
   import dm::*;
 
-  //*******//
-  //Hart Dependent 
-  //Debug Req
-
-  logic [NrHarts-1:0]    unavailable_i;
-  dm::hartinfo_t [NrHarts-1:0] hartinfo;
+  logic [NRHARTS-1:0]    unavailable;
+  dm::hartinfo_t [NRHARTS-1:0] hartinfo;
 
   always @(*) begin
-    for (int i = 0; i < NrHarts; i++) begin
+    for (int i = 0; i < NRHARTS; i++) begin
       hartinfo[i].zero1 = '0;
       hartinfo[i].nscratch = 2;  // Debug module needs at least two scratch regs
       hartinfo[i].zero0 = '0;
       hartinfo[i].dataaccess = 1'b1;  // data registers are memory mapped in the debugger
       hartinfo[i].datasize = dm::DataCount;
       hartinfo[i].dataaddr = dm::DataAddr;
-      unavailable_i[i] = ~(1'b1);
+      unavailable[i] = ~(1'b1);
     end
   end
-  /* 
-  logic [NrHarts-1:0]    unavailable_i;
-  dm::hartinfo_t [NrHarts-1:0] hartinfo;
-  always @(*) begin
-    for (int i = 0; i < NrHarts; i++) begin
-      unavailable_i[i] = ~(1'b1);
-    end
-    ;
-  end
-  always @(*) begin
-    for (int i = 0; i < NrHarts; i++) begin
-      hartinfo[i].zero1 = '0;
-      hartinfo[i].nscratch = 2;  // Debug module needs at least two scratch regs
-      hartinfo[i].zero0 = '0;
-      hartinfo[i].dataaccess = 1'b1;
-      hartinfo[i].datasize = dm::DataCount;  // Variable dm::DataCount definida en otro lugar
-      hartinfo[i].dataaddr = dm::DataAddr;  // Variable dm::DataAddr definida en otro lugar
-    end
-  end
-
-*/
-  /*Single Hart
-  localparam dm::hartinfo_t hartinfo = '{
-      zero1: '0,
-      nscratch: 2,  // Debug module needs at least two scratch regs
-      zero0: '0,
-      dataaccess: 1'b1,  // data registers are memory mapped in the debugger
-      datasize: dm::DataCount,
-      dataaddr: dm::DataAddr
-  };
-*/
 
   dm::dmi_req_t  dmi_req;
   logic          dmi_req_valid;
@@ -113,7 +76,7 @@ module debug_subsystem
   );
 
   dm_obi_top #(
-      .NrHarts(NrHarts)
+      .NrHarts(NRHARTS)
   ) dm_obi_top_i (
       .clk_i        (clk_i),
       .rst_ni       (rst_ni),
@@ -121,7 +84,7 @@ module debug_subsystem
       .ndmreset_o   (ndmreset),
       .dmactive_o   (),
       .debug_req_o  (debug_core_req_o),
-      .unavailable_i(unavailable_i),
+      .unavailable_i(unavailable),
       .hartinfo_i   (hartinfo),
 
       .slave_req_i   (debug_slave_req_i.req),

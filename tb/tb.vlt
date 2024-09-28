@@ -7,3 +7,5 @@ lint_off -rule UNDRIVEN -file "*tb/testharness.sv" -match "Signal is not driven:
 lint_off -rule SYNCASYNCNET -file "*tb/testharness.sv" -match "*"
 lint_off -rule WIDTH -file "*tb/testharness.sv" -match "*"
 lint_off -rule LITENDIAN -file "*tb/testharness.sv" -match "*"
+lint_off -rule UNUSED -file "*hw/CB-heep/CB_heep.sv" -match "*"
+lint_off -rule UNDRIVEN -file "*hw/CB-heep/CB_heep.sv" -match "*"

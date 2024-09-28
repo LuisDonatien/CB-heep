@@ -64,13 +64,14 @@ module cpu_subsystem
         .DmExceptionAddr('0)
     ) cv32e20_i (
         .clk_i (clk_i),
-        .rst_ni(rst_ni && 1'b0),
+        .rst_ni(rst_ni),
 
         .test_en_i(1'b0),
         .ram_cfg_i('0),
 
         .hart_id_i  (32'h0),
         .boot_addr_i(BOOT_ADDR),
+
         .instr_addr_o  (core_instr_req_o.addr),
         .instr_req_o   (core_instr_req_o.req),
         .instr_rdata_i (core_instr_resp_i.rdata),
@@ -96,7 +97,6 @@ module cpu_subsystem
 
         .debug_req_i (debug_req_i),
         .crash_dump_o(),
-        .debug_mode_o(),
 
         .fetch_enable_i(fetch_enable),
 
