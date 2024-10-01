@@ -66,6 +66,8 @@ module xilinx_CB_x_heep_wrapper
   logic [                      31:0] exit_value;
   wire                               rst_n;
   logic [CLK_LED_COUNT_LENGTH - 1:0] clk_count;
+  
+  logic clk_125MHz;
 
   // low active reset
 `ifdef FPGA_NEXYS
@@ -95,14 +97,24 @@ module xilinx_CB_x_heep_wrapper
   // clock output for debugging
   assign clk_out = clk_gen;
 
+`ifdef FPGA_ZCU104
   xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
-`ifdef FPGA_NEXYS
-      .clk_100MHz(clk_i),
-`else
-      .clk_125MHz(clk_i),
-`endif
+      .CLK_IN1_D_0_clk_n(clk_300mhz_n),
+      .CLK_IN1_D_0_clk_p(clk_300mhz_p),
       .clk_out1_0(clk_gen)
   );
+`elsif FPGA_NEXYS
+  xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+      .clk_100MHz(clk_i),
+      .clk_out1_0(clk_gen)
+  );
+`else  // FPGA PYNQ-Z2
+  xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+      //.clk_125MHz(clk_125MHz),
+      .clk_125MHz(clk_i),
+      .clk_out1_0(clk_gen)
+  );
+`endif
 
   CB_heep#(
       .COREV_PULP(COREV_PULP),
@@ -176,12 +188,6 @@ module xilinx_CB_x_heep_wrapper
       .xif_mem_if(ext_if),
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
-      .ext_dma_read_ch0_req_o(),
-      .ext_dma_read_ch0_resp_i('0),
-      .ext_dma_write_ch0_req_o(),
-      .ext_dma_write_ch0_resp_i('0),
-      .ext_dma_addr_ch0_req_o(),
-      .ext_dma_addr_ch0_resp_i('0),
       .external_subsystem_powergate_switch_no(),
       .external_subsystem_powergate_switch_ack_ni(),
       .external_subsystem_powergate_iso_no(),
@@ -189,7 +195,14 @@ module xilinx_CB_x_heep_wrapper
       .external_ram_banks_set_retentive_no(),
       .external_subsystem_clkgate_en_no(),
       .ext_dma_slot_tx_i('0),
-      .ext_dma_slot_rx_i('0)
+      .ext_dma_slot_rx_i('0),
+      .ext_dma_stop_i('0)
   );
-
+  /*
+  design_1_wrapper design_wrapper_i (
+     .clk_in(clk_i),
+     .clk_125MHz_o(clk_125MHz),
+     .ext_reset_in(rst_n)
+  );
+*/
 endmodule

@@ -1,0 +1,46 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Mon Sep 30 12:50:58 2024
+[*]
+[dumpfile] "/home/luis/Documents/PhD/CB-heep/build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator/waveform.vcd"
+[dumpfile_mtime] "Mon Sep 30 12:45:42 2024"
+[dumpfile_size] 18622882
+[savefile] "/home/luis/Documents/PhD/CB-heep/tb/CB_HEEP_TMR SIGNALS.gtkw"
+[timestart] 235062
+[size] 1920 1043
+[pos] -1 -1
+*-4.000000 235113 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.testharness.
+[treeopen] TOP.testharness.CB_heep_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.
+[sst_width] 384
+[signals_width] 198
+[sst_expanded] 1
+[sst_vpaned_height] 298
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).addr[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).req
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).wdata[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).we
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).rdata[31:0]
+@29
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).rvalid
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).addr[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).req
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).wdata[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).we
+@22
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rdata[31:0]
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rvalid
+[pattern_trace] 1
+[pattern_trace] 0
