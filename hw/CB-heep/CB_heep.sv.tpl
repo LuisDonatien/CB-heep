@@ -48,7 +48,7 @@ ${pad.x_heep_system_interface}
   import core_v_mini_mcu_pkg::*;
 
 
-  localparam EXT_HARTS = 1;
+  localparam EXT_HARTS = 0;
   localparam EXT_XBAR_NMASTER = 1;
 
   //do not touch these parameter

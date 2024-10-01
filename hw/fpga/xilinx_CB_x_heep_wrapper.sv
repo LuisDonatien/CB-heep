@@ -19,7 +19,6 @@ module xilinx_CB_x_heep_wrapper
     //visibility signals
     output logic rst_led,
     output logic clk_led,
-    output logic clk_out,
 
     inout logic boot_select_i,
     inout logic execute_from_flash_i,
@@ -198,6 +197,8 @@ module xilinx_CB_x_heep_wrapper
       .ext_dma_slot_rx_i('0),
       .ext_dma_stop_i('0)
   );
+
+    assign exit_value_o = exit_value[0];
   /*
   design_1_wrapper design_wrapper_i (
      .clk_in(clk_i),

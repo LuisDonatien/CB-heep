@@ -103,7 +103,7 @@ module CB_heep
   import core_v_mini_mcu_pkg::*;
 
 
-  localparam EXT_HARTS = 1;
+  localparam EXT_HARTS = 0;
   localparam EXT_XBAR_NMASTER = 1;
 
   //do not touch these parameter
@@ -596,7 +596,7 @@ module CB_heep
     .external_subsystem_powergate_switch_no,
     .external_subsystem_powergate_switch_ack_ni,
     .external_subsystem_powergate_iso_no,
-    .external_subsystem_rst_no(),
+    .external_subsystem_rst_no(ext_cpu_subsystem_rst_n),
     .ext_cpu_subsystem_rst_no(ext_cpu_subsystem_rst_n),
     .external_ram_banks_set_retentive_no,
     .external_subsystem_clkgate_en_no,
@@ -1210,7 +1210,7 @@ module CB_heep
   );
 
   mochila_top mochila_top_i (
-      .clk_i(clk_in_x),
+      .clk_i,
       .rst_ni(ext_cpu_subsystem_rst_n),
       //Bus External Master
       .ext_master_req_i(ext_master_bus_req),
