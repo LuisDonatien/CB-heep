@@ -1,0 +1,13 @@
+diff --git a/core-v-mini-mcu-fpga.core b/core-v-mini-mcu-fpga.core
+index 38663ae..bd5e955 100644
+--- a/core-v-mini-mcu-fpga.core
++++ b/core-v-mini-mcu-fpga.core
+@@ -49,7 +49,7 @@ filesets:
+ 
+   xdc-fpga-pynq-z2:
+     files:
+-    - hw/fpga/constraints/pynq-z2/pin_assign.xdc
++  #  - hw/fpga/constraints/pynq-z2/pin_assign.xdc
+     - hw/fpga/constraints/pynq-z2/constraints.xdc
+     file_type: xdc
+ 
