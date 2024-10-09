@@ -1,20 +1,39 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Sep 30 12:50:58 2024
+[*] Mon Oct  7 08:46:02 2024
 [*]
 [dumpfile] "/home/luis/Documents/PhD/CB-heep/build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator/waveform.vcd"
-[dumpfile_mtime] "Mon Sep 30 12:45:42 2024"
-[dumpfile_size] 18622882
+[dumpfile_mtime] "Mon Oct  7 08:24:24 2024"
+[dumpfile_size] 30017635
 [savefile] "/home/luis/Documents/PhD/CB-heep/tb/CB_HEEP_TMR SIGNALS.gtkw"
-[timestart] 235062
+[timestart] 0
 [size] 1920 1043
 [pos] -1 -1
-*-4.000000 235113 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.000000 195849 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.testharness.
 [treeopen] TOP.testharness.CB_heep_i.
+[treeopen] TOP.testharness.CB_heep_i.core_v_mini_mcu_i.
+[treeopen] TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.
-[sst_width] 384
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_end_sw_routine.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_enable_interrupt.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_status_interrupt.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.u_cve2_core.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.u_cve2_core.id_stage_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.u_cve2_core.if_stage_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.u_cve2_core.if_stage_i.prefetch_buffer_i.
+[treeopen] TOP.testharness.CB_heep_i.obi_pipelined_i.
+[treeopen] TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_i.
+[treeopen] TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_o.
+[treeopen] TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_i.
+[treeopen] TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.
+[sst_width] 504
 [signals_width] 198
 [sst_expanded] 1
 [sst_vpaned_height] 298
@@ -28,8 +47,10 @@ TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).wdata[31:0]
 TOP.testharness.CB_heep_i.mochila_top_i.core_instr_req(2).we
 @22
 TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).rdata[31:0]
-@29
+@28
+TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).gnt
 TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).rvalid
+TOP.testharness.CB_heep_i.mochila_top_i.interrupt_o
 @22
 TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).addr[31:0]
 @28
@@ -42,5 +63,69 @@ TOP.testharness.CB_heep_i.mochila_top_i.core_data_req(2).we
 TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rdata[31:0]
 @28
 TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rvalid
+TOP.testharness.CB_heep_i.mochila_top_i.interrupt_o
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_end_sw_routine.q
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_status_interrupt.q
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_enable_interrupt.q
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.sleep_i[2:0]
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.EndSw_i
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_start.q
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_start.clk_i
+@22
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_i.addr[31:0]
+@28
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_i.req
+@22
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_i.wdata[31:0]
+@28
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_i.we
+@22
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_o.addr[31:0]
+@28
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_o.req
+@22
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_o.wdata[31:0]
+@28
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_req_o.we
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.gnt
+@22
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.rdata[31:0]
+@29
+[color] 2
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.rvalid
+@28
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_i.gnt
+@22
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_i.rdata[31:0]
+@28
+[color] 3
+TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_i.rvalid
+@100000028
+TOP.testharness.CB_heep_i.mochila_top_i.safe_cpu_wrapper_i.cpu_system_i.cv32e20_core2.u_cve2_core.id_stage_i.controller_i.ctrl_fsm_cs[3:0]
+@22
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_req_o.addr[31:0]
+@28
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_req_o.req
+@22
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_req_o.wdata[31:0]
+@28
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_req_o.we
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_resp_i.gnt
+@22
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_resp_i.rdata[31:0]
+@28
+TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.core_data_resp_i.rvalid
 [pattern_trace] 1
 [pattern_trace] 0

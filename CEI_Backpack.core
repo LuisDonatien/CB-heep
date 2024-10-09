@@ -16,6 +16,7 @@ filesets:
     - cei:ip:cei_mochila
     files:
     - hw/vendor/esl_epfl_x_heep/hw/system/pad_ring.sv
+    - hw/CB-heep/obi_pipelined.sv
     - hw/CB-heep/CB_heep.sv
     file_type: systemVerilogSource
 
@@ -103,7 +104,7 @@ filesets:
 
   fpga_xdc_pynq_z2:
     files:
- #   - hw/fpga/constraints/pin_assign.xdc
+    - hw/fpga/constraints/pin_assign.xdc
     file_type: xdc
 
   netlist-fpga:

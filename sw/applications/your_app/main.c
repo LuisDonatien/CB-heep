@@ -28,6 +28,7 @@
 #define ENTRY_PROG  (BASE_ADDRESS | 0x14)
 #define END_SW      (BASE_ADDRESS | 0x18)
 #define CONFIG      (BASE_ADDRESS | 0x0)
+#define INTC_CTRL   (BASE_ADDRESS | 0x1c)
 int main(int argc, char *argv[])
 {
     /* write something to stdout */
@@ -38,6 +39,7 @@ int main(int argc, char *argv[])
     volatile unsigned int *END_SW_P = END_SW;
     volatile unsigned int *CONFIG_P = CONFIG;
     volatile unsigned int *CRITICAL_P = CRITICAL_SECT; 
+    volatile unsigned int *INTC_CTRL_P = INTC_CTRL;
     printf("[X-HEEP]: INIT_Program...1 \n");
     *SAFE_P = 0x0;
     *CONFIG_P = 0x00;
@@ -54,8 +56,10 @@ int main(int argc, char *argv[])
     *CRITICAL_P = 0x1;
     *ENTRY_PROG_P = 0xF0020180;
     *MASTER_P = 0x1;
+    *INTC_CTRL_P = 0x1;
     *START_P = 0x1;
     while((*END_SW_P)==0){};/*
+    printf()/*
     printf("[X-HEEP]: INIT_Program...3 \n");
     *SAFE_P = 0x0;
     *CONFIG = 0x00;
@@ -80,6 +84,9 @@ int main(int argc, char *argv[])
     *MASTER = 0x1;
     *START_P = 0x1;
     while((*END_SW)==0){};  */
+    printf("INTC VAL: %d \n",(*INTC_CTRL_P));
+    *INTC_CTRL_P = 0x1;
+    printf("INTC VAL: %d \n",(*INTC_CTRL_P));
     printf("[X-HEEP]: End...\n");   
     return EXIT_SUCCESS;
 }

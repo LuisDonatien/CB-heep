@@ -103,7 +103,7 @@ module CB_heep
   import core_v_mini_mcu_pkg::*;
 
 
-  localparam EXT_HARTS = 0;
+  localparam EXT_HARTS = 1;
   localparam EXT_XBAR_NMASTER = 1;
 
   //do not touch these parameter
@@ -596,7 +596,7 @@ module CB_heep
     .external_subsystem_powergate_switch_no,
     .external_subsystem_powergate_switch_ack_ni,
     .external_subsystem_powergate_iso_no,
-    .external_subsystem_rst_no(ext_cpu_subsystem_rst_n),
+    .external_subsystem_rst_no(external_subsystem_rst_no),
     .ext_cpu_subsystem_rst_no(ext_cpu_subsystem_rst_n),
     .external_ram_banks_set_retentive_no,
     .external_subsystem_clkgate_en_no,
@@ -1183,6 +1183,9 @@ module CB_heep
   obi_req_t                          ext_master_bus_req;
   obi_resp_t                         ext_master_bus_resp;
 
+  obi_req_t                          ext_slave_req;
+  obi_resp_t                         ext_slave_resp;
+
   assign N_to_one_master_bus_req =  { ext_dma_addr_ch0_req,
                                       ext_dma_write_ch0_req,
                                       ext_dma_read_ch0_req,
@@ -1217,8 +1220,8 @@ module CB_heep
       .ext_master_resp_o(ext_master_bus_resp),
 
       //Bus External Slave
-      .ext_slave_req_o(ext_xbar_master_req[0]),
-      .ext_slave_resp_i(ext_xbar_master_resp[0]),
+      .ext_slave_req_o(ext_slave_req),
+      .ext_slave_resp_i(ext_slave_resp),
 
       .csr_reg_req_i(ext_peripheral_slave_req),
       .csr_reg_resp_o(ext_peripheral_slave_resp),
@@ -1226,7 +1229,20 @@ module CB_heep
     // power manager signals that goes to the ASIC macros
       .pwrgate_ni('0),
       .pwrgate_ack_no(),
-      .set_retentive_ni('0)
+      .set_retentive_ni('0),
+      .interrupt_o()
   );
+
+  obi_pipelined obi_pipelined_i (
+
+  .clk_i,
+  .rst_ni(ext_cpu_subsystem_rst_n),
+  .pipelined_obi_req_i(ext_slave_req),
+  .pipelined_obi_req_o(ext_xbar_master_req[0]),
+
+  .pipelined_obi_resp_i(ext_xbar_master_resp[0]),
+  .pipelined_obi_resp_o(ext_slave_resp)
+
+);
 
 endmodule  // CB_heep
