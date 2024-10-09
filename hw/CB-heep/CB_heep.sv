@@ -109,6 +109,7 @@ module CB_heep
   //do not touch these parameter
   localparam EXT_HARTS_RND = EXT_HARTS == 0 ? 1 : EXT_HARTS;
 
+  logic accelerator_backpack_intr;
 
   logic [EXT_HARTS_RND-1:0] ext_debug_req;
   logic ext_cpu_subsystem_rst_n;
@@ -561,7 +562,8 @@ module CB_heep
     .gpio_30_o(gpio_30_out_x),
     .gpio_30_oe_o(gpio_30_oe_x),
 
-    .intr_vector_ext_i,
+    .intr_vector_ext_i(intr_vector_ext_i),
+    .accelerator_backpack_fast_intr_i(accelerator_backpack_intr),
     .xif_compressed_if,
     .xif_issue_if,
     .xif_commit_if,
@@ -1230,7 +1232,7 @@ module CB_heep
       .pwrgate_ni('0),
       .pwrgate_ack_no(),
       .set_retentive_ni('0),
-      .interrupt_o()
+      .interrupt_o(accelerator_backpack_intr)
   );
 
   obi_pipelined obi_pipelined_i (

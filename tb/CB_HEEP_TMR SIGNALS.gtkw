@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Oct  7 08:46:02 2024
+[*] Wed Oct  9 16:01:15 2024
 [*]
 [dumpfile] "/home/luis/Documents/PhD/CB-heep/build/CEI-Backpack-heep_ip_mochila_0.0/sim-verilator/waveform.vcd"
-[dumpfile_mtime] "Mon Oct  7 08:24:24 2024"
-[dumpfile_size] 30017635
+[dumpfile_mtime] "Wed Oct  9 15:50:18 2024"
+[dumpfile_size] 20335518
 [savefile] "/home/luis/Documents/PhD/CB-heep/tb/CB_HEEP_TMR SIGNALS.gtkw"
-[timestart] 0
+[timestart] 657298
 [size] 1920 1043
 [pos] -1 -1
-*-17.000000 195849 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-5.000000 657395 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.testharness.
 [treeopen] TOP.testharness.CB_heep_i.
@@ -17,6 +17,8 @@
 [treeopen] TOP.testharness.CB_heep_i.core_v_mini_mcu_i.cpu_subsystem_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.core_instr_resp(2).
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.
+[treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_end_sw_routine.
 [treeopen] TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_enable_interrupt.
@@ -64,6 +66,9 @@ TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rdata[31:0]
 @28
 TOP.testharness.CB_heep_i.mochila_top_i.core_data_resp(2).rvalid
 TOP.testharness.CB_heep_i.mochila_top_i.interrupt_o
+@29
+TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_start.q
+@28
 TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_end_sw_routine.q
 TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_status_interrupt.q
 TOP.testharness.CB_heep_i.mochila_top_i.periph_system_i.cb_heep_ctrl_i.cb_heep_ctrl_reg_top_i.u_interrupt_controler_enable_interrupt.q
@@ -100,10 +105,9 @@ TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.gnt
 @22
 [color] 2
 TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.rdata[31:0]
-@29
+@28
 [color] 2
 TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_o.rvalid
-@28
 [color] 3
 TOP.testharness.CB_heep_i.obi_pipelined_i.pipelined_obi_resp_i.gnt
 @22

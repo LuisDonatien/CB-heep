@@ -54,6 +54,7 @@ ${pad.x_heep_system_interface}
   //do not touch these parameter
   localparam EXT_HARTS_RND = EXT_HARTS == 0 ? 1 : EXT_HARTS;
 
+  logic accelerator_backpack_intr;
 
   logic [EXT_HARTS_RND-1:0] ext_debug_req;
   logic ext_cpu_subsystem_rst_n;
@@ -124,7 +125,8 @@ ${pad.internal_signals}
 % for pad in pad_list:
 ${pad.core_v_mini_mcu_bonding}
 % endfor
-    .intr_vector_ext_i,
+    .intr_vector_ext_i(intr_vector_ext_i),
+    .accelerator_backpack_fast_intr_i(accelerator_backpack_intr),
     .xif_compressed_if,
     .xif_issue_if,
     .xif_commit_if,
@@ -273,7 +275,7 @@ ${pad_mux_process}
       .pwrgate_ni('0),
       .pwrgate_ack_no(),
       .set_retentive_ni('0),
-      .interrupt_o()
+      .interrupt_o(accelerator_backpack_intr)
   );
 
   obi_pipelined obi_pipelined_i (

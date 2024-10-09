@@ -188,6 +188,14 @@ INTERRUPT_HANDLER_ABI void handler_irq_fast_gpio_6(void);
  */
 INTERRUPT_HANDLER_ABI void handler_irq_fast_gpio_7(void);
 
+/**
+ * @brief fast interrupt controller irq for accelerator_backpack
+ * `fast_intr_ctrl.c` provides a weak definition of this symbol, which can 
+ * be overridden at link-time by providing an additional non-weak definition 
+ * inside peripherals connected through FIC
+ */
+INTERRUPT_HANDLER_ABI void handler_accelerator_backpack(void);
+
 /****************************************************************************/
 /**                                                                        **/
 /*                           EXPORTED VARIABLES                             */
@@ -300,6 +308,11 @@ __attribute__((weak, optimize("O0"))) void fic_irq_gpio_6(void)
 }
 
 __attribute__((weak, optimize("O0"))) void fic_irq_gpio_7(void)
+{
+    /* Users should implement their non-weak version */
+}
+
+__attribute__((weak, optimize("O0"))) void fic_accelerator_backpack(void)
 {
     /* Users should implement their non-weak version */
 }
@@ -420,6 +433,14 @@ void handler_irq_fast_gpio_7(void)
     clear_fast_interrupt(kGpio_7_fic_e);
     // call the weak fic handler
     fic_irq_gpio_7();
+}
+
+void handler_accelerator_backpack(void)
+{
+    // The interrupt is cleared.
+    clear_fast_interrupt(kAccelerator_Backpack_e);
+    // call the weak fic handler
+    fic_accelerator_backpack();
 }
 #ifdef __cplusplus
 }
