@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_BOOT_ADDRESS_REG_OFFSET, 0xF0020180);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_START_REG_OFFSET, 0x1);
     while(end_program == 0) end_program = mmio_region_read32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_END_SW_ROUTINE_REG_OFFSET);
-
+    printf("[X-HEEP]: End...\n");  
     return EXIT_SUCCESS;
 }
 
