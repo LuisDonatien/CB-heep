@@ -194,7 +194,7 @@ INTERRUPT_HANDLER_ABI void handler_irq_fast_gpio_7(void);
  * be overridden at link-time by providing an additional non-weak definition 
  * inside peripherals connected through FIC
  */
-INTERRUPT_HANDLER_ABI void handler_accelerator_backpack(void);
+INTERRUPT_HANDLER_ABI void handler_irq_fast_accelerator_backpack(void);
 
 /****************************************************************************/
 /**                                                                        **/
@@ -435,7 +435,7 @@ void handler_irq_fast_gpio_7(void)
     fic_irq_gpio_7();
 }
 
-void handler_accelerator_backpack(void)
+void handler_irq_fast_accelerator_backpack(void)
 {
     // The interrupt is cleared.
     clear_fast_interrupt(kAccelerator_Backpack_e);

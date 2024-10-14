@@ -78,7 +78,7 @@ vector_table:
 	// 29 : fast interrupt - gpio_7
 	j handler_irq_fast_gpio_7
 	// 30 : fast interrupt - unmapped
-	j handler_accelerator_backpack
+	j handler_irq_fast_accelerator_backpack
 	// vendor interrupts: on Ibex interrupt id 31 is for non-maskable interrupts
 	j __no_irq_handler
 	// 64-32 : not connected on Ibex

@@ -31,17 +31,7 @@
 #include "CB_heep_ctrl_regs.h" 
 
 
-#define ACCELERATOR_BASE_ADDR EXT_PERIPHERAL_START_ADDRESS + 0x0000
-
-#define BASE_ADDRESS 0x20070000
-#define SAFE       (BASE_ADDRESS | 0x4)
-#define START     (BASE_ADDRESS | 0x10)
-#define MASTER    (BASE_ADDRESS | 0x8)
-#define CRITICAL_SECT (BASE_ADDRESS | 0xC)
-#define ENTRY_PROG  (BASE_ADDRESS | 0x14)
-#define END_SW      (BASE_ADDRESS | 0x18)
-#define CONFIG      (BASE_ADDRESS | 0x0)
-#define INTC_CTRL   (BASE_ADDRESS | 0x1c)
+#define BACKPACK_BASE_ADDR EXT_PERIPHERAL_START_ADDRESS + 0x0000
 
 volatile uint8_t accelerator_backpack_intr_flag;
 
@@ -51,25 +41,7 @@ void fic_accelerator_backpack(void) {
 
 int main(int argc, char *argv[])
 {
-    /* write something to stdout */
-    volatile unsigned int *SAFE_P = SAFE;
-    volatile unsigned int *START_P = START;
-    volatile unsigned int *ENTRY_PROG_P = ENTRY_PROG;
-    volatile unsigned int *MASTER_P = MASTER;
-    volatile unsigned int *END_SW_P = END_SW;
-    volatile unsigned int *CONFIG_P = CONFIG;
-    volatile unsigned int *CRITICAL_P = CRITICAL_SECT; 
-    volatile unsigned int *INTC_CTRL_P = INTC_CTRL;
-    printf("[X-HEEP]: INIT_Program...1 \n");
-    *SAFE_P = 0x0;
-    *CONFIG_P = 0x00;
-    *END_SW_P = 0x0;
-    *MASTER_P = 0x4;
-    *CRITICAL_P = 0x1;
-    *ENTRY_PROG_P = 0xF0020180;
-    *START_P = 0x1;
-    while((*END_SW_P)==0){};
-    printf("[X-HEEP]: INIT_Program...2\n"); 
+    printf("[X-HEEP]: Init_Program...\n"); 
     // Core configurations
     enable_all_fast_interrupts(true);
     // Enable interrupt on processor side
@@ -79,7 +51,7 @@ int main(int argc, char *argv[])
     const uint32_t mask = 1 << 30;
     CSR_SET_BITS(CSR_REG_MIE, mask);
     mmio_region_t accelerator_backpack;
-    accelerator_backpack = mmio_region_from_addr(ACCELERATOR_BASE_ADDR);
+    accelerator_backpack = mmio_region_from_addr(BACKPACK_BASE_ADDR);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_MODE_REG_OFFSET, 0x1);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_CONFIGURATION_REG_OFFSET, 0x1);
 //    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_END_SW_ROUTINE_REG_OFFSET, 0x0);
@@ -91,10 +63,6 @@ int main(int argc, char *argv[])
 
     accelerator_backpack_intr_flag = 0;
     while(accelerator_backpack_intr_flag == 0) wait_for_interrupt();
-
-    printf("INTC VAL: %d \n",(*INTC_CTRL_P));
-    *INTC_CTRL_P = 0x1;
-    printf("INTC VAL: %d \n",(*INTC_CTRL_P));
     printf("[X-HEEP]: End...\n");   
     return EXIT_SUCCESS;
 }

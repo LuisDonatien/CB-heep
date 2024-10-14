@@ -4,3 +4,5 @@ export PATH=/home/$USER/tools/verilator/$VERILATOR_VERSION/bin:$PATH
 export VERIBLE_VERSION=v0.0-2135-gb534c1fe
 export PATH=/tools/verible/$VERIBLE_VERSION/bin:$PATH
 export PATH=/home/$USER/tools/openocd/bin:$PATH
+
+conda activate core-v-mini-mcu
