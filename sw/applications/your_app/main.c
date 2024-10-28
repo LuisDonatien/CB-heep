@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
     printf("[X-HEEP]: Init_Program...\n");
     mmio_region_t accelerator_backpack;
     accelerator_backpack = mmio_region_from_addr(BACKPACK_BASE_ADDR);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_MODE_REG_OFFSET, 0x1);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_CONFIGURATION_REG_OFFSET, 0x1);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_DMR_MASK_REG_OFFSET, 0x3);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_CONFIGURATION_REG_OFFSET, 0x00);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_MASTER_CORE_REG_OFFSET, 0x1);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_CRITICAL_SECTION_REG_OFFSET, 0x1);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_CRITICAL_SECTION_REG_OFFSET, 0x0);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_BOOT_ADDRESS_REG_OFFSET, 0xF0020180);
     mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_START_REG_OFFSET, 0x1);
     while(end_program == 0) end_program = mmio_region_read32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_END_SW_ROUTINE_REG_OFFSET);
