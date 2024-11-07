@@ -37,7 +37,7 @@ void *memset(void *dest, int value, size_t len) {
   uint8_t *dest8 = (uint8_t *)dest;
   uint8_t value8 = (uint8_t)value;
   for (size_t i = 0; i < len; ++i) {
-    dest8[i] = value8;
+    dest8[i] = value8
   }
   return dest;
 }

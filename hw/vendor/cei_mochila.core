@@ -21,6 +21,8 @@ filesets:
       - cei_mochila/ip/CB_boot_rom/CB_boot_rom.sv
       - cei_mochila/rtl/safe_wrapper_ctrl_reg_top.sv
       - cei_mochila/rtl/safe_wrapper_ctrl.sv
+      - cei_mochila/rtl/obi_pipelined_delay.sv
+      - cei_mochila/rtl/obi_sngreg.sv
       - cei_mochila/rtl/safe_cpu_wrapper.sv
       - cei_mochila/rtl/safe_FSM.sv
       - cei_mochila/rtl/tmr_voter.sv
