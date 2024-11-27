@@ -1,0 +1,1 @@
+../../../../../hw/vendor/cei_mochila/sw/CB_device/lib/safety/CB_Safety_Config.h

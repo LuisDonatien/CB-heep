@@ -106,7 +106,7 @@ int _execve(const char *name, char *const argv[], char *const env[])
     return -1;
 }
 
-void _exit(int exit_status)
+__attribute__ ((weak)) void _exit(int exit_status)
 {
     soc_ctrl_t soc_ctrl;
     soc_ctrl.base_addr = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
