@@ -1,1 +1,0 @@
-../../../../../hw/vendor/cei_mochila/sw/CB_device/lib/cb_register/CB_heep_ctrl_regs.h

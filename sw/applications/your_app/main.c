@@ -28,7 +28,7 @@
 #include "mmio.h"
 #include "csr.h"
 #include "csr_registers.h"
-#include "CB_heep_ctrl_regs.h"
+#include "Safe_wrapper_ctrl_regs.h"
 #include "CB_Safety_Config.h"
 
 
@@ -43,14 +43,14 @@ int main(int argc, char *argv[])
     printf("[X-HEEP]: Init_Program 1 Single mode...\n");
     mmio_region_t accelerator_backpack;
     accelerator_backpack = mmio_region_from_addr(BACKPACK_BASE_ADDR);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_DMR_MASK_REG_OFFSET, CORE01_MASK);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_SAFE_CONFIGURATION_REG_OFFSET, SINGLE_MODE);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_MASTER_CORE_REG_OFFSET, MASTER_CORE0);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_CRITICAL_SECTION_REG_OFFSET, NONE_CRITICAL_SECTION);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_BOOT_ADDRESS_REG_OFFSET, 0xF0020180);
-    mmio_region_write32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_START_REG_OFFSET, START);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_DMR_MASK_REG_OFFSET, CORE01_MASK);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_SAFE_CONFIGURATION_REG_OFFSET, SINGLE_MODE);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_MASTER_CORE_REG_OFFSET, MASTER_CORE0);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_CRITICAL_SECTION_REG_OFFSET, NONE_CRITICAL_SECTION);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_ENTRY_ADDRESS_REG_OFFSET, 0xF0020180);
+    mmio_region_write32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_START_REG_OFFSET, START);
     end_program = 0;
-    while(end_program == 0) end_program = mmio_region_read32(accelerator_backpack, (ptrdiff_t) CB_HEEP_CTRL_END_SW_ROUTINE_REG_OFFSET);
+    while(end_program == 0) end_program = mmio_region_read32(accelerator_backpack, (ptrdiff_t) SAFE_WRAPPER_CTRL_END_SW_ROUTINE_REG_OFFSET);
     printf("[X-HEEP]: End 1...\n");
 
     return EXIT_SUCCESS;

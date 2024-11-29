@@ -1,0 +1,1 @@
+../../../../../hw/vendor/cei_mochila/sw/CB_device/lib/cb_register/Safe_wrapper_ctrl_regs.h
